@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="DataContainerView">
+        <attr name="dataLayout" format="reference" />
+        <attr name="busyLayout" format="reference" />
+        <attr name="retryLayout" format="reference" />
+        <attr name="emptyLayout" format="reference" />
+    </declare-styleable>
+    <declare-styleable name="SearchBoxView">
+        <attr name="keywords" format="string" />
+        <attr name="hintText" format="string" />
+        <attr name="performSearchDuringTyping" format="boolean" />
+    </declare-styleable>
+</resources>

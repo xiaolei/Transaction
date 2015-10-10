@@ -1,0 +1,22 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:padding="@dimen/margin_medium"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <io.github.xiaolei.transaction.widget.SearchBoxView
+        android:id="@+id/searchBoxForTags"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:hintText="@string/search_box_hint"
+        app:performSearchDuringTyping="true" />
+
+    <io.github.xiaolei.transaction.widget.DataContainerView
+        android:id="@+id/dataContainerViewTags"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/searchBoxForTags"
+        app:dataLayout="@layout/layout_tags" />
+
+</RelativeLayout>

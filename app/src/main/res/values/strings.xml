@@ -1,0 +1,80 @@
+<resources>
+    <string name="app_name">Transaction</string>
+
+    <string name="title_section1">Section 1</string>
+    <string name="title_section2">Section 2</string>
+    <string name="title_section3">Section 3</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_example">New Product</string>
+
+    <string name="action_settings">Settings</string>
+
+<!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="delete_database">Delete Database</string>
+    <string name="tags">Tags</string>
+    <string name="products">Products</string>
+    <string name="product_editor">Product Editor</string>
+    <string name="action_save_product">Save</string>
+    <string name="loading">Loading...</string>
+    <string name="action_new_tag">New</string>
+    <string name="action_save_tag">Save</string>
+    <string name="saving">Saving...</string>
+    <string name="error_tag_name_empty">Tag name is required.</string>
+    <string name="error_product_name_empty">Product name is required.</string>
+    <string name="action_new_product">New Product</string>
+    <string name="tag_editor">Tag Editor</string>
+    <string name="search_box_hint">Search</string>
+    <string name="retry_hint">Tag to reload</string>
+    <string name="no_search_result">Sorry, no search result</string>
+    <string name="no_result">No result</string>
+    <string name="calculator_title">New Transaction</string>
+    <string name="incoming">Earn</string>
+    <string name="outgoing">Expense</string>
+    <string name="flag_incoming">EARN</string>
+    <string name="flag_outgoing">EXPENSE</string>
+    <string name="ok">OK</string>
+    <string name="title_activity_product_editor">Product Editor</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="new_tag">New Tag</string>
+    <string name="tag_hint">Type new tag names below, separate multiple tags with space</string>
+    <string name="today_transactions_amount">Today amount</string>
+    <string name="validation_error_input_price">Please input price.</string>
+    <string name="validation_error_choose_product">Please choose product.</string>
+    <string name="validation_error_choose_transaction_type">Please choose transaction type.</string>
+    <string name="dialog_title_choose_currency">Choose Currency</string>
+    <string name="action_delete_product">Delete</string>
+    <string name="confirm_message_delete_products">Are you sure to delete the selected %d products?</string>
+    <string name="copy_database">Copy Database</string>
+    <string name="validation_error_product_name_duplicate">Product name is duplicate, please change another one.</string>
+    <string name="unlock">Unlock</string>
+    <string name="no_product">You don\'t have any product yet, before create a new transaction, please create a product at first.</string>
+    <string name="search">Search</string>
+    <string name="dashboard">Dashboard</string>
+    <string name="transactions">Transactions</string>
+    <string name="analysis_fragment_title">Analysis</string>
+    <string name="analysis">Analysis</string>
+    <string name="no_transaction">No matching transaction found</string>
+    <string name="action_button_take_photo">Take Photo</string>
+    <string name="action_button_choose_date">Choose Date</string>
+    <string name="action_button_scan_barcode">Scan Barcode</string>
+    <string name="action_button_new_product">New Product</string>
+    <string name="transaction_date">Date: %s</string>
+    <string name="title_activity_transaction_list">Transactions</string>
+    <string name="transaction_navigator_today">Today</string>
+    <string name="transaction_navigator_this_week">This Week</string>
+    <string name="transaction_navigator_this_month">This Month</string>
+    <string name="transaction_navigator_this_year">This Year</string>
+    <string name="title_activity_barcode_scanner">Scan Barcode</string>
+    <string name="create_product">Create or Search Product</string>
+    <string name="label_product_name">Product Name</string>
+    <string name="loading_msg_creating_product">Creating new product, please wait...</string>
+    <string name="photo_picker_take_from_camera">Take from camera</string>
+    <string name="photo_picker_select_from_gallery">Select from gallery</string>
+    <string name="photo_picker_select_image">Select Image</string>
+    <string name="photo_picker_choose_photo_from_gallery">Choose a Photo</string>
+</resources>

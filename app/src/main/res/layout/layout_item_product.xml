@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<io.github.xiaolei.transaction.widget.SquareCheckableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <ViewFlipper
+        android:id="@+id/viewFlipperProductItemContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:measureAllChildren="false">
+
+        <include layout="@layout/item_product" />
+
+        <include layout="@layout/layout_item_add_product" />
+    </ViewFlipper>
+
+</io.github.xiaolei.transaction.widget.SquareCheckableLayout>

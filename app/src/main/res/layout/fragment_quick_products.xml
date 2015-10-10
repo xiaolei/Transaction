@@ -1,0 +1,70 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <io.github.xiaolei.transaction.widget.DataContainerView
+        android:id="@+id/dataContainerViewProducts"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:dataLayout="@layout/layout_products" />
+
+    <net.i2p.android.ext.floatingactionbutton.FloatingActionsMenu
+        android:id="@+id/famProduct"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/margin_medium"
+        fab:fab_addButtonColorNormal="@color/action_button_normal_color"
+        fab:fab_addButtonColorPressed="@color/action_button_pressed_color"
+        fab:fab_addButtonSize="normal"
+        fab:fab_icon="@drawable/ic_add_white_24dp"
+        fab:fab_labelStyle="@style/menu_labels_style"
+        fab:fab_labelsPosition="left">
+
+        <net.i2p.android.ext.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabChooseDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            fab:fab_colorNormal="@color/action_button_normal_color"
+            fab:fab_colorPressed="@color/action_button_pressed_color"
+            fab:fab_size="mini"
+            fab:fab_title="@string/action_button_choose_date"
+            app:fab_icon="@drawable/ic_calendar_white_24dp" />
+
+        <net.i2p.android.ext.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabTakePhoto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            fab:fab_colorNormal="@color/action_button_normal_color"
+            fab:fab_colorPressed="@color/action_button_pressed_color"
+            fab:fab_icon="@drawable/ic_photo_camera_white_24dp"
+            fab:fab_size="mini"
+            fab:fab_title="@string/action_button_take_photo" />
+
+        <net.i2p.android.ext.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabScanBarcode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            fab:fab_colorNormal="@color/action_button_normal_color"
+            fab:fab_colorPressed="@color/action_button_pressed_color"
+            fab:fab_icon="@drawable/ic_scan_white_24dp"
+            fab:fab_size="mini"
+            fab:fab_title="@string/action_button_scan_barcode" />
+
+        <net.i2p.android.ext.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabNewProduct"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            fab:fab_colorNormal="@color/action_button_normal_color"
+            fab:fab_colorPressed="@color/action_button_pressed_color"
+            fab:fab_icon="@drawable/ic_add_white_24dp"
+            fab:fab_size="mini"
+            fab:fab_title="@string/action_button_new_product" />
+    </net.i2p.android.ext.floatingactionbutton.FloatingActionsMenu>
+</FrameLayout>

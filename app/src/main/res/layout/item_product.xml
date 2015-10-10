@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <io.github.xiaolei.transaction.widget.SquareImageView
+        android:id="@+id/imageViewProduct"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#eeeeee" />
+
+    <TextView
+        android:id="@+id/textViewProductName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_gravity="bottom|center_horizontal"
+        android:background="@color/text_bg_color"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:maxLines="1"
+        android:padding="5dp"
+        android:text="New Text" />
+</FrameLayout>

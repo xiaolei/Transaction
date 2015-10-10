@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/margin_small"
+    android:paddingLeft="@dimen/margin_medium"
+    android:paddingRight="@dimen/margin_medium"
+    android:paddingTop="@dimen/margin_small">
+
+    <RelativeLayout
+        android:id="@+id/topOutputContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="3dp">
+
+        <TextView
+            android:id="@+id/textViewTransactionType"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:text="EARN"
+            android:textColor="@color/secondary_text_color" />
+
+        <TextView
+            android:id="@+id/textViewCurrencyCode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/currency_code_selector"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:text="Currency Code"
+            android:textColor="@color/light_white"
+            android:textSize="12sp" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/middleOutputContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="3dp">
+
+        <TextSwitcher
+            android:id="@+id/textViewCalculatorProductName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/textViewCalculatorPrice"
+            android:inAnimation="@anim/slide_in"
+            android:outAnimation="@anim/slide_out">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="Product"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="Product"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        </TextSwitcher>
+
+        <TextView
+            android:id="@+id/textViewCalculatorPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:gravity="right"
+            android:text="0"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/bottomOutputContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextSwitcher
+            android:id="@+id/textViewTodayAmount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inAnimation="@android:anim/fade_in"
+            android:outAnimation="@android:anim/fade_out">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentRight="true"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:text="Today: +?/-?"
+                android:textAllCaps="true"
+                android:textColor="@color/secondary_text_color"
+                android:textSize="12sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentRight="true"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:text="Today: +?/-?"
+                android:textAllCaps="true"
+                android:textColor="@color/secondary_text_color"
+                android:textSize="12sp" />
+
+        </TextSwitcher>
+
+        <TextView
+            android:id="@+id/textViewTransactionDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textViewTodayAmount"
+            android:layout_centerVertical="true"
+            android:layout_marginTop="3dp"
+            android:background="@drawable/currency_code_selector"
+            android:ellipsize="end"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:singleLine="true"
+            android:text="2017/1/1 11:11:11"
+            android:textColor="@color/white"
+            android:visibility="gone" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/transactionPhotoGallery"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone">
+
+        <io.github.xiaolei.transaction.widget.SquareImageView
+            android:id="@+id/imageViewPickedPhoto"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:scaleType="centerCrop" />
+    </RelativeLayout>
+</LinearLayout>

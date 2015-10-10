@@ -1,0 +1,23 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/margin_medium">
+
+    <io.github.xiaolei.transaction.widget.CalculatorOutputView
+        android:id="@+id/calculatorOutputView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/edit_text_bg" />
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewPagerCalculator"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/calculatorOutputView"
+        android:layout_marginTop="@dimen/margin_medium">
+
+    </android.support.v4.view.ViewPager>
+
+</RelativeLayout>

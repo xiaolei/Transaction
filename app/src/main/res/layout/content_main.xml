@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ViewFlipper xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mainViewFlipper"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_below="@+id/toolbar"
+    android:inAnimation="@anim/abc_fade_in"
+    android:measureAllChildren="false"
+    android:outAnimation="@anim/abc_fade_out"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:showIn="@layout/app_bar_main">
+
+    <io.github.xiaolei.transaction.widget.SplashView
+        android:id="@+id/splashView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <me.tabak.fragmentswitcher.FragmentSwitcher
+        android:id="@+id/fragmentSwitcher"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+</ViewFlipper>

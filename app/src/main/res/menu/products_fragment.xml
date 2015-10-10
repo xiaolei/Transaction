@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_new_product"
+        android:icon="@drawable/ic_add_white_24dp"
+        android:title="@string/action_new_product"
+        app:showAsAction="ifRoom|collapseActionView" />
+    <item
+        android:id="@+id/action_delete_database"
+        android:title="@string/delete_database"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_copy_database"
+        android:title="@string/copy_database"
+        app:showAsAction="never" />
+</menu>

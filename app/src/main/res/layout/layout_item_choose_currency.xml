@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/margin_medium">
+
+    <TextView
+        android:id="@+id/textViewCurrencyCode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:text="Currency Code"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <RadioButton
+        android:id="@+id/radioButtonChooseCurrency"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:clickable="false"
+        android:focusable="false" />
+</RelativeLayout>

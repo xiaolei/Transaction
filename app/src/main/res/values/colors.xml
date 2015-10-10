@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="text_bg_color">#B3EEEEEE</color>
+    <color name="default_bg">#EEEEEE</color>
+    <color name="primary_text_color">#767676</color>
+    <color name="secondary_text_color">#b3767676</color>
+    <color name="disabled_text_color">#4d767676</color>
+    <color name="disable_text_color">#42000000</color>
+    <color name="divider_color">#e0e0e0</color>
+    <color name="hint_text_color">#42000000</color>
+    <color name="drawer_header_bg">#e0e0e0</color>
+    <color name="incoming_text_color">#009688</color>
+    <color name="expense_text_color">#dd2c00</color>
+    <color name="currency_code_pressed_bg_color">#8A000000</color>
+    <color name="action_button_normal_color">#1abc9c</color>
+    <color name="action_button_pressed_color">#16a085</color>
+    <color name="calculator_action_button_text_color">#ffffff</color>
+    <color name="calculator_number_button_normal_color">#bdc3c7</color>
+    <color name="calculator_number_button_pressed_color">#a1a6a9</color>
+
+    <color name="button_light_color">#ffffff</color>
+    <color name="button_shadow_color">#8f8f8f</color><!-- #8f8f8f-->
+    <color name="button_color">#ffffff</color><!-- #f4f4f4-->
+    <color name="button_pressed_color">#00BFA5</color>
+    <color name="button_border_color">#e0e0e0</color>
+
+    <!-- design begin -->
+    <color name="dark_black">#25242B</color>
+    <color name="light_black">#3C3B45</color>
+
+    <color name="clouds">#ECF0F1</color>
+    <color name="silver">#BDC3C7</color>
+
+    <color name="alizarin">#E74C3C</color>
+    <color name="pomegranate">#C0392B</color>
+
+    <color name="amethyst">#9B59B6</color>
+    <color name="wisteria">#8E44AD</color>
+
+    <color name="peter_river">#3498DB</color>
+    <color name="belize_hole">#2980B9</color>
+
+    <color name="emerald">#2ECC71</color>
+    <color name="nephritis">#27AE60</color>
+
+    <color name="carrot">#E67E22</color>
+    <color name="pumpkin">#D35400</color>
+
+    <color name="sun_flower">#F1C40F</color>
+    <color name="orange">#F39C12</color>
+
+    <color name="concrete">#95A5A6</color>
+    <color name="asbestos">#7F8C8D</color>
+
+    <color name="wet_asphalt">#34495E</color>
+    <color name="midnight_blue">#2C3E50</color>
+
+    <color name="gray_bg">#edeff1</color>
+    <color name="gray_bg_text_color">#bac1c8</color>
+    <color name="text_color_light_green">#d1f2eb</color>
+
+
+    <color name="light_white">#ccffffff</color>
+    <color name="default_background">#f4f4f4</color>
+
+    <color name="calculator_screen_background_color">#C6C5AD</color>
+    <color name="highlighted_background_color">#48A8F5</color>
+    <color name="light_blue_background_color">#B1C1D6</color>
+    <!-- design end -->
+
+    <color name="app_accent">#00BFA5</color>
+    <color name="app_primary">#00BFA5</color>
+    <color name="app_primary_dark">#009688</color>
+    <color name="app_window_background">#f4f4f4</color>
+    <color name="app_primary_text">#DE000000</color>
+    <color name="app_secondary_text">#8A000000</color>
+
+    <color name="white">#ffffff</color>
+    <color name="chart_grid_color">#e0e0e0</color>
+    <color name="black_semi_transparent">#4d000000</color>
+</resources>

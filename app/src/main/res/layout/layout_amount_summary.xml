@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bottom_line"
+        android:padding="@dimen/margin_small">
+
+        <TextView
+            android:id="@+id/textViewAmount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textViewAmountLabel"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:text="$123456000"
+            android:textSize="40sp" />
+
+        <TextView
+            android:id="@+id/textViewAmountLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignRight="@+id/textViewAmount"
+            android:text="Total amount (CNY)"
+            android:textSize="@dimen/dashboard_label_text_size" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bottom_line"
+        android:orientation="horizontal">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/right_border_line"
+            android:padding="10dp">
+
+            <TextView
+                android:id="@+id/textViewTotalIncomeLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/textViewTotalIncome"
+                android:text="Total income (CNY)"
+                android:textSize="@dimen/dashboard_label_text_size" />
+
+            <TextView
+                android:id="@+id/textViewTotalIncome"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/textViewTotalIncomeLabel"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:layout_marginTop="3dp"
+                android:text="$123450000"
+                android:textColor="@color/incoming_text_color"
+                android:textSize="25sp" />
+
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="10dp">
+
+            <TextView
+                android:id="@+id/textViewTotalExpenseLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/textViewTotalExpense"
+                android:text="Total expense (CNY)"
+                android:textSize="@dimen/dashboard_label_text_size" />
+
+            <TextView
+                android:id="@+id/textViewTotalExpense"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/textViewTotalExpenseLabel"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:layout_marginTop="3dp"
+                android:text="$6000"
+                android:textColor="@color/expense_text_color"
+                android:textSize="25sp" />
+        </RelativeLayout>
+    </LinearLayout>
+</LinearLayout>
