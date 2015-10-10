@@ -16,6 +16,7 @@ import java.util.List;
 
 import io.github.xiaolei.transaction.R;
 import io.github.xiaolei.transaction.util.ColorUtil;
+import io.github.xiaolei.transaction.widget.SquareRelativeLayout;
 
 /**
  * TODO: add comment
@@ -70,6 +71,7 @@ public class CalculatorAdapter extends BaseAdapter implements IDataAdapter<Calcu
             return;
         }
 
+        mViewHolder.relativeLayoutButtonContainer.setBackgroundResource(item.backgroundResourceId);
         mViewHolder.textViewText.setText(item.text);
         mViewHolder.textViewText.setTextSize(TypedValue.COMPLEX_UNIT_SP, item.textSize);
     }
@@ -91,10 +93,12 @@ public class CalculatorAdapter extends BaseAdapter implements IDataAdapter<Calcu
     private class ViewHolder {
         public TextView textViewText;
         public View view;
+        public SquareRelativeLayout relativeLayoutButtonContainer;
 
         public ViewHolder(View view) {
             this.view = view;
             textViewText = (TextView) view.findViewById(R.id.textViewCalcItem);
+            relativeLayoutButtonContainer = (SquareRelativeLayout) view.findViewById(R.id.relativeLayoutButtonContainer);
         }
     }
 }

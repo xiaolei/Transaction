@@ -2,6 +2,7 @@
 <io.github.xiaolei.transaction.widget.SquareRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/relativeLayoutButtonContainer"
     android:background="@drawable/button_selector">
 
     <TextView

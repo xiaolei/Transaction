@@ -52,22 +52,22 @@ public class PriceFragment extends BaseDataFragment implements AdapterView.OnIte
 
     private void initialize() {
         mItems = new ArrayList<CalculatorItem>();
-        mItems.add(new CalculatorItem("Erase", 3, TEXT_SIZE_ACTION_BUTTON));
-        mItems.add(new CalculatorItem("7", 0, TEXT_SIZE_NUMBER_BUTTON));
-        mItems.add(new CalculatorItem("8", 0, TEXT_SIZE_NUMBER_BUTTON));
-        mItems.add(new CalculatorItem("9", 0, TEXT_SIZE_NUMBER_BUTTON));
-        mItems.add(new CalculatorItem(getString(R.string.outgoing), 2, TEXT_SIZE_ACTION_BUTTON));
-        mItems.add(new CalculatorItem("4", 0, TEXT_SIZE_NUMBER_BUTTON));
-        mItems.add(new CalculatorItem("5", 0, TEXT_SIZE_NUMBER_BUTTON));
-        mItems.add(new CalculatorItem("6", 0, TEXT_SIZE_NUMBER_BUTTON));
-        mItems.add(new CalculatorItem(getString(R.string.incoming), 1, TEXT_SIZE_ACTION_BUTTON));
-        mItems.add(new CalculatorItem("1", 0, TEXT_SIZE_NUMBER_BUTTON));
-        mItems.add(new CalculatorItem("2", 0, TEXT_SIZE_NUMBER_BUTTON));
-        mItems.add(new CalculatorItem("3", 0, TEXT_SIZE_NUMBER_BUTTON));
-        mItems.add(new CalculatorItem(getString(R.string.ok), 4, TEXT_SIZE_ACTION_BUTTON));
-        mItems.add(new CalculatorItem("0", 0, TEXT_SIZE_NUMBER_BUTTON));
-        mItems.add(new CalculatorItem("00", 0, TEXT_SIZE_NUMBER_BUTTON));
-        mItems.add(new CalculatorItem(".", 0, TEXT_SIZE_NUMBER_BUTTON));
+        mItems.add(new CalculatorItem("Erase", 3, TEXT_SIZE_ACTION_BUTTON, R.drawable.action_button_selector));
+        mItems.add(new CalculatorItem("7", 0, TEXT_SIZE_NUMBER_BUTTON, R.drawable.button_selector));
+        mItems.add(new CalculatorItem("8", 0, TEXT_SIZE_NUMBER_BUTTON, R.drawable.button_selector));
+        mItems.add(new CalculatorItem("9", 0, TEXT_SIZE_NUMBER_BUTTON, R.drawable.button_selector));
+        mItems.add(new CalculatorItem(getString(R.string.outgoing), 2, TEXT_SIZE_ACTION_BUTTON, R.drawable.action_button_selector));
+        mItems.add(new CalculatorItem("4", 0, TEXT_SIZE_NUMBER_BUTTON, R.drawable.button_selector));
+        mItems.add(new CalculatorItem("5", 0, TEXT_SIZE_NUMBER_BUTTON, R.drawable.button_selector));
+        mItems.add(new CalculatorItem("6", 0, TEXT_SIZE_NUMBER_BUTTON, R.drawable.button_selector));
+        mItems.add(new CalculatorItem(getString(R.string.incoming), 1, TEXT_SIZE_ACTION_BUTTON, R.drawable.action_button_selector));
+        mItems.add(new CalculatorItem("1", 0, TEXT_SIZE_NUMBER_BUTTON, R.drawable.button_selector));
+        mItems.add(new CalculatorItem("2", 0, TEXT_SIZE_NUMBER_BUTTON, R.drawable.button_selector));
+        mItems.add(new CalculatorItem("3", 0, TEXT_SIZE_NUMBER_BUTTON, R.drawable.button_selector));
+        mItems.add(new CalculatorItem(getString(R.string.ok), 4, TEXT_SIZE_ACTION_BUTTON, R.drawable.action_button_selector));
+        mItems.add(new CalculatorItem("0", 0, TEXT_SIZE_NUMBER_BUTTON, R.drawable.button_selector));
+        mItems.add(new CalculatorItem("00", 0, TEXT_SIZE_NUMBER_BUTTON, R.drawable.button_selector));
+        mItems.add(new CalculatorItem(".", 0, TEXT_SIZE_NUMBER_BUTTON, R.drawable.button_selector));
     }
 
     @Override

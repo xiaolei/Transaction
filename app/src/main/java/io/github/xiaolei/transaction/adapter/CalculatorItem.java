@@ -12,14 +12,16 @@ public class CalculatorItem {
     public String text;
     public int actionId;
     public int textSize;
+    public int backgroundResourceId;
 
     public CalculatorItem(String text, int actionId) {
         this.text = text;
         this.actionId = actionId;
     }
 
-    public CalculatorItem(String text, int actionId, int textSize) {
+    public CalculatorItem(String text, int actionId, int textSize, int backgroundResourceId) {
         this(text, actionId);
         this.textSize = textSize;
+        this.backgroundResourceId = backgroundResourceId;
     }
 }
