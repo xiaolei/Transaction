@@ -1,6 +1,5 @@
 package io.github.xiaolei.transaction.ui;
 
-import io.github.xiaolei.transaction.common.DeprecatedFragmentSwitcher;
 import io.github.xiaolei.transaction.entity.Product;
 import me.tabak.fragmentswitcher.FragmentSwitcher;
 

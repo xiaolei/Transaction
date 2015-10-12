@@ -82,12 +82,20 @@ public class MainActivity extends BaseActivity
                     calculatorFragment.switchToProductListView();
                     goAhead = false;
                 }
+            }else{
+                switchToHomeFragment();
+                goAhead = false;
             }
         }
 
         if (goAhead) {
             super.onBackPressed();
         }
+    }
+
+    public void switchToHomeFragment(){
+        mViewHolder.fragmentSwitcher.setCurrentItem(0);
+        mViewHolder.navigationView.setCheckedItem(R.id.navigation_item_calculator);
     }
 
     @Override
