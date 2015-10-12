@@ -1,6 +1,5 @@
 package io.github.xiaolei.transaction.widget;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -21,10 +20,10 @@ import java.util.Date;
 
 import de.greenrobot.event.EventBus;
 import io.github.xiaolei.transaction.R;
+import io.github.xiaolei.transaction.common.ValidationHelper;
 import io.github.xiaolei.transaction.event.ShowDatePickerEvent;
 import io.github.xiaolei.transaction.listener.OnFragmentDialogDismissListener;
 import io.github.xiaolei.transaction.ui.ChooseCurrencyFragment;
-import io.github.xiaolei.transaction.ui.DatePickerFragment;
 import io.github.xiaolei.transaction.util.ConfigurationManager;
 import io.github.xiaolei.transaction.util.DateTimeUtils;
 import io.github.xiaolei.transaction.util.PreferenceHelper;
@@ -36,11 +35,15 @@ import io.github.xiaolei.transaction.viewmodel.TransactionType;
  */
 public class CalculatorOutputView extends RelativeLayout {
     protected static final String TAG = CalculatorOutputView.class.getSimpleName();
-    private ViewHolder mViewHolder;
     public static final int MAX_INTEGER_LENGTH = 9;
     public static final int MAX_DECIMAL_LENGTH = 2;
+    public static final int DEFAULT_PRODUCT_COUNT = 1;
+    public static final String QUANTITY_SYMBOL = "×";
+
+    private ViewHolder mViewHolder;
     private CalculatorOutputInfo mCalculatorOutputInfo = new CalculatorOutputInfo();
     private boolean mIsLastPrice = false;
+    private boolean mQuantityOn = false;
 
     public CalculatorOutputView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -130,7 +133,7 @@ public class CalculatorOutputView extends RelativeLayout {
 
     private boolean exceedLengthLimitation(String output) {
         int increaseLength = output.length();
-        String value = getPriceText();
+        String value = getOutputText();
 
         if (!value.contains(".")) {
             if (!output.equals(".")) {
@@ -160,8 +163,26 @@ public class CalculatorOutputView extends RelativeLayout {
             return;
         }
 
-        String value = getPriceText();
+        String value = getOutputText();
+
+        // Allow input only 1 dot symbol
         if (value.contains(".") && text.equals(".")) {
+            return;
+        }
+
+        // Allow input only 1 quantity symbol
+        if (value.contains(QUANTITY_SYMBOL) && text.equals(QUANTITY_SYMBOL)) {
+            removeQuantity();
+            return;
+        }
+
+        // When quantity symbol is visible, do not allow input dot symbol
+        if (value.contains(QUANTITY_SYMBOL) && text.equals(".")) {
+            return;
+        }
+
+        // Do not allow input quantity symbol, if current value is zero
+        if (value.startsWith("0") && text.equals(QUANTITY_SYMBOL)) {
             return;
         }
 
@@ -187,6 +208,44 @@ public class CalculatorOutputView extends RelativeLayout {
         }
     }
 
+    public String validate() {
+        String outputText = getOutputText();
+
+        if (TextUtils.isEmpty(outputText) || outputText.startsWith("0")) {
+            return getContext().getString(R.string.validation_error_input_price);
+        }
+
+        if (outputText.contains(QUANTITY_SYMBOL)) {
+            String[] array = outputText.split(QUANTITY_SYMBOL);
+            String priceText = array[0];
+            String quantityText = "";
+
+            if (array.length == 2) {
+                quantityText = array[1];
+            }
+
+            // Validate price value
+            if (TextUtils.isEmpty(priceText)) {
+                return getContext().getString(R.string.validation_error_input_price);
+            } else if (!ValidationHelper.isValidBigDecimal(priceText)) {
+                return getContext().getString(R.string.validation_error_invalid_price);
+            }
+
+            // Validate quantity value
+            if (!TextUtils.isEmpty(quantityText)) {
+                if (!ValidationHelper.isValidInteger(quantityText)) {
+                    return getContext().getString(R.string.validation_error_invalid_quantity);
+                }
+            }
+        } else {
+            if (!ValidationHelper.isValidBigDecimal(outputText)) {
+                return getContext().getString(R.string.validation_error_invalid_price);
+            }
+        }
+
+        return "";
+    }
+
     public void erase() {
         String value = mViewHolder.textViewCalculatorPrice.getText().toString();
 
@@ -201,10 +260,50 @@ public class CalculatorOutputView extends RelativeLayout {
         }
     }
 
+    public void setQuantitySymbol(boolean visibility) {
+        mQuantityOn = visibility;
+        if (visibility) {
+            output(QUANTITY_SYMBOL);
+        } else {
+            removeQuantity();
+        }
+    }
+
+    public void removeQuantity() {
+        mQuantityOn = false;
+        String outputText = getOutputText();
+        if (!TextUtils.isEmpty(outputText) && outputText.contains(QUANTITY_SYMBOL)) {
+            String[] array = outputText.split(QUANTITY_SYMBOL);
+            if (array.length > 1) {
+                clear();
+                output(array[0]);
+            } else {
+                clear();
+                output(outputText.replace(QUANTITY_SYMBOL, ""));
+            }
+        }
+    }
+
     public void setPrice(BigDecimal price) {
         mIsLastPrice = false;
         mCalculatorOutputInfo.price = price;
         mViewHolder.textViewCalculatorPrice.setText(price.toString());
+    }
+
+    public int getQuantityValue() {
+        String outputText = getOutputText();
+        if (TextUtils.isEmpty(outputText)) {
+            return DEFAULT_PRODUCT_COUNT;
+        }
+
+        if (outputText.contains(QUANTITY_SYMBOL)) {
+            String[] array = outputText.split(QUANTITY_SYMBOL);
+            if (array.length > 1) {
+                return Integer.parseInt(array[1]);
+            }
+        }
+
+        return DEFAULT_PRODUCT_COUNT;
     }
 
     public void setLastPrice(BigDecimal price) {
@@ -249,12 +348,18 @@ public class CalculatorOutputView extends RelativeLayout {
     }
 
     private BigDecimal getPrice() {
-        String price = mViewHolder.textViewCalculatorPrice.getText().toString();
-        return new BigDecimal(!TextUtils.isEmpty(price) ? price : "0");
+        String outputText = getOutputText();
+        if(!outputText.contains(QUANTITY_SYMBOL)) {
+            return new BigDecimal(outputText);
+        }else{
+            String[] array = outputText.split(QUANTITY_SYMBOL);
+            return new BigDecimal(array[0]);
+        }
     }
 
     public CalculatorOutputInfo getOutputInfo() {
         mCalculatorOutputInfo.price = getPrice();
+        mCalculatorOutputInfo.quantity = getQuantityValue();
 
         return mCalculatorOutputInfo;
     }
@@ -270,7 +375,7 @@ public class CalculatorOutputView extends RelativeLayout {
         return text;
     }
 
-    public String getPriceText() {
+    public String getOutputText() {
         return mViewHolder.textViewCalculatorPrice.getText().toString();
     }
 

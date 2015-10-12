@@ -14,6 +14,7 @@ public class CalculatorOutputInfo {
     public String currencyCode;
     public String tips;
     public BigDecimal price;
+    public int quantity = 1;
     public Date date;
 
     public CalculatorOutputInfo() {

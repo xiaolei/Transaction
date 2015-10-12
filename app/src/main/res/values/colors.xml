@@ -23,11 +23,22 @@
     <color name="button_pressed_border_color">#00BFA5</color>
     <color name="button_pressed_color">#EEEEEE</color>
     <color name="button_border_color">#e0e0e0</color>
+    <color name="button_pressed_text_color">@color/app_primary_dark</color>
+    <color name="button_text_color">@color/primary_text_color</color>
 
     <color name="action_button_color">#ffffff</color>
     <color name="action_button_normal_color">#1abc9c</color>
     <color name="action_button_pressed_color">#EEEEEE</color>
-    <color name="action_button_border_color">#e0e0e0</color>
+    <color name="action_button_border_color">@color/app_primary</color>
+    <color name="action_button_pressed_border_color">@color/app_primary_dark</color>
+    <color name="action_button_pressed_text_color">@color/app_primary_dark</color>
+    <color name="action_button_text_color">@color/app_primary</color>
+
+    <color name="confirm_button_pressed_border_color">#D35400</color>
+    <color name="confirm_button_border_color">#E67E22</color>
+    <color name="confirm_button_pressed_color">#4dF39C12</color>
+    <color name="confirm_button_pressed_text_color">#D35400</color>
+    <color name="confirm_button_text_color">#E67E22</color>
 
     <!-- design begin -->
     <color name="dark_black">#25242B</color>

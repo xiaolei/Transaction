@@ -77,4 +77,8 @@
     <string name="photo_picker_select_from_gallery">Select from gallery</string>
     <string name="photo_picker_select_image">Select Image</string>
     <string name="photo_picker_choose_photo_from_gallery">Choose a Photo</string>
+    <string name="quantity">Quantity</string>
+    <string name="validation_error_empty_quantity">Please input quantity</string>
+    <string name="validation_error_invalid_quantity">Quantity is invalid</string>
+    <string name="validation_error_invalid_price">Price is invalid</string>
 </resources>

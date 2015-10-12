@@ -74,6 +74,7 @@ public class CalculatorAdapter extends BaseAdapter implements IDataAdapter<Calcu
         mViewHolder.relativeLayoutButtonContainer.setBackgroundResource(item.backgroundResourceId);
         mViewHolder.textViewText.setText(item.text);
         mViewHolder.textViewText.setTextSize(TypedValue.COMPLEX_UNIT_SP, item.textSize);
+        mViewHolder.textViewText.setTextColor(mContext.getResources().getColorStateList(item.textColor));
     }
 
     @Override

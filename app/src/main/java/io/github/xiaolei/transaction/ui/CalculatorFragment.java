@@ -16,7 +16,6 @@ import com.google.gson.Gson;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.Date;
-import java.util.List;
 
 import de.greenrobot.event.EventBus;
 import io.github.xiaolei.transaction.GlobalApplication;
@@ -30,7 +29,6 @@ import io.github.xiaolei.transaction.event.NewProductCreatedEvent;
 import io.github.xiaolei.transaction.event.PickPhotoEvent;
 import io.github.xiaolei.transaction.event.ProductSelectedEvent;
 import io.github.xiaolei.transaction.event.RefreshTransactionListEvent;
-import io.github.xiaolei.transaction.event.ShowDatePickerEvent;
 import io.github.xiaolei.transaction.listener.OnCalculatorActionClickListener;
 import io.github.xiaolei.transaction.listener.OnCalculatorActionLongClickListener;
 import io.github.xiaolei.transaction.listener.OnProductSelectedListener;
@@ -227,7 +225,10 @@ public class CalculatorFragment extends BaseDataFragment implements OnProductSel
                 mViewHolder.calculatorOutputView.erase();
                 break;
             case 4:
-                save(mViewHolder.calculatorOutputView.getOutputInfo());
+                save();
+                break;
+            case 5:
+                mViewHolder.calculatorOutputView.setQuantitySymbol(true);
                 break;
             default:
                 break;
@@ -267,9 +268,10 @@ public class CalculatorFragment extends BaseDataFragment implements OnProductSel
         mViewHolder.calculatorOutputView.showPhoto(event.photoFileUri);
     }
 
-    private void save(final CalculatorOutputInfo outputInfo) {
-        if (outputInfo.price.equals(new BigDecimal("0"))) {
-            Toast.makeText(getActivity(), getString(R.string.validation_error_input_price), Toast.LENGTH_SHORT).show();
+    private void save() {
+        String error = mViewHolder.calculatorOutputView.validate();
+        if (!TextUtils.isEmpty(error)) {
+            Toast.makeText(getActivity(), error, Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -279,10 +281,14 @@ public class CalculatorFragment extends BaseDataFragment implements OnProductSel
             return;
         }
 
+        final CalculatorOutputInfo outputInfo = mViewHolder.calculatorOutputView.getOutputInfo();
+
         if (outputInfo.transactionType == TransactionType.Unknown) {
             Toast.makeText(getActivity(), getString(R.string.validation_error_choose_transaction_type), Toast.LENGTH_SHORT).show();
             return;
         }
+
+        Log.d(TAG, String.format("Quantity: %d", outputInfo.quantity));
 
         AsyncTask<Void, Void, Exception> task = new AsyncTask<Void, Void, Exception>() {
 
@@ -300,7 +306,7 @@ public class CalculatorFragment extends BaseDataFragment implements OnProductSel
                     transaction.setCurrencyCode(outputInfo.currencyCode);
                     transaction.setProduct(mProduct);
                     transaction.setPrice(price);
-                    transaction.setProductCount(1);
+                    transaction.setProductCount(outputInfo.quantity);
                     transaction.setProductPrice(price);
                     if (outputInfo.date != null) {
                         transaction.setCreationTime(outputInfo.date);
@@ -317,7 +323,8 @@ public class CalculatorFragment extends BaseDataFragment implements OnProductSel
             @Override
             protected void onPostExecute(Exception result) {
                 String transactionType = outputInfo.transactionType == TransactionType.Incoming ? getString(R.string.incoming) : getString(R.string.outgoing);
-                String message = String.format("%s %s: %s %s", transactionType, mProduct.getName(), outputInfo.currencyCode, outputInfo.price.toString());
+                String message = String.format("%s %s: %s %s", transactionType, mProduct.getName(), outputInfo.currencyCode,
+                        outputInfo.price.multiply(new BigDecimal(outputInfo.quantity)).toString());
                 if (result != null) {
                     message = result.toString();
                 } else {
