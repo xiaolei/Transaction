@@ -182,7 +182,7 @@ public class CalculatorOutputView extends RelativeLayout {
         }
 
         // Do not allow input quantity symbol, if current value is zero
-        if (value.startsWith("0") && text.equals(QUANTITY_SYMBOL)) {
+        if (value.equals("0") && text.equals(QUANTITY_SYMBOL)) {
             return;
         }
 
