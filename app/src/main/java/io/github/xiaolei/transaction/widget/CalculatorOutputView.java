@@ -137,6 +137,8 @@ public class CalculatorOutputView extends RelativeLayout {
         String value = getOutputText();
         String priceText = value;
         String quantityText = "";
+        boolean containsQuantitySymbol = value.contains(QUANTITY_SYMBOL);
+        boolean isQuantitySymbol = output.equals(QUANTITY_SYMBOL);
 
         if(value.contains(QUANTITY_SYMBOL)){
             String[] array = value.split(QUANTITY_SYMBOL);
@@ -152,16 +154,16 @@ public class CalculatorOutputView extends RelativeLayout {
 
         if (!priceText.contains(".")) {
             if (!output.equals(".")) {
-                return priceText.length() + increaseLength > MAX_PRICE_LENGTH;
+                return !containsQuantitySymbol && !isQuantitySymbol && (priceText.length() + increaseLength > MAX_PRICE_LENGTH);
             } else {
-                return priceText.length() + increaseLength > MAX_PRICE_LENGTH + 1;
+                return !containsQuantitySymbol && !isQuantitySymbol && (priceText.length() + increaseLength > MAX_PRICE_LENGTH + 1);
             }
         } else {
             String[] values = priceText.split("\\.");
             if (values.length == 1) {
                 return false;
             } else if (values.length == 2) {
-                return values[1].length() + increaseLength > MAX_DECIMAL_LENGTH;
+                return !containsQuantitySymbol && !isQuantitySymbol && (values[1].length() + increaseLength > MAX_DECIMAL_LENGTH);
             }
         }
 

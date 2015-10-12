@@ -56,16 +56,16 @@ public class PriceFragment extends BaseDataFragment implements AdapterView.OnIte
         mItems.add(new CalculatorItem("7", 0, TEXT_SIZE_NUMBER_BUTTON, R.drawable.button_selector));
         mItems.add(new CalculatorItem("8", 0, TEXT_SIZE_NUMBER_BUTTON, R.drawable.button_selector));
         mItems.add(new CalculatorItem("9", 0, TEXT_SIZE_NUMBER_BUTTON, R.drawable.button_selector));
-        mItems.add(new CalculatorItem(getString(R.string.outgoing), 2, TEXT_SIZE_ACTION_BUTTON, R.drawable.action_button_selector, R.drawable.action_button_text_selector));
+        mItems.add(new CalculatorItem(getString(R.string.outgoing) + "\n－", 2, TEXT_SIZE_ACTION_BUTTON, R.drawable.action_button_selector, R.drawable.action_button_text_selector));
         mItems.add(new CalculatorItem("4", 0, TEXT_SIZE_NUMBER_BUTTON, R.drawable.button_selector));
         mItems.add(new CalculatorItem("5", 0, TEXT_SIZE_NUMBER_BUTTON, R.drawable.button_selector));
         mItems.add(new CalculatorItem("6", 0, TEXT_SIZE_NUMBER_BUTTON, R.drawable.button_selector));
-        mItems.add(new CalculatorItem(getString(R.string.incoming), 1, TEXT_SIZE_ACTION_BUTTON, R.drawable.action_button_selector, R.drawable.action_button_text_selector));
+        mItems.add(new CalculatorItem(getString(R.string.incoming) + "\n＋", 1, TEXT_SIZE_ACTION_BUTTON, R.drawable.action_button_selector, R.drawable.action_button_text_selector));
         mItems.add(new CalculatorItem("1", 0, TEXT_SIZE_NUMBER_BUTTON, R.drawable.button_selector));
         mItems.add(new CalculatorItem("2", 0, TEXT_SIZE_NUMBER_BUTTON, R.drawable.button_selector));
         mItems.add(new CalculatorItem("3", 0, TEXT_SIZE_NUMBER_BUTTON, R.drawable.button_selector));
         mItems.add(new CalculatorItem(getString(R.string.ok), 4, TEXT_SIZE_ACTION_BUTTON, R.drawable.confirm_button_selector, R.drawable.confirm_button_text_selector));
-        mItems.add(new CalculatorItem(getString(R.string.quantity), 5, TEXT_SIZE_ACTION_BUTTON, R.drawable.action_button_selector, R.drawable.action_button_text_selector));
+        mItems.add(new CalculatorItem(getString(R.string.quantity) + "\n" + CalculatorOutputView.QUANTITY_SYMBOL, 5, TEXT_SIZE_ACTION_BUTTON, R.drawable.action_button_selector, R.drawable.action_button_text_selector));
         mItems.add(new CalculatorItem(".", 0, TEXT_SIZE_NUMBER_BUTTON, R.drawable.button_selector));
         mItems.add(new CalculatorItem("0", 0, TEXT_SIZE_NUMBER_BUTTON, R.drawable.button_selector));
     }
