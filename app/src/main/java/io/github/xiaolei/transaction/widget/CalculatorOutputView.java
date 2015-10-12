@@ -35,9 +35,10 @@ import io.github.xiaolei.transaction.viewmodel.TransactionType;
  */
 public class CalculatorOutputView extends RelativeLayout {
     protected static final String TAG = CalculatorOutputView.class.getSimpleName();
-    public static final int MAX_INTEGER_LENGTH = 9;
+    public static final int MAX_PRICE_LENGTH = 9;
     public static final int MAX_DECIMAL_LENGTH = 2;
-    public static final int DEFAULT_PRODUCT_COUNT = 1;
+    public static final int MAX_QUANTITY_LENGTH = 4;
+    public static final int DEFAULT_QUANTITY_COUNT = 1;
     public static final String QUANTITY_SYMBOL = "×";
 
     private ViewHolder mViewHolder;
@@ -134,15 +135,29 @@ public class CalculatorOutputView extends RelativeLayout {
     private boolean exceedLengthLimitation(String output) {
         int increaseLength = output.length();
         String value = getOutputText();
+        String priceText = value;
+        String quantityText = "";
 
-        if (!value.contains(".")) {
+        if(value.contains(QUANTITY_SYMBOL)){
+            String[] array = value.split(QUANTITY_SYMBOL);
+            priceText = array[0];
+            if(array.length > 1){
+                quantityText = array[1];
+            }
+        }
+
+        if(!TextUtils.isEmpty(quantityText) && quantityText.length() + increaseLength > MAX_QUANTITY_LENGTH){
+            return false;
+        }
+
+        if (!priceText.contains(".")) {
             if (!output.equals(".")) {
-                return value.length() + increaseLength > MAX_INTEGER_LENGTH;
+                return priceText.length() + increaseLength > MAX_PRICE_LENGTH;
             } else {
-                return value.length() + increaseLength > MAX_INTEGER_LENGTH + 1;
+                return priceText.length() + increaseLength > MAX_PRICE_LENGTH + 1;
             }
         } else {
-            String[] values = value.split("\\.");
+            String[] values = priceText.split("\\.");
             if (values.length == 1) {
                 return false;
             } else if (values.length == 2) {
@@ -293,7 +308,7 @@ public class CalculatorOutputView extends RelativeLayout {
     public int getQuantityValue() {
         String outputText = getOutputText();
         if (TextUtils.isEmpty(outputText)) {
-            return DEFAULT_PRODUCT_COUNT;
+            return DEFAULT_QUANTITY_COUNT;
         }
 
         if (outputText.contains(QUANTITY_SYMBOL)) {
@@ -303,7 +318,7 @@ public class CalculatorOutputView extends RelativeLayout {
             }
         }
 
-        return DEFAULT_PRODUCT_COUNT;
+        return DEFAULT_QUANTITY_COUNT;
     }
 
     public void setLastPrice(BigDecimal price) {
