@@ -13,8 +13,10 @@ import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 
+import io.github.xiaolei.transaction.GlobalApplication;
 import io.github.xiaolei.transaction.entity.Product;
 import io.github.xiaolei.transaction.entity.Transaction;
+import io.github.xiaolei.transaction.util.CurrencyHelper;
 import io.github.xiaolei.transaction.util.DateTimeUtils;
 import io.github.xiaolei.transaction.util.ConfigurationManager;
 import io.github.xiaolei.transaction.viewmodel.AmountInfo;
@@ -27,9 +29,11 @@ import io.github.xiaolei.transaction.viewmodel.DailyTransactionSummaryInfo;
 public class TransactionRepository extends BaseRepository {
     private ExchangeRateRepository exchangeRateRepository;
     private Dao<Transaction, Long> transactionDao;
-    public static final String AMOUNT_SQL = "select ifnull(sum(case t.currency_code when '%s' then price*t.product_count else round(price*t.product_count/er.exchange_rate * %s, 0) end), 0) as total_target_currency_price  from 'transaction' t left join exchange_rate er on er.currency_code = t.currency_code where t.active = 1 ";
-    public static final String SQL_EXPENSE_TRANSACTION_AMOUNT_GROUP_BY_DAY = "select abs(ifnull(sum(case t.currency_code when '%s' then price*t.product_count else round(price*t.product_count/er.exchange_rate * %s, 0) end), 0)) as price, date(t.creation_time) as creation_time from 'transaction' t left join exchange_rate er on er.currency_code = t.currency_code where t.active = 1 and t.price < 0 group by date(t.creation_time) order by date(t.creation_time) desc";
-    public static final String SQL_INCOME_TRANSACTION_AMOUNT_GROUP_BY_DAY = "select ifnull(sum(case t.currency_code when '%s' then price*t.product_count else round(price*t.product_count/er.exchange_rate * %s, 0) end), 0) as price, date(t.creation_time) as creation_time from 'transaction' t left join exchange_rate er on er.currency_code = t.currency_code where t.active = 1 and t.price > 0 group by date(t.creation_time) order by date(t.creation_time) desc";
+    public static final String AMOUNT_SQL = "select ifnull(sum(case t.currency_code when '%s' then t.product_price else round(t.product_price/er.exchange_rate * %s, 0) end), 0) as total_target_currency_price  from 'transaction' t left join exchange_rate er on er.currency_code = t.currency_code where t.active = 1 ";
+    public static final String SQL_EXPENSE_TRANSACTION_AMOUNT_GROUP_BY_DAY = "select abs(ifnull(sum(case t.currency_code when '%s' then t.product_price else round(t.product_price/er.exchange_rate * %s, 0) end), 0)) as price, date(t.creation_time) as creation_time from 'transaction' t left join exchange_rate er on er.currency_code = t.currency_code where t.active = 1 and t.price < 0 group by date(t.creation_time) order by date(t.creation_time) desc";
+    public static final String SQL_INCOME_TRANSACTION_AMOUNT_GROUP_BY_DAY = "select ifnull(sum(case t.currency_code when '%s' then t.product_price else round(t.product_price/er.exchange_rate * %s, 0) end), 0) as price, date(t.creation_time) as creation_time from 'transaction' t left join exchange_rate er on er.currency_code = t.currency_code where t.active = 1 and t.price > 0 group by date(t.creation_time) order by date(t.creation_time) desc";
+    public static final String SQL_MOST_EXPENSIVE_TRANSACTION = "select t.id, t.product_id, t.product_count, t.product_price, (case t.currency_code when '%s' then t.product_price else round(t.product_price/er.exchange_rate * %s, 0) end) as price, p.name from 'transaction' t left join exchange_rate er on er.currency_code = t.currency_code left join product p on p.id = t.product_id where t.active=1 and t.account_id =? order by abs(t.product_price) desc limit 1";
+    public static final String SQL_TOTAL_TRANSACTION_COUNT = "select sum(id) from 'transaction' t where t.active=1 and t.account_id=?";
 
     public TransactionRepository(Context context) throws SQLException {
         super(context);
@@ -360,5 +364,49 @@ public class TransactionRepository extends BaseRepository {
         result.currencyCode = targetCurrencyCode;
 
         return result;
+    }
+
+    public Transaction getMostExpensiveTransaction(String targetCurrencyCode, long accountId) throws SQLException {
+        int targetCurrencyExchangeRate = exchangeRateRepository.getExchangeRate(targetCurrencyCode);
+        String sql = String.format(SQL_MOST_EXPENSIVE_TRANSACTION, targetCurrencyCode, String.valueOf(targetCurrencyExchangeRate));
+        GenericRawResults<Transaction> result = transactionDao.queryRaw(sql, new RawRowMapper<Transaction>() {
+            @Override
+            public Transaction mapRow(String[] columnNames, String[] resultColumns) throws SQLException {
+                String id = resultColumns[0];
+                long productId = Long.parseLong(resultColumns[1]);
+                int productCount = Integer.parseInt(resultColumns[2]);
+                int productPrice = Integer.parseInt(resultColumns[3]);
+                int price = Integer.parseInt(resultColumns[4]);
+                String productName = resultColumns[5];
+
+                Product product = new Product();
+                product.setId(productId);
+                product.setName(productName);
+
+                Transaction result = new Transaction();
+                result.setAccountId(GlobalApplication.getCurrentAccount().getId());
+                result.setId(Long.parseLong(id));
+                result.setProductPrice(productPrice);
+                result.setProduct(product);
+                result.setPrice(price);
+
+                return result;
+            }
+        }, new String[]{String.valueOf(accountId)});
+
+        return result.getFirstResult();
+    }
+
+    public long getTotalTransactionCount(long accountId) throws SQLException {
+        String sql = SQL_TOTAL_TRANSACTION_COUNT;
+        GenericRawResults<Long> result = transactionDao.queryRaw(sql, new RawRowMapper<Long>() {
+            @Override
+            public Long mapRow(String[] columnNames, String[] resultColumns) throws SQLException {
+                return Long.parseLong(resultColumns[0]);
+            }
+        }, new String[]{String.valueOf(accountId)});
+
+        Long value = result.getFirstResult();
+        return value != null ? value.longValue() : 0;
     }
 }

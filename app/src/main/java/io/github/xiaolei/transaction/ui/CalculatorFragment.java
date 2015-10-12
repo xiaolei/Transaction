@@ -305,7 +305,7 @@ public class CalculatorFragment extends BaseDataFragment implements OnProductSel
                     transaction.setAccount(GlobalApplication.getCurrentAccount());
                     transaction.setCurrencyCode(outputInfo.currencyCode);
                     transaction.setProduct(mProduct);
-                    transaction.setPrice(price);
+                    transaction.setPrice(price * outputInfo.quantity);
                     transaction.setProductCount(outputInfo.quantity);
                     transaction.setProductPrice(price);
                     if (outputInfo.date != null) {

@@ -34,6 +34,11 @@ public class CurrencyHelper {
         return formatter.format(money);
     }
 
+    public static String formatCurrency(String currencyCode, int money) {
+        BigDecimal value = new BigDecimal(money).movePointLeft(ConfigurationManager.DECIMAL_POINT_LEFT);
+        return formatCurrency(currencyCode, value);
+    }
+
     public static String getDefaultCurrencyCode() {
         String result = GlobalApplication.getCurrentAccount().getDefaultCurrencyCode();
         return !TextUtils.isEmpty(result) ? result : "USD";
@@ -41,5 +46,9 @@ public class CurrencyHelper {
 
     public static BigDecimal castToBigDecimal(int money) {
         return new BigDecimal(money).movePointLeft(ConfigurationManager.DECIMAL_POINT_LEFT);
+    }
+
+    public static int getIntValue(BigDecimal money) {
+        return money.movePointRight(ConfigurationManager.DECIMAL_POINT_LEFT).intValue();
     }
 }
