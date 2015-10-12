@@ -29,9 +29,9 @@ import io.github.xiaolei.transaction.viewmodel.DailyTransactionSummaryInfo;
 public class TransactionRepository extends BaseRepository {
     private ExchangeRateRepository exchangeRateRepository;
     private Dao<Transaction, Long> transactionDao;
-    public static final String AMOUNT_SQL = "select ifnull(sum(case t.currency_code when '%s' then t.product_price else round(t.product_price/er.exchange_rate * %s, 0) end), 0) as total_target_currency_price  from 'transaction' t left join exchange_rate er on er.currency_code = t.currency_code where t.active = 1 ";
-    public static final String SQL_EXPENSE_TRANSACTION_AMOUNT_GROUP_BY_DAY = "select abs(ifnull(sum(case t.currency_code when '%s' then t.product_price else round(t.product_price/er.exchange_rate * %s, 0) end), 0)) as price, date(t.creation_time) as creation_time from 'transaction' t left join exchange_rate er on er.currency_code = t.currency_code where t.active = 1 and t.price < 0 group by date(t.creation_time) order by date(t.creation_time) desc";
-    public static final String SQL_INCOME_TRANSACTION_AMOUNT_GROUP_BY_DAY = "select ifnull(sum(case t.currency_code when '%s' then t.product_price else round(t.product_price/er.exchange_rate * %s, 0) end), 0) as price, date(t.creation_time) as creation_time from 'transaction' t left join exchange_rate er on er.currency_code = t.currency_code where t.active = 1 and t.price > 0 group by date(t.creation_time) order by date(t.creation_time) desc";
+    public static final String AMOUNT_SQL = "select ifnull(sum(case t.currency_code when '%s' then t.product_price else round(t.product_price/er.exchange_rate * %s, 0) end), 0) as total_target_currency_price  from 'transaction' t left join exchange_rate er on er.currency_code = t.currency_code where t.active = 1 and t.account_id=? ";
+    public static final String SQL_EXPENSE_TRANSACTION_AMOUNT_GROUP_BY_DAY = "select abs(ifnull(sum(case t.currency_code when '%s' then t.product_price else round(t.product_price/er.exchange_rate * %s, 0) end), 0)) as price, date(t.creation_time) as creation_time from 'transaction' t left join exchange_rate er on er.currency_code = t.currency_code where t.active = 1 and t.price < 0 and t.account_id=? group by date(t.creation_time) order by date(t.creation_time) desc";
+    public static final String SQL_INCOME_TRANSACTION_AMOUNT_GROUP_BY_DAY = "select ifnull(sum(case t.currency_code when '%s' then t.product_price else round(t.product_price/er.exchange_rate * %s, 0) end), 0) as price, date(t.creation_time) as creation_time from 'transaction' t left join exchange_rate er on er.currency_code = t.currency_code where t.active = 1 and t.price > 0 and t.account_id=? group by date(t.creation_time) order by date(t.creation_time) desc";
     public static final String SQL_MOST_EXPENSIVE_TRANSACTION = "select t.id, t.product_id, t.product_count, t.product_price, (case t.currency_code when '%s' then t.product_price else round(t.product_price/er.exchange_rate * %s, 0) end) as price, p.name from 'transaction' t left join exchange_rate er on er.currency_code = t.currency_code left join product p on p.id = t.product_id where t.active=1 and t.account_id =? order by abs(t.product_price) desc limit 1";
     public static final String SQL_TOTAL_TRANSACTION_COUNT = "select count(id) from 'transaction' t where t.active=1 and t.account_id=?";
 
@@ -71,12 +71,12 @@ public class TransactionRepository extends BaseRepository {
         return query(accountId, transactionDate, transactionDate);
     }
 
-    public BigDecimal getLastTransactionPrice(String productName) throws SQLException {
+    public BigDecimal getLastTransactionPrice(long accountId, String productName) throws SQLException {
         if (TextUtils.isEmpty(productName)) {
             return BigDecimal.ZERO;
         }
 
-        GenericRawResults<BigDecimal> result = transactionDao.queryRaw("select t.product_price from 'transaction' t left join 'product' p on t.product_id = p.id where p.name = ? order by t.last_modified desc limit 1",
+        GenericRawResults<BigDecimal> result = transactionDao.queryRaw("select t.product_price from 'transaction' t left join 'product' p on t.product_id = p.id where p.name = ? and t.account_id=? order by t.last_modified desc limit 1",
                 new RawRowMapper<BigDecimal>() {
                     @Override
                     public BigDecimal mapRow(String[] columnNames, String[] resultColumns) throws SQLException {
@@ -87,7 +87,7 @@ public class TransactionRepository extends BaseRepository {
                             return null;
                         }
                     }
-                }, productName);
+                }, productName, String.valueOf(accountId));
         BigDecimal value = result.getFirstResult();
         if (value != null) {
             return value;
@@ -96,7 +96,7 @@ public class TransactionRepository extends BaseRepository {
         }
     }
 
-    public BigDecimal getTotalIncoming(final Date date, String targetCurrencyCode) throws SQLException {
+    public BigDecimal getTotalIncoming(long accountId, final Date date, String targetCurrencyCode) throws SQLException {
         int targetCurrencyExchangeRate = exchangeRateRepository.getExchangeRate(targetCurrencyCode);
         String sql = String.format(AMOUNT_SQL, targetCurrencyCode, String.valueOf(targetCurrencyExchangeRate));
         GenericRawResults<BigDecimal> result = transactionDao.queryRaw(sql + " and t.price > 0 and t.creation_time between ? and ?", new RawRowMapper<BigDecimal>() {
@@ -109,7 +109,7 @@ public class TransactionRepository extends BaseRepository {
                     return null;
                 }
             }
-        }, DateTimeUtils.getStartTimeStringOfDate(date), DateTimeUtils.getEndTimeStringOfDate(date));
+        }, String.valueOf(accountId), DateTimeUtils.getStartTimeStringOfDate(date), DateTimeUtils.getEndTimeStringOfDate(date));
 
         BigDecimal value = result.getFirstResult();
         if (value != null) {
@@ -119,7 +119,7 @@ public class TransactionRepository extends BaseRepository {
         }
     }
 
-    public BigDecimal getTotalIncoming(String targetCurrencyCode) throws SQLException {
+    public BigDecimal getTotalIncoming(long accountId, String targetCurrencyCode) throws SQLException {
         int targetCurrencyExchangeRate = exchangeRateRepository.getExchangeRate(targetCurrencyCode);
         String sql = String.format(AMOUNT_SQL, targetCurrencyCode, String.valueOf(targetCurrencyExchangeRate));
         GenericRawResults<BigDecimal> result = transactionDao.queryRaw(sql + " and t.price > 0 ", new RawRowMapper<BigDecimal>() {
@@ -132,7 +132,7 @@ public class TransactionRepository extends BaseRepository {
                     return null;
                 }
             }
-        });
+        }, new String[]{String.valueOf(accountId)});
 
         BigDecimal value = result.getFirstResult();
         if (value != null) {
@@ -142,7 +142,7 @@ public class TransactionRepository extends BaseRepository {
         }
     }
 
-    public BigDecimal getTotalIncoming(final Date startDate, final Date endDate, String targetCurrencyCode) throws SQLException {
+    public BigDecimal getTotalIncoming(long accountId, final Date startDate, final Date endDate, String targetCurrencyCode) throws SQLException {
         int targetCurrencyExchangeRate = exchangeRateRepository.getExchangeRate(targetCurrencyCode);
         String sql = String.format(AMOUNT_SQL, targetCurrencyCode, String.valueOf(targetCurrencyExchangeRate));
         GenericRawResults<BigDecimal> result = transactionDao.queryRaw(sql + " and t.price > 0 and t.creation_time between ? and ?", new RawRowMapper<BigDecimal>() {
@@ -155,7 +155,7 @@ public class TransactionRepository extends BaseRepository {
                     return null;
                 }
             }
-        }, DateTimeUtils.getStartTimeStringOfDate(startDate), DateTimeUtils.getEndTimeStringOfDate(endDate));
+        }, String.valueOf(accountId), DateTimeUtils.getStartTimeStringOfDate(startDate), DateTimeUtils.getEndTimeStringOfDate(endDate));
 
         BigDecimal value = result.getFirstResult();
         if (value != null) {
@@ -165,7 +165,7 @@ public class TransactionRepository extends BaseRepository {
         }
     }
 
-    public BigDecimal getTotalOutgoing(final Date date, String targetCurrencyCode) throws SQLException {
+    public BigDecimal getTotalOutgoing(long accountId, final Date date, String targetCurrencyCode) throws SQLException {
         int targetCurrencyExchangeRate = exchangeRateRepository.getExchangeRate(targetCurrencyCode);
         String sql = String.format(AMOUNT_SQL, targetCurrencyCode, String.valueOf(targetCurrencyExchangeRate));
         GenericRawResults<BigDecimal> result = transactionDao.queryRaw(sql + " and t.price < 0 and t.creation_time between ? and ?", new RawRowMapper<BigDecimal>() {
@@ -178,7 +178,7 @@ public class TransactionRepository extends BaseRepository {
                     return null;
                 }
             }
-        }, DateTimeUtils.getStartTimeStringOfDate(date), DateTimeUtils.getEndTimeStringOfDate(date));
+        }, String.valueOf(accountId), DateTimeUtils.getStartTimeStringOfDate(date), DateTimeUtils.getEndTimeStringOfDate(date));
 
         BigDecimal value = result.getFirstResult();
         if (value != null) {
@@ -188,7 +188,7 @@ public class TransactionRepository extends BaseRepository {
         }
     }
 
-    public BigDecimal getTotalOutgoing(String targetCurrencyCode) throws SQLException {
+    public BigDecimal getTotalOutgoing(long accountId, String targetCurrencyCode) throws SQLException {
         int targetCurrencyExchangeRate = exchangeRateRepository.getExchangeRate(targetCurrencyCode);
         String sql = String.format(AMOUNT_SQL, targetCurrencyCode, String.valueOf(targetCurrencyExchangeRate));
         GenericRawResults<BigDecimal> result = transactionDao.queryRaw(sql + " and t.price < 0 ", new RawRowMapper<BigDecimal>() {
@@ -201,7 +201,7 @@ public class TransactionRepository extends BaseRepository {
                     return null;
                 }
             }
-        });
+        }, new String[]{String.valueOf(accountId)});
 
         BigDecimal value = result.getFirstResult();
         if (value != null) {
@@ -211,7 +211,7 @@ public class TransactionRepository extends BaseRepository {
         }
     }
 
-    public BigDecimal getTotalOutgoing(final Date startDate, final Date endDate, String targetCurrencyCode) throws SQLException {
+    public BigDecimal getTotalOutgoing(long accountId, final Date startDate, final Date endDate, String targetCurrencyCode) throws SQLException {
         int targetCurrencyExchangeRate = exchangeRateRepository.getExchangeRate(targetCurrencyCode);
         String sql = String.format(AMOUNT_SQL, targetCurrencyCode, String.valueOf(targetCurrencyExchangeRate));
         GenericRawResults<BigDecimal> result = transactionDao.queryRaw(sql + " and t.price < 0 and t.creation_time between ? and ?", new RawRowMapper<BigDecimal>() {
@@ -224,7 +224,7 @@ public class TransactionRepository extends BaseRepository {
                     return null;
                 }
             }
-        }, DateTimeUtils.getStartTimeStringOfDate(startDate), DateTimeUtils.getEndTimeStringOfDate(endDate));
+        }, String.valueOf(accountId), DateTimeUtils.getStartTimeStringOfDate(startDate), DateTimeUtils.getEndTimeStringOfDate(endDate));
 
         BigDecimal value = result.getFirstResult();
         if (value != null) {
@@ -234,7 +234,7 @@ public class TransactionRepository extends BaseRepository {
         }
     }
 
-    public BigDecimal getTotalAmount(final Date date, String targetCurrencyCode) throws SQLException {
+    public BigDecimal getTotalAmount(long accountId, final Date date, String targetCurrencyCode) throws SQLException {
         int targetCurrencyExchangeRate = exchangeRateRepository.getExchangeRate(targetCurrencyCode);
         String sql = String.format(AMOUNT_SQL, targetCurrencyCode, String.valueOf(targetCurrencyExchangeRate)) + " and t.creation_time between ? and ?";
         GenericRawResults<BigDecimal> result = transactionDao.queryRaw(sql, new RawRowMapper<BigDecimal>() {
@@ -247,7 +247,7 @@ public class TransactionRepository extends BaseRepository {
                     return null;
                 }
             }
-        }, DateTimeUtils.getStartTimeStringOfDate(date), DateTimeUtils.getEndTimeStringOfDate(date));
+        }, String.valueOf(accountId), DateTimeUtils.getStartTimeStringOfDate(date), DateTimeUtils.getEndTimeStringOfDate(date));
 
         BigDecimal value = result.getFirstResult();
         if (value != null) {
@@ -257,7 +257,7 @@ public class TransactionRepository extends BaseRepository {
         }
     }
 
-    public BigDecimal getTotalAmount(String targetCurrencyCode) throws SQLException {
+    public BigDecimal getTotalAmount(long accountId, String targetCurrencyCode) throws SQLException {
         int targetCurrencyExchangeRate = exchangeRateRepository.getExchangeRate(targetCurrencyCode);
         String sql = String.format(AMOUNT_SQL, targetCurrencyCode, String.valueOf(targetCurrencyExchangeRate));
         GenericRawResults<BigDecimal> result = transactionDao.queryRaw(sql, new RawRowMapper<BigDecimal>() {
@@ -270,7 +270,7 @@ public class TransactionRepository extends BaseRepository {
                     return null;
                 }
             }
-        });
+        }, new String[]{String.valueOf(accountId)});
 
         BigDecimal value = result.getFirstResult();
         if (value != null) {
@@ -280,7 +280,7 @@ public class TransactionRepository extends BaseRepository {
         }
     }
 
-    public BigDecimal getTotalAmount(final Date startDate, final Date endDate, String targetCurrencyCode) throws SQLException {
+    public BigDecimal getTotalAmount(long accountId, final Date startDate, final Date endDate, String targetCurrencyCode) throws SQLException {
         int targetCurrencyExchangeRate = exchangeRateRepository.getExchangeRate(targetCurrencyCode);
         String sql = String.format(AMOUNT_SQL, targetCurrencyCode, String.valueOf(targetCurrencyExchangeRate)) + " and t.creation_time between ? and ?";
         GenericRawResults<BigDecimal> result = transactionDao.queryRaw(sql, new RawRowMapper<BigDecimal>() {
@@ -293,7 +293,7 @@ public class TransactionRepository extends BaseRepository {
                     return null;
                 }
             }
-        }, DateTimeUtils.getStartTimeStringOfDate(startDate), DateTimeUtils.getEndTimeStringOfDate(endDate));
+        }, String.valueOf(accountId), DateTimeUtils.getStartTimeStringOfDate(startDate), DateTimeUtils.getEndTimeStringOfDate(endDate));
 
         BigDecimal value = result.getFirstResult();
         if (value != null) {
@@ -303,7 +303,7 @@ public class TransactionRepository extends BaseRepository {
         }
     }
 
-    public List<ChartValue> getExpenseTransactionsGroupByDay(String targetCurrencyCode) throws SQLException {
+    public List<ChartValue> getExpenseTransactionsGroupByDay(long accountId,String targetCurrencyCode) throws SQLException {
         int targetCurrencyExchangeRate = exchangeRateRepository.getExchangeRate(targetCurrencyCode);
         String sql = String.format(SQL_EXPENSE_TRANSACTION_AMOUNT_GROUP_BY_DAY, targetCurrencyCode, String.valueOf(targetCurrencyExchangeRate));
         GenericRawResults<ChartValue> result = transactionDao.queryRaw(sql, new RawRowMapper<ChartValue>() {
@@ -314,12 +314,12 @@ public class TransactionRepository extends BaseRepository {
 
                 return new ChartValue(creationTime, price);
             }
-        });
+        }, String.valueOf(accountId));
 
         return result.getResults();
     }
 
-    public List<ChartValue> getIncomeTransactionsGroupByDay(String targetCurrencyCode) throws SQLException {
+    public List<ChartValue> getIncomeTransactionsGroupByDay(long accountId,String targetCurrencyCode) throws SQLException {
         int targetCurrencyExchangeRate = exchangeRateRepository.getExchangeRate(targetCurrencyCode);
         String sql = String.format(SQL_INCOME_TRANSACTION_AMOUNT_GROUP_BY_DAY, targetCurrencyCode, String.valueOf(targetCurrencyExchangeRate));
         GenericRawResults<ChartValue> result = transactionDao.queryRaw(sql, new RawRowMapper<ChartValue>() {
@@ -330,43 +330,43 @@ public class TransactionRepository extends BaseRepository {
 
                 return new ChartValue(creationTime, price);
             }
-        });
+        }, String.valueOf(accountId));
 
         return result.getResults();
     }
 
-    public AmountInfo getAmountInfo(final Date startDate, final Date endDate, String targetCurrencyCode) throws SQLException {
+    public AmountInfo getAmountInfo(long accountId, final Date startDate, final Date endDate, String targetCurrencyCode) throws SQLException {
         AmountInfo result = new AmountInfo();
         result.currencyCode = targetCurrencyCode;
-        result.amount = getTotalAmount(startDate, endDate, targetCurrencyCode);
-        result.totalExpense = getTotalOutgoing(startDate, endDate, targetCurrencyCode);
-        result.totalIncome = getTotalIncoming(startDate, endDate, targetCurrencyCode);
+        result.amount = getTotalAmount(accountId, startDate, endDate, targetCurrencyCode);
+        result.totalExpense = getTotalOutgoing(accountId, startDate, endDate, targetCurrencyCode);
+        result.totalIncome = getTotalIncoming(accountId, startDate, endDate, targetCurrencyCode);
 
         return result;
     }
 
-    public AmountInfo getAmountInfo(String targetCurrencyCode) throws SQLException {
+    public AmountInfo getAmountInfo(long accountId, String targetCurrencyCode) throws SQLException {
         AmountInfo result = new AmountInfo();
         result.currencyCode = targetCurrencyCode;
-        result.amount = getTotalAmount(targetCurrencyCode);
-        result.totalExpense = getTotalOutgoing(targetCurrencyCode);
-        result.totalIncome = getTotalIncoming(targetCurrencyCode);
+        result.amount = getTotalAmount(accountId, targetCurrencyCode);
+        result.totalExpense = getTotalOutgoing(accountId, targetCurrencyCode);
+        result.totalIncome = getTotalIncoming(accountId, targetCurrencyCode);
 
         return result;
     }
 
-    public DailyTransactionSummaryInfo getTransactionSummaryByDate(final Date date, String targetCurrencyCode) throws SQLException {
+    public DailyTransactionSummaryInfo getTransactionSummaryByDate(long accountId, final Date date, String targetCurrencyCode) throws SQLException {
         final DailyTransactionSummaryInfo result = new DailyTransactionSummaryInfo();
         result.date = date;
-        result.totalIncoming = getTotalIncoming(date, targetCurrencyCode);
-        result.totalOutgoing = getTotalOutgoing(date, targetCurrencyCode);
-        result.totalPrice = getTotalAmount(date, targetCurrencyCode);
+        result.totalIncoming = getTotalIncoming(accountId, date, targetCurrencyCode);
+        result.totalOutgoing = getTotalOutgoing(accountId, date, targetCurrencyCode);
+        result.totalPrice = getTotalAmount(accountId, date, targetCurrencyCode);
         result.currencyCode = targetCurrencyCode;
 
         return result;
     }
 
-    public Transaction getMostExpensiveTransaction(String targetCurrencyCode, long accountId) throws SQLException {
+    public Transaction getMostExpensiveTransaction(long accountId, String targetCurrencyCode) throws SQLException {
         int targetCurrencyExchangeRate = exchangeRateRepository.getExchangeRate(targetCurrencyCode);
         String sql = String.format(SQL_MOST_EXPENSIVE_TRANSACTION, targetCurrencyCode, String.valueOf(targetCurrencyExchangeRate));
         GenericRawResults<Transaction> result = transactionDao.queryRaw(sql, new RawRowMapper<Transaction>() {

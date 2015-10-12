@@ -153,7 +153,8 @@ public class CalculatorFragment extends BaseDataFragment implements OnProductSel
             @Override
             protected BigDecimal doInBackground(String... productNames) {
                 try {
-                    return RepositoryProvider.getInstance(getActivity()).resolve(TransactionRepository.class).getLastTransactionPrice(productNames[0]);
+                    long accountId = GlobalApplication.getCurrentAccount().getId();
+                    return RepositoryProvider.getInstance(getActivity()).resolve(TransactionRepository.class).getLastTransactionPrice(accountId, productNames[0]);
                 } catch (SQLException e) {
                     e.printStackTrace();
                     return BigDecimal.ZERO;
@@ -180,7 +181,9 @@ public class CalculatorFragment extends BaseDataFragment implements OnProductSel
             @Override
             protected DailyTransactionSummaryInfo doInBackground(Void... args) {
                 try {
-                    return RepositoryProvider.getInstance(getActivity()).resolve(TransactionRepository.class).getTransactionSummaryByDate(new Date()
+                    return RepositoryProvider.getInstance(getActivity()).resolve(TransactionRepository.class).getTransactionSummaryByDate(
+                            GlobalApplication.getCurrentAccount().getId(),
+                            new Date()
                             , GlobalApplication.getCurrentAccount().getDefaultCurrencyCode());
                 } catch (SQLException e) {
                     e.printStackTrace();

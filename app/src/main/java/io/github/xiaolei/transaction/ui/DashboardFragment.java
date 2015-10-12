@@ -70,14 +70,15 @@ public class DashboardFragment extends BaseFragment {
         AsyncTask<Void, Void, AmountInfo> task = new AsyncTask<Void, Void, AmountInfo>() {
             @Override
             protected AmountInfo doInBackground(Void... voids) {
+                long accountId = GlobalApplication.getCurrentAccount().getId();
                 String currencyCode = GlobalApplication.getCurrentAccount().getDefaultCurrencyCode();
                 TransactionRepository repository = RepositoryProvider.getInstance(getActivity()).resolve(TransactionRepository.class);
                 AmountInfo result = new AmountInfo(BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO, currencyCode);
 
                 try {
-                    result.totalExpense = repository.getTotalOutgoing(currencyCode);
-                    result.totalIncome = repository.getTotalIncoming(currencyCode);
-                    result.amount = repository.getTotalAmount(currencyCode);
+                    result.totalExpense = repository.getTotalOutgoing(accountId, currencyCode);
+                    result.totalIncome = repository.getTotalIncoming(accountId, currencyCode);
+                    result.amount = repository.getTotalAmount(accountId, currencyCode);
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
@@ -101,13 +102,14 @@ public class DashboardFragment extends BaseFragment {
             protected ArrayList<ChartDataSet> doInBackground(Void... voids) {
                 ArrayList<ChartDataSet> result = new ArrayList<ChartDataSet>();
                 try {
+                    long accountId = GlobalApplication.getCurrentAccount().getId();
                     String currencyCode = GlobalApplication.getCurrentAccount().getDefaultCurrencyCode();
                     List<ChartValue> expense = RepositoryProvider.getInstance(getActivity())
                             .resolve(TransactionRepository.class)
-                            .getExpenseTransactionsGroupByDay(currencyCode);
+                            .getExpenseTransactionsGroupByDay(accountId, currencyCode);
                     List<ChartValue> income = RepositoryProvider.getInstance(getActivity())
                             .resolve(TransactionRepository.class)
-                            .getIncomeTransactionsGroupByDay(currencyCode);
+                            .getIncomeTransactionsGroupByDay(accountId, currencyCode);
 
                     result.add(new ChartDataSet(expense, getResources().getColor(R.color.expense_text_color), getString(R.string.outgoing)));
                     result.add(new ChartDataSet(income, getResources().getColor(R.color.incoming_text_color), getString(R.string.incoming)));
@@ -146,7 +148,7 @@ public class DashboardFragment extends BaseFragment {
                     long accountId = GlobalApplication.getCurrentAccount().getId();
 
                     mostExpensiveTransaction = repository
-                            .getMostExpensiveTransaction(defaultCurrencyCode, accountId);
+                            .getMostExpensiveTransaction(accountId, defaultCurrencyCode);
                     if (mostExpensiveTransaction != null) {
                         items.add(new DashboardListItem("Most expensive transaction:\n" + mostExpensiveTransaction.getProduct().getName(),
                                 CurrencyHelper.formatCurrency(defaultCurrencyCode, mostExpensiveTransaction.getProductPrice())));
