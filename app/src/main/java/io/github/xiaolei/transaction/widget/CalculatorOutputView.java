@@ -211,7 +211,7 @@ public class CalculatorOutputView extends RelativeLayout {
     public String validate() {
         String outputText = getOutputText();
 
-        if (TextUtils.isEmpty(outputText) || outputText.startsWith("0")) {
+        if (TextUtils.isEmpty(outputText) || outputText.equals("0")) {
             return getContext().getString(R.string.validation_error_input_price);
         }
 

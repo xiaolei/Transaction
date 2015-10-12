@@ -19,7 +19,6 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/margin_medium"
         fab:fab_addButtonColorNormal="@color/action_button_normal_color"
         fab:fab_addButtonColorPressed="@color/action_button_pressed_color"
         fab:fab_addButtonSize="normal"
