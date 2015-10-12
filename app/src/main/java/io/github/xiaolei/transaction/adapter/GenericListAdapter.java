@@ -1,32 +1,32 @@
 package io.github.xiaolei.transaction.adapter;
 
 import android.content.Context;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
+import android.widget.AdapterView;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import io.github.xiaolei.transaction.R;
 import io.github.xiaolei.transaction.viewholder.BaseViewHolder;
 import io.github.xiaolei.transaction.viewmodel.BaseViewModel;
 
 /**
  * TODO: add comment
  */
-public abstract class GenericListAdapter<T extends BaseViewModel,
-        V extends BaseViewHolder> extends BaseAdapter {
+public abstract class GenericListAdapter<T extends BaseViewModel, V extends BaseViewHolder> extends RecyclerView.Adapter<V> {
     protected Context mContext;
-    protected int mLayoutResourceId;
     protected List<T> mItems = new ArrayList<T>();
     protected V mViewHolder;
     protected LayoutInflater mLayoutInflater;
+    protected OnRecyclerViewItemClickListener mOnItemClickListener;
 
     public GenericListAdapter(Context context, List<T> items) {
         mContext = context;
         mLayoutInflater = LayoutInflater.from(mContext);
-        mLayoutResourceId = getLayoutResourceId();
         mItems = items;
     }
 
@@ -36,39 +36,38 @@ public abstract class GenericListAdapter<T extends BaseViewModel,
         notifyDataSetChanged();
     }
 
+    public void setOnItemClickListener(OnRecyclerViewItemClickListener listener) {
+        mOnItemClickListener = listener;
+    }
+
+    protected void onItemClickListener(int position) {
+        if (mOnItemClickListener != null) {
+            mOnItemClickListener.onRecyclerViewItemClick(position);
+        }
+    }
+
+    protected OnRecyclerViewItemClickListener getOnItemClickListener() {
+        return mOnItemClickListener;
+    }
+
     @Override
-    public int getCount() {
+    public int getItemCount() {
         return mItems.size();
     }
 
-    @Override
-    public Object getItem(int i) {
-        return mItems.get(i);
+    protected LayoutInflater getLayoutInflater() {
+        return mLayoutInflater;
     }
 
-    @Override
-    public long getItemId(int i) {
-        return i;
+    protected Context getContext() {
+        return mContext;
     }
 
-    @Override
-    public View getView(int i, View view, ViewGroup viewGroup) {
-        if (view == null) {
-            view = mLayoutInflater.inflate(mLayoutResourceId, viewGroup, false);
-            mViewHolder = createViewHolder(view);
-            view.setTag(mViewHolder);
-        } else {
-            mViewHolder = (V) view.getTag();
-        }
-
-        bindData(mItems.get(i));
-
-        return view;
+    protected List<T> getItems() {
+        return mItems;
     }
 
-    public abstract void bindData(T viewModel);
-
-    public abstract V createViewHolder(View view);
-
-    public abstract int getLayoutResourceId();
+    public interface OnRecyclerViewItemClickListener<T> {
+        void onRecyclerViewItemClick(int position);
+    }
 }

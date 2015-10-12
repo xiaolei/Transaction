@@ -1,7 +1,11 @@
 package io.github.xiaolei.transaction.adapter;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.util.List;
@@ -14,35 +18,35 @@ import io.github.xiaolei.transaction.viewmodel.DashboardListItem;
  * TODO: add comment
  */
 public class DashboardListAdapter extends GenericListAdapter<DashboardListItem, DashboardListAdapter.ViewHolder> {
-
     public DashboardListAdapter(Context context, List<DashboardListItem> items) {
         super(context, items);
     }
 
     @Override
-    public void bindData(DashboardListItem viewModel) {
-        mViewHolder.textViewLabel.setText(viewModel.label);
-        mViewHolder.textViewValue.setText(viewModel.value);
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = getLayoutInflater().inflate(R.layout.layout_item_dashboard, parent, false);
+        ViewHolder viewHolder = new ViewHolder(view, getOnItemClickListener());
+
+        return viewHolder;
     }
 
     @Override
-    public DashboardListAdapter.ViewHolder createViewHolder(View view) {
-        return new ViewHolder(view);
-    }
-
-    @Override
-    public int getLayoutResourceId() {
-        return R.layout.layout_item_dashboard;
+    public void onBindViewHolder(ViewHolder holder, int position) {
+        DashboardListItem viewModel = getItems().get(position);
+        holder.textViewLabel.setText(viewModel.label);
+        holder.textViewValue.setText(viewModel.value);
     }
 
     public class ViewHolder extends BaseViewHolder {
         public TextView textViewLabel;
         public TextView textViewValue;
 
-        public ViewHolder(View view) {
-            textViewLabel = (TextView) view.findViewById(R.id.textViewLabel);
-            textViewValue = (TextView) view.findViewById(R.id.textViewValue);
-        }
 
+        public ViewHolder(View itemView, OnRecyclerViewItemClickListener listener) {
+            super(itemView, listener);
+
+            textViewLabel = (TextView) itemView.findViewById(R.id.textViewLabel);
+            textViewValue = (TextView) itemView.findViewById(R.id.textViewValue);
+        }
     }
 }

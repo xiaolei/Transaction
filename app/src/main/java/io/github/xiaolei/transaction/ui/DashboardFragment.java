@@ -2,10 +2,13 @@ package io.github.xiaolei.transaction.ui;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.math.BigDecimal;
 import java.sql.SQLException;
@@ -15,6 +18,7 @@ import java.util.List;
 import io.github.xiaolei.transaction.GlobalApplication;
 import io.github.xiaolei.transaction.R;
 import io.github.xiaolei.transaction.adapter.DashboardListAdapter;
+import io.github.xiaolei.transaction.adapter.GenericListAdapter;
 import io.github.xiaolei.transaction.entity.Transaction;
 import io.github.xiaolei.transaction.repository.RepositoryProvider;
 import io.github.xiaolei.transaction.repository.TransactionRepository;
@@ -29,8 +33,9 @@ import io.github.xiaolei.transaction.widget.ChartView;
 /**
  * TODO: add comment
  */
-public class DashboardFragment extends BaseFragment {
+public class DashboardFragment extends BaseFragment implements GenericListAdapter.OnRecyclerViewItemClickListener {
     private ViewHolder mViewHolder;
+    private DashboardListAdapter mAdapter;
 
     public DashboardFragment() {
     }
@@ -129,12 +134,6 @@ public class DashboardFragment extends BaseFragment {
     }
 
     private void loadDashboardInfoAsync() {
-        List<DashboardListItem> items = new ArrayList<DashboardListItem>();
-        items.add(new DashboardListItem("Label A", "$20.00"));
-        items.add(new DashboardListItem("Label B", "-$520.00"));
-        items.add(new DashboardListItem("Label C", "$123.00"));
-
-
         AsyncTask<Void, Void, List<DashboardListItem>> task = new AsyncTask<Void, Void, List<DashboardListItem>>() {
 
             @Override
@@ -166,9 +165,10 @@ public class DashboardFragment extends BaseFragment {
 
             @Override
             protected void onPostExecute(List<DashboardListItem> result) {
-                DashboardListAdapter adapter = new DashboardListAdapter(getContext(), result);
                 if (mViewHolder.listViewDashboard.getAdapter() == null) {
-                    mViewHolder.listViewDashboard.setAdapter(adapter);
+                    mAdapter = new DashboardListAdapter(getContext(), result);
+                    mAdapter.setOnItemClickListener(DashboardFragment.this);
+                    mViewHolder.listViewDashboard.setAdapter(mAdapter);
                 } else {
                     ((DashboardListAdapter) (mViewHolder.listViewDashboard.getAdapter())).swap(result);
                 }
@@ -180,6 +180,7 @@ public class DashboardFragment extends BaseFragment {
     @Override
     public void findViews(View view) {
         mViewHolder = new ViewHolder(view);
+        mViewHolder.listViewDashboard.setLayoutManager(new LinearLayoutManager(getContext()));
     }
 
     @Override
@@ -187,15 +188,20 @@ public class DashboardFragment extends BaseFragment {
         return R.layout.fragment_dashboard;
     }
 
+    @Override
+    public void onRecyclerViewItemClick(int position) {
+        Toast.makeText(getContext(), "Position:" + position, Toast.LENGTH_SHORT).show();
+    }
+
     private class ViewHolder {
         public AmountView amountViewInDashboard;
         public ChartView chartView;
-        public ListView listViewDashboard;
+        public RecyclerView listViewDashboard;
 
         public ViewHolder(View view) {
             amountViewInDashboard = (AmountView) view.findViewById(R.id.assetSummaryViewInDashboard);
             chartView = (ChartView) view.findViewById(R.id.chartView);
-            listViewDashboard = (ListView) view.findViewById(R.id.listViewDashboard);
+            listViewDashboard = (RecyclerView) view.findViewById(R.id.listViewDashboard);
         }
     }
 }
