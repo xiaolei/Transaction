@@ -147,7 +147,7 @@ public class CalculatorOutputView extends RelativeLayout {
         }
 
         if(!TextUtils.isEmpty(quantityText) && quantityText.length() + increaseLength > MAX_QUANTITY_LENGTH){
-            return false;
+            return true;
         }
 
         if (!priceText.contains(".")) {
