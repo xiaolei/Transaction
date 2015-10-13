@@ -13,13 +13,16 @@ import android.widget.Toast;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.EventListener;
 import java.util.List;
 
+import de.greenrobot.event.EventBus;
 import io.github.xiaolei.transaction.GlobalApplication;
 import io.github.xiaolei.transaction.R;
 import io.github.xiaolei.transaction.adapter.DashboardListAdapter;
 import io.github.xiaolei.transaction.adapter.GenericListAdapter;
 import io.github.xiaolei.transaction.entity.Transaction;
+import io.github.xiaolei.transaction.event.RefreshTransactionListEvent;
 import io.github.xiaolei.transaction.repository.RepositoryProvider;
 import io.github.xiaolei.transaction.repository.TransactionRepository;
 import io.github.xiaolei.transaction.util.CurrencyHelper;
@@ -49,6 +52,7 @@ public class DashboardFragment extends BaseFragment implements GenericListAdapte
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        EventBus.getDefault().register(this);
     }
 
     @Override
@@ -56,6 +60,12 @@ public class DashboardFragment extends BaseFragment implements GenericListAdapte
         super.onCreateOptionsMenu(menu, inflater);
         menu.clear();
         inflater.inflate(R.menu.dashboard_fragment, menu);
+    }
+
+    @Override
+    public void onDestroy() {
+        EventBus.getDefault().unregister(this);
+        super.onDestroy();
     }
 
     @Override
@@ -68,6 +78,10 @@ public class DashboardFragment extends BaseFragment implements GenericListAdapte
         loadAmountInfoAsync();
         loadChartViewDataAsync();
         loadDashboardInfoAsync();
+    }
+
+    public void onEvent(RefreshTransactionListEvent event) {
+        load();
     }
 
     private void loadAmountInfoAsync() {
