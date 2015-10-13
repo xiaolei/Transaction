@@ -2,6 +2,7 @@ package io.github.xiaolei.transaction.ui;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.format.DateUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
@@ -61,15 +62,23 @@ public class TransactionListFragment extends BaseFragment {
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState){
+    public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         showDateRange(mStartDate, mEndDate);
     }
 
     private void showDateRange(Date startDate, Date endDate) {
-        mViewHolder.textViewTransactionDateRange.setText(String.format("%s ~ %s",
+        String dateRange = String.format("%s ~ %s",
                 DateTimeUtils.formatShortDate(startDate),
-                DateTimeUtils.formatShortDate(endDate)));
+                DateTimeUtils.formatShortDate(endDate));
+        if (DateTimeUtils.isDateEqualsIgnoreTime(startDate, endDate)) {
+            if (!DateUtils.isToday(startDate.getTime())) {
+                dateRange = DateUtils.formatDateTime(getContext(), startDate.getTime(), DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_WEEKDAY);
+            } else {
+                dateRange = getString(R.string.today);
+            }
+        }
+        mViewHolder.textViewTransactionDateRange.setText(dateRange);
     }
 
     @Override
@@ -137,6 +146,10 @@ public class TransactionListFragment extends BaseFragment {
 
             @Override
             protected void onPostExecute(List<Transaction> result) {
+                if(!isAdded()){
+                    return;
+                }
+
                 if (result != null && result.size() > 0) {
                     mViewHolder.dataContainerViewTransactions.switchToDataView();
 

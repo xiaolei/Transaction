@@ -30,6 +30,17 @@ public class DateTimeUtils {
         return null;
     }
 
+    public static boolean isDateEqualsIgnoreTime(Date date1, Date date2) {
+        Calendar cal1 = Calendar.getInstance();
+        Calendar cal2 = Calendar.getInstance();
+        cal1.setTime(date1);
+        cal2.setTime(date2);
+
+        return cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
+                cal1.get(Calendar.MONTH) == cal2.get(Calendar.MONTH) &&
+                cal1.get(Calendar.DAY_OF_MONTH) == cal2.get(Calendar.DAY_OF_MONTH);
+    }
+
     public static String formatDate(Date date) {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         return format.format(date);
@@ -187,7 +198,10 @@ public class DateTimeUtils {
 
     public static long betweenDays(Date startDate, Date endDate) {
         long diff = Math.abs(endDate.getTime() - startDate.getTime());
-        return TimeUnit.MILLISECONDS.toDays(diff);
+        long hours = TimeUnit.MILLISECONDS.toHours(diff);
+
+        double days = hours * 1.0d / 24;
+        return days % 1 == 0 ? (int) days : (int) days + 1;
     }
 
     public static Date addDays(Date date, int days) {

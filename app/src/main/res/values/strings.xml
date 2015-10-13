@@ -81,4 +81,5 @@
     <string name="validation_error_empty_quantity">Please input quantity</string>
     <string name="validation_error_invalid_quantity">Quantity is invalid</string>
     <string name="validation_error_invalid_price">Price is invalid</string>
+    <string name="today">Today</string>
 </resources>

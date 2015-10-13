@@ -55,9 +55,6 @@ public class TransactionListActivity extends BaseActivity {
 
         mTransactionListPagerAdapter = new TransactionListPagerAdapter(getSupportFragmentManager(), mTransactionDate, mTransactionDate);
         mViewHolder.viewPagerFragmentList.setAdapter(mTransactionListPagerAdapter);
-        if(mTransactionListPagerAdapter.getCount() > 0) {
-            mViewHolder.viewPagerFragmentList.setCurrentItem(mTransactionListPagerAdapter.getCount() - 1);
-        }
     }
 
     private void query(int transactionFilterType, Date date) {
@@ -80,6 +77,10 @@ public class TransactionListActivity extends BaseActivity {
                 break;
             default:
                 break;
+        }
+
+        if(mTransactionListPagerAdapter.getCount() > 0) {
+            mViewHolder.viewPagerFragmentList.setCurrentItem(0);
         }
     }
 
