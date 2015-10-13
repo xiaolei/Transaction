@@ -2,7 +2,6 @@ package io.github.xiaolei.transaction.ui;
 
 import io.github.xiaolei.enterpriselibrary.widget.FragmentViewPager;
 import io.github.xiaolei.transaction.entity.Product;
-import me.tabak.fragmentswitcher.FragmentSwitcher;
 
 /**
  * TODO: add comment
