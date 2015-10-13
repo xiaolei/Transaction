@@ -1,7 +1,6 @@
 package io.github.xiaolei.transaction.adapter;
 
 import android.content.Context;
-import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,11 +11,10 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.github.xiaolei.transaction.GlobalApplication;
+import io.github.xiaolei.enterpriselibrary.utility.CurrencyHelper;
+import io.github.xiaolei.enterpriselibrary.utility.DateTimeUtils;
 import io.github.xiaolei.transaction.R;
 import io.github.xiaolei.transaction.entity.Transaction;
-import io.github.xiaolei.transaction.util.CurrencyHelper;
-import io.github.xiaolei.transaction.util.DateTimeUtils;
 import io.github.xiaolei.transaction.widget.CurrencyTextView;
 
 /**

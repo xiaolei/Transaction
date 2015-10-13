@@ -31,6 +31,11 @@ public class CurrencyHelper {
         return formatter.format(money);
     }
 
+    public static String formatCurrency(String currencyCode, int money) {
+        BigDecimal value = new BigDecimal(money).movePointLeft(MAXIMUM_FRACTION_DIGITS);
+        return formatCurrency(currencyCode, value);
+    }
+
     public static String getDefaultCurrencyCode() {
         return "USD";
     }

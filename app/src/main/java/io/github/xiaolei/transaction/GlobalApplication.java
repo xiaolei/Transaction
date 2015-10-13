@@ -7,19 +7,16 @@ import android.util.Log;
 import com.j256.ormlite.dao.Dao;
 
 import java.sql.SQLException;
-import java.util.concurrent.Callable;
 
-import bolts.Continuation;
-import bolts.Task;
 import de.greenrobot.event.EventBus;
 import io.github.xiaolei.enterpriselibrary.logging.Logger;
+import io.github.xiaolei.enterpriselibrary.utility.FileUtils;
 import io.github.xiaolei.transaction.entity.Account;
 import io.github.xiaolei.transaction.event.AccountInfoLoadCompletedEvent;
 import io.github.xiaolei.transaction.event.AppInitCompletedEvent;
 import io.github.xiaolei.transaction.repository.AccountRepository;
 import io.github.xiaolei.transaction.repository.RepositoryProvider;
 import io.github.xiaolei.transaction.util.ConfigurationManager;
-import io.github.xiaolei.transaction.util.FileUtils;
 import io.github.xiaolei.transaction.util.PreferenceHelper;
 
 /**

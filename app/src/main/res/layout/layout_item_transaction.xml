@@ -7,14 +7,15 @@
 
     <CheckedTextView
         android:id="@+id/checkedTextViewTransactionIcon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/oval_checked_text_view_size"
+        android:layout_height="@dimen/oval_checked_text_view_size"
         android:layout_alignParentLeft="true"
         android:layout_marginRight="@dimen/margin_medium"
         android:layout_marginTop="5dp"
         android:background="@drawable/circle_bg"
         android:gravity="center"
-        android:text=""
+        android:checked="false"
+        android:text="测"
         android:textAllCaps="true"
         android:textColor="@color/white"
         android:textSize="20dp" />

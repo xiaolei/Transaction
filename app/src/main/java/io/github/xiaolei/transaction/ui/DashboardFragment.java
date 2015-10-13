@@ -7,16 +7,15 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.EventListener;
 import java.util.List;
 
 import de.greenrobot.event.EventBus;
+import io.github.xiaolei.enterpriselibrary.utility.CurrencyHelper;
 import io.github.xiaolei.transaction.GlobalApplication;
 import io.github.xiaolei.transaction.R;
 import io.github.xiaolei.transaction.adapter.DashboardListAdapter;
@@ -25,7 +24,6 @@ import io.github.xiaolei.transaction.entity.Transaction;
 import io.github.xiaolei.transaction.event.RefreshTransactionListEvent;
 import io.github.xiaolei.transaction.repository.RepositoryProvider;
 import io.github.xiaolei.transaction.repository.TransactionRepository;
-import io.github.xiaolei.transaction.util.CurrencyHelper;
 import io.github.xiaolei.transaction.viewmodel.AmountInfo;
 import io.github.xiaolei.transaction.viewmodel.ChartDataSet;
 import io.github.xiaolei.transaction.viewmodel.ChartValue;

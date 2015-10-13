@@ -7,8 +7,8 @@ import android.util.Log;
 
 import java.util.Date;
 
+import io.github.xiaolei.enterpriselibrary.utility.DateTimeUtils;
 import io.github.xiaolei.transaction.ui.TransactionListFragment;
-import io.github.xiaolei.transaction.util.DateTimeUtils;
 
 /**
  * TODO: add comment
@@ -24,7 +24,8 @@ public class TransactionListPagerAdapter extends FragmentStatePagerAdapter {
 
         mStartDate = startDate;
         mEndDate = endDate;
-        mCount = (int) (DateTimeUtils.betweenDays(DateTimeUtils.parseDate("1970-1-1"), endDate));
+        mCount = (int) (DateTimeUtils.betweenDays(startDate, endDate));
+        mCount = mCount > 0 ? mCount : 1;
         Log.d(TAG, "betweenDays: " + mCount);
     }
 
@@ -36,8 +37,8 @@ public class TransactionListPagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        Date startDate = DateTimeUtils.addDays(mStartDate, position);
-        return TransactionListFragment.newInstance(startDate, mEndDate);
+        Date date = DateTimeUtils.addDays(mStartDate, position);
+        return TransactionListFragment.newInstance(date, date);
     }
 
     @Override

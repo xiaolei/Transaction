@@ -6,8 +6,8 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import io.github.xiaolei.enterpriselibrary.utility.CurrencyHelper;
 import io.github.xiaolei.transaction.R;
-import io.github.xiaolei.transaction.util.CurrencyHelper;
 import io.github.xiaolei.transaction.viewmodel.AmountInfo;
 
 /**

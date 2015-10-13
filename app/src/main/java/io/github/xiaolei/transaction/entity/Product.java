@@ -1,11 +1,9 @@
 package io.github.xiaolei.transaction.entity;
 
-import android.support.v4.graphics.ColorUtils;
-
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
-import io.github.xiaolei.transaction.util.ColorUtil;
+import io.github.xiaolei.enterpriselibrary.utility.ColorUtil;
 
 /**
  * TODO: add comment

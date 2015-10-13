@@ -192,7 +192,7 @@ public class DateTimeUtils {
 
     public static Date addDays(Date date, int days) {
         Calendar cal = Calendar.getInstance();
-        cal.setTime(getStartDayOfYear(date));
+        cal.setTime(date);
         cal.add(Calendar.DAY_OF_YEAR, days);
 
         return cal.getTime();

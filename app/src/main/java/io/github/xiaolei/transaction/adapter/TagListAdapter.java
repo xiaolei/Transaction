@@ -10,9 +10,9 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import io.github.xiaolei.enterpriselibrary.utility.ColorUtil;
 import io.github.xiaolei.transaction.R;
 import io.github.xiaolei.transaction.entity.Tag;
-import io.github.xiaolei.transaction.util.ColorUtil;
 
 /**
  * TODO: add comment

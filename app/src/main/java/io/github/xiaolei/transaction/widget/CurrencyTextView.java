@@ -1,7 +1,6 @@
 package io.github.xiaolei.transaction.widget;
 
 import android.content.Context;
-import android.content.res.TypedArray;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
@@ -10,8 +9,8 @@ import android.widget.TextView;
 
 import java.math.BigDecimal;
 
+import io.github.xiaolei.enterpriselibrary.utility.CurrencyHelper;
 import io.github.xiaolei.transaction.R;
-import io.github.xiaolei.transaction.util.CurrencyHelper;
 
 /**
  * TODO: add comment

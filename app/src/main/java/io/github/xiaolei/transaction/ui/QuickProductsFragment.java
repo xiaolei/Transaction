@@ -25,6 +25,7 @@ import java.util.Date;
 import java.util.List;
 
 import de.greenrobot.event.EventBus;
+import io.github.xiaolei.enterpriselibrary.utility.PhotoPicker;
 import io.github.xiaolei.transaction.event.DateSelectedEvent;
 import io.github.xiaolei.transaction.event.GetBarcodeResultEvent;
 import io.github.xiaolei.transaction.event.RefreshProductListEvent;
@@ -41,7 +42,6 @@ import io.github.xiaolei.transaction.repository.ProductRepository;
 import io.github.xiaolei.transaction.repository.RepositoryProvider;
 import io.github.xiaolei.transaction.util.ActivityHelper;
 import io.github.xiaolei.transaction.util.ConfigurationManager;
-import io.github.xiaolei.transaction.util.PhotoPicker;
 import io.github.xiaolei.transaction.widget.DataContainerView;
 
 /**

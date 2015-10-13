@@ -20,8 +20,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Locale;
 
+import io.github.xiaolei.enterpriselibrary.utility.FileUtils;
 import io.github.xiaolei.transaction.entity.TableEntity;
-import io.github.xiaolei.transaction.util.FileUtils;
 
 /**
  * A helper to manager database

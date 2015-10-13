@@ -18,6 +18,7 @@ import com.google.gson.Gson;
 
 import de.greenrobot.event.EventBus;
 import io.github.xiaolei.enterpriselibrary.logging.Logger;
+import io.github.xiaolei.enterpriselibrary.utility.PhotoPicker;
 import io.github.xiaolei.enterpriselibrary.widget.FragmentViewPager;
 import io.github.xiaolei.transaction.GlobalApplication;
 import io.github.xiaolei.transaction.R;
@@ -26,7 +27,6 @@ import io.github.xiaolei.transaction.entity.Product;
 import io.github.xiaolei.transaction.event.AccountInfoLoadCompletedEvent;
 import io.github.xiaolei.transaction.event.AppInitCompletedEvent;
 import io.github.xiaolei.transaction.event.PickPhotoEvent;
-import io.github.xiaolei.transaction.util.PhotoPicker;
 import io.github.xiaolei.transaction.widget.AccountView;
 
 

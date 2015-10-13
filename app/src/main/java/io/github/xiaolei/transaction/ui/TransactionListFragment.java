@@ -2,7 +2,6 @@ package io.github.xiaolei.transaction.ui;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
@@ -14,6 +13,7 @@ import java.util.Date;
 import java.util.List;
 
 import de.greenrobot.event.EventBus;
+import io.github.xiaolei.enterpriselibrary.utility.DateTimeUtils;
 import io.github.xiaolei.transaction.GlobalApplication;
 import io.github.xiaolei.transaction.R;
 import io.github.xiaolei.transaction.adapter.GenericEndlessAdapter;
@@ -24,7 +24,6 @@ import io.github.xiaolei.transaction.event.RefreshTransactionListEvent;
 import io.github.xiaolei.transaction.repository.RepositoryProvider;
 import io.github.xiaolei.transaction.repository.TransactionRepository;
 import io.github.xiaolei.transaction.util.ConfigurationManager;
-import io.github.xiaolei.transaction.util.DateTimeUtils;
 import io.github.xiaolei.transaction.widget.DataContainerView;
 
 /**

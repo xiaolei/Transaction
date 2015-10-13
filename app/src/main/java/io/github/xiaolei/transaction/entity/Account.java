@@ -5,9 +5,7 @@ import android.text.TextUtils;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
-import org.w3c.dom.Text;
-
-import io.github.xiaolei.transaction.util.HashHelper;
+import io.github.xiaolei.enterpriselibrary.utility.HashHelper;
 import io.github.xiaolei.transaction.util.PreferenceHelper;
 
 /**

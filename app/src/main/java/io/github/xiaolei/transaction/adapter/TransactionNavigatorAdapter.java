@@ -7,14 +7,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.Date;
 import java.util.List;
 
+import io.github.xiaolei.enterpriselibrary.utility.DateTimeUtils;
 import io.github.xiaolei.transaction.R;
-import io.github.xiaolei.transaction.util.DateTimeUtils;
 import io.github.xiaolei.transaction.viewmodel.TransactionFilterType;
 import io.github.xiaolei.transaction.viewmodel.TransactionNavigatorItem;
 

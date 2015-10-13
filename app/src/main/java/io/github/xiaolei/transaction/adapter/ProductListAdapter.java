@@ -1,25 +1,19 @@
 package io.github.xiaolei.transaction.adapter;
 
 import android.content.Context;
-import android.database.DataSetObserver;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.ListAdapter;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 
 import io.github.xiaolei.transaction.R;
 import io.github.xiaolei.transaction.entity.Product;
-import io.github.xiaolei.transaction.util.ColorUtil;
 
 /**
  * TODO: add comment
