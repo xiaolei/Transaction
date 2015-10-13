@@ -18,6 +18,7 @@ import java.sql.SQLException;
 import java.util.Date;
 
 import de.greenrobot.event.EventBus;
+import io.github.xiaolei.enterpriselibrary.logging.Logger;
 import io.github.xiaolei.transaction.GlobalApplication;
 import io.github.xiaolei.transaction.R;
 import io.github.xiaolei.transaction.adapter.CalculatorItem;
@@ -70,6 +71,8 @@ public class CalculatorFragment extends BaseDataFragment implements OnProductSel
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Logger.d(TAG, "onCreateView");
+
         Bundle args = getArguments();
         if (args != null) {
             String productJson = args.getString(ARG_PRODUCT, "");
@@ -88,11 +91,14 @@ public class CalculatorFragment extends BaseDataFragment implements OnProductSel
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        Logger.d(TAG, "onViewCreated");
 
         initialize();
     }
 
     private void initialize() {
+        Logger.d(TAG, "Initialize " + TAG);
+
         mAdapter = new CalculatorPagerAdapter(getChildFragmentManager(), mViewHolder.calculatorOutputView, this, this, this);
         mViewHolder.viewPagerCalculator.setAdapter(mAdapter);
 

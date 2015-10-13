@@ -18,6 +18,7 @@ import android.widget.ViewFlipper;
 import com.google.gson.Gson;
 
 import de.greenrobot.event.EventBus;
+import io.github.xiaolei.enterpriselibrary.logging.Logger;
 import io.github.xiaolei.transaction.GlobalApplication;
 import io.github.xiaolei.transaction.R;
 import io.github.xiaolei.transaction.adapter.FragmentListPagerAdapter;
@@ -32,10 +33,14 @@ import me.tabak.fragmentswitcher.FragmentSwitcher;
 
 public class MainActivity extends BaseActivity
         implements ITitleChangeable, IFragmentSwitchable, NavigationView.OnNavigationItemSelectedListener {
+    public static final String TAG = MainActivity.class.getSimpleName();
     public static final int VIEW_INDEX_SPLASH = 0;
     public static final int VIEW_INDEX_CONTENT = 1;
+
     private CharSequence mTitle;
     private ViewHolder mViewHolder;
+    private FragmentListPagerAdapter mAdapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +64,8 @@ public class MainActivity extends BaseActivity
     }
 
     private void initialize() {
+        Logger.d(TAG, "initialize");
+
         mViewHolder.navigationView.setNavigationItemSelectedListener(this);
         setupToolbar(mViewHolder.drawerLayout);
 
@@ -67,8 +74,8 @@ public class MainActivity extends BaseActivity
         mViewHolder.drawerLayout.setDrawerListener(toggle);
         toggle.syncState();
 
-        FragmentListPagerAdapter adapter = new FragmentListPagerAdapter(getSupportFragmentManager());
-        mViewHolder.fragmentSwitcher.setAdapter(adapter);
+        mAdapter = new FragmentListPagerAdapter(getSupportFragmentManager());
+        mViewHolder.fragmentSwitcher.setAdapter(mAdapter);
     }
 
     @Override
@@ -82,7 +89,7 @@ public class MainActivity extends BaseActivity
                     calculatorFragment.switchToProductListView();
                     goAhead = false;
                 }
-            }else{
+            } else {
                 switchToHomeFragment();
                 goAhead = false;
             }
@@ -93,7 +100,7 @@ public class MainActivity extends BaseActivity
         }
     }
 
-    public void switchToHomeFragment(){
+    public void switchToHomeFragment() {
         mViewHolder.fragmentSwitcher.setCurrentItem(0);
         mViewHolder.navigationView.setCheckedItem(R.id.navigation_item_calculator);
     }
@@ -166,6 +173,7 @@ public class MainActivity extends BaseActivity
     }
 
     public void onEvent(AppInitCompletedEvent event) {
+        Logger.d(TAG, "Receive Application initialized completed event");
         initialize();
         switchToContentView();
     }
@@ -186,6 +194,7 @@ public class MainActivity extends BaseActivity
         mViewHolder.toolbar.setVisibility(View.VISIBLE);
         mViewHolder.mainViewFlipper.setDisplayedChild(VIEW_INDEX_CONTENT);
         mViewHolder.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+        switchToHomeFragment();
     }
 
     private class ViewHolder {

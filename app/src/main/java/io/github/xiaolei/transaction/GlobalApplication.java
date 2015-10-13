@@ -1,6 +1,7 @@
 package io.github.xiaolei.transaction;
 
 import android.app.Application;
+import android.os.AsyncTask;
 import android.util.Log;
 
 import com.j256.ormlite.dao.Dao;
@@ -11,6 +12,7 @@ import java.util.concurrent.Callable;
 import bolts.Continuation;
 import bolts.Task;
 import de.greenrobot.event.EventBus;
+import io.github.xiaolei.enterpriselibrary.logging.Logger;
 import io.github.xiaolei.transaction.entity.Account;
 import io.github.xiaolei.transaction.event.AccountInfoLoadCompletedEvent;
 import io.github.xiaolei.transaction.event.AppInitCompletedEvent;
@@ -55,14 +57,20 @@ public class GlobalApplication extends Application {
     public void notifyApplicationInitializationCompleted(boolean success) {
         mIsInitialized = true;
         EventBus.getDefault().post(new AppInitCompletedEvent(success));
+        Logger.d(TAG, "Application initialized completed");
     }
 
     protected void initialize() {
+        Logger.setEnable(GlobalConfiguration.DEBUG);
+        Logger.d(TAG, "Application initializing...");
+
+        /*
         Task.callInBackground(new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
                 try {
                     initializeAccountInfo();
+                    Thread.sleep(5000);
                     return true;
                 } catch (Exception e) {
                     return false;
@@ -81,6 +89,30 @@ public class GlobalApplication extends Application {
                 return success;
             }
         }, Task.UI_THREAD_EXECUTOR);
+        */
+
+        AsyncTask<Void, Void, Boolean> task = new AsyncTask<Void, Void, Boolean>() {
+            @Override
+            protected Boolean doInBackground(Void... voids) {
+                try {
+                    initializeAccountInfo();
+                    Thread.sleep(5000);
+                    return true;
+                } catch (Exception e) {
+                    return false;
+                }
+            }
+
+            @Override
+            protected void onPostExecute(Boolean result) {
+                if (result) {
+                    notifyAccountInfoLoadCompleted();
+                }
+
+                notifyApplicationInitializationCompleted(result);
+            }
+        };
+        task.execute();
     }
 
     /**

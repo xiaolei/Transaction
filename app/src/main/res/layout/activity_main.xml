@@ -9,10 +9,22 @@
     android:fitsSystemWindows="true"
     tools:openDrawer="start">
 
-    <include
-        layout="@layout/app_bar_main"
+    <ViewFlipper
+        android:id="@+id/mainViewFlipper"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:measureAllChildren="true">
+
+        <io.github.xiaolei.transaction.widget.SplashView
+            android:id="@+id/splashView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <include
+            layout="@layout/app_bar_main"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </ViewFlipper>
 
     <android.support.design.widget.NavigationView
         android:id="@+id/navigationView"
