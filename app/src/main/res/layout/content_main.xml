@@ -8,7 +8,7 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:showIn="@layout/app_bar_main">
 
-    <me.tabak.fragmentswitcher.FragmentSwitcher
+    <io.github.xiaolei.enterpriselibrary.widget.FragmentViewPager
         android:id="@+id/fragmentSwitcher"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

@@ -2,7 +2,6 @@ package io.github.xiaolei.transaction.ui;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -19,6 +18,7 @@ import com.google.gson.Gson;
 
 import de.greenrobot.event.EventBus;
 import io.github.xiaolei.enterpriselibrary.logging.Logger;
+import io.github.xiaolei.enterpriselibrary.widget.FragmentViewPager;
 import io.github.xiaolei.transaction.GlobalApplication;
 import io.github.xiaolei.transaction.R;
 import io.github.xiaolei.transaction.adapter.FragmentListPagerAdapter;
@@ -28,7 +28,6 @@ import io.github.xiaolei.transaction.event.AppInitCompletedEvent;
 import io.github.xiaolei.transaction.event.PickPhotoEvent;
 import io.github.xiaolei.transaction.util.PhotoPicker;
 import io.github.xiaolei.transaction.widget.AccountView;
-import me.tabak.fragmentswitcher.FragmentSwitcher;
 
 
 public class MainActivity extends BaseActivity
@@ -81,8 +80,11 @@ public class MainActivity extends BaseActivity
     @Override
     public void onBackPressed() {
         boolean goAhead = true;
-        Fragment fragment = mViewHolder.fragmentSwitcher.getCurrentFragment();
-        if (fragment != null) {
+        int currentFragmentIndex = mViewHolder.fragmentSwitcher.getCurrentItem();
+        if(currentFragmentIndex < 0){
+            goAhead = true;
+        }else{
+            Fragment fragment = mAdapter.getItem(currentFragmentIndex);
             if (fragment instanceof CalculatorFragment) {
                 CalculatorFragment calculatorFragment = (CalculatorFragment) fragment;
                 if (calculatorFragment.getCurrentViewIndex() != CalculatorFragment.VIEW_INDEX_PRODUCTS) {
@@ -106,7 +108,7 @@ public class MainActivity extends BaseActivity
     }
 
     @Override
-    public FragmentSwitcher getFragmentSwitcher() {
+    public FragmentViewPager getFragmentSwitcher() {
         return mViewHolder.fragmentSwitcher;
     }
 
@@ -198,7 +200,7 @@ public class MainActivity extends BaseActivity
     }
 
     private class ViewHolder {
-        public FragmentSwitcher fragmentSwitcher;
+        public FragmentViewPager fragmentSwitcher;
         public NavigationView navigationView;
         public DrawerLayout drawerLayout;
         public AccountView accountView;
@@ -206,7 +208,7 @@ public class MainActivity extends BaseActivity
         public Toolbar toolbar;
 
         public ViewHolder(Activity activity) {
-            fragmentSwitcher = (FragmentSwitcher) activity.findViewById(R.id.fragmentSwitcher);
+            fragmentSwitcher = (FragmentViewPager) activity.findViewById(R.id.fragmentSwitcher);
             navigationView = (NavigationView) activity.findViewById(R.id.navigationView);
             drawerLayout = (DrawerLayout) activity.findViewById(R.id.drawer_layout);
             accountView = (AccountView) activity.findViewById(R.id.accountView);
