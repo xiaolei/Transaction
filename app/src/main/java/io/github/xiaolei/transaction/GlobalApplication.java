@@ -64,39 +64,11 @@ public class GlobalApplication extends Application {
         Logger.setEnable(GlobalConfiguration.DEBUG);
         Logger.d(TAG, "Application initializing...");
 
-        /*
-        Task.callInBackground(new Callable<Boolean>() {
-            @Override
-            public Boolean call() throws Exception {
-                try {
-                    initializeAccountInfo();
-                    Thread.sleep(5000);
-                    return true;
-                } catch (Exception e) {
-                    return false;
-                }
-            }
-        }).continueWith(new Continuation<Boolean, Boolean>() {
-            @Override
-            public Boolean then(Task<Boolean> task) throws Exception {
-                boolean success = task.getResult();
-                if (success) {
-                    notifyAccountInfoLoadCompleted();
-                }
-
-                notifyApplicationInitializationCompleted(task.getResult());
-
-                return success;
-            }
-        }, Task.UI_THREAD_EXECUTOR);
-        */
-
         AsyncTask<Void, Void, Boolean> task = new AsyncTask<Void, Void, Boolean>() {
             @Override
             protected Boolean doInBackground(Void... voids) {
                 try {
                     initializeAccountInfo();
-                    Thread.sleep(5000);
                     return true;
                 } catch (Exception e) {
                     return false;
