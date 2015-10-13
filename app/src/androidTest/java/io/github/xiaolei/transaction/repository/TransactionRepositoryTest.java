@@ -31,7 +31,7 @@ public class TransactionRepositoryTest extends BaseTestCase {
         transaction.setAccount(account);
         repository.save(transaction);
 
-        BigDecimal actualPrice = repository.getLastTransactionPrice(product.getName());
+        BigDecimal actualPrice = repository.getLastTransactionPrice(account.getId(), product.getName());
         assertEquals(true, price.equals(actualPrice));
     }
 }

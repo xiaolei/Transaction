@@ -24,16 +24,29 @@ public class TransactionListPagerAdapter extends FragmentStatePagerAdapter {
 
         mStartDate = startDate;
         mEndDate = endDate;
-        mCount = (int) (DateTimeUtils.betweenDays(startDate, endDate));
-        mCount = mCount > 0 ? mCount : 1;
+        refreshCount();
         Log.d(TAG, "betweenDays: " + mCount);
     }
 
     public void changeDateRange(Date startDate, Date endDate) {
         mStartDate = startDate;
         mEndDate = endDate;
+        refreshCount();
+
         notifyDataSetChanged();
     }
+
+    private void refreshCount(){
+        mCount = (int) (DateTimeUtils.betweenDays(mStartDate, mEndDate));
+        mCount = mCount > 0 ? mCount : 1;
+    }
+
+
+    @Override
+    public int getItemPosition(Object object) {
+        return POSITION_NONE;
+    }
+
 
     @Override
     public Fragment getItem(int position) {
