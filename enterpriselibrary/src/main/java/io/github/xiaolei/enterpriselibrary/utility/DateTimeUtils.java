@@ -200,7 +200,7 @@ public class DateTimeUtils {
         long diff = Math.abs(endDate.getTime() - startDate.getTime());
         long hours = TimeUnit.MILLISECONDS.toHours(diff);
 
-        double days = hours * 1.0d / 24;
+        double days = hours / 24.0d;
         return days % 1 == 0 ? (int) days : (int) days + 1;
     }
 
