@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
@@ -49,6 +50,28 @@ public class MainActivity extends BaseActivity
         EventBus.getDefault().register(this);
         mViewHolder = new ViewHolder(this);
         mTitle = getTitle();
+        mViewHolder.fragmentSwitcher.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                Fragment fragment = mAdapter.getItem(position);
+                if (fragment instanceof BaseFragment) {
+                    BaseFragment currentFragment = (BaseFragment) fragment;
+                    if (currentFragment != null) {
+                        setActionBarTitle(currentFragment.getActionBarTitle());
+                    }
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
 
         start();
     }
@@ -153,7 +176,7 @@ public class MainActivity extends BaseActivity
     }
 
     @Override
-    public void setTitle(int resId) {
+    public void setActionBarTitle(int resId) {
         this.getSupportActionBar().setTitle(resId);
     }
 
@@ -173,8 +196,6 @@ public class MainActivity extends BaseActivity
                     } else {
                         getSupportActionBar().show();
                     }
-
-                    setTitle(currentFragment.getActionBarTitle());
                 }
             }
 

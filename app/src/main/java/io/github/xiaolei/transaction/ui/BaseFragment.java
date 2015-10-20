@@ -63,14 +63,14 @@ public abstract class BaseFragment extends Fragment {
     public void refreshActivityTitle() {
         Activity activity = getActivity();
         if (activity != null && activity instanceof ITitleChangeable) {
-            ((ITitleChangeable) activity).setTitle(getActionBarTitle());
+            ((ITitleChangeable) activity).setActionBarTitle(getActionBarTitle());
         }
     }
 
     public void setActionBarTitle(String title) {
         Activity activity = getActivity();
         if (activity != null && activity instanceof ITitleChangeable) {
-            ((ITitleChangeable) activity).setTitle(getActionBarTitle());
+            ((ITitleChangeable) activity).setActionBarTitle(getActionBarTitle());
         }
     }
 
