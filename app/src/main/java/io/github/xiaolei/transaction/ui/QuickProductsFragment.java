@@ -47,7 +47,7 @@ import io.github.xiaolei.transaction.widget.DataContainerView;
 /**
  * TODO: add comments
  */
-public class QuickProductsFragment extends BaseDataFragment implements View.OnClickListener {
+public class QuickProductsFragment extends BaseFragment implements View.OnClickListener {
     public static final String ARG_IS_SELECTION_MODE = "is_selection_mode";
     public static final String ARG_SHOW_ADD_BUTTON = "arg_show_add_button";
     private static final String TAG = QuickProductsFragment.class.getSimpleName();
@@ -77,16 +77,6 @@ public class QuickProductsFragment extends BaseDataFragment implements View.OnCl
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        Log.d(TAG, "onCreateView");
-        View rootView = inflater.inflate(R.layout.fragment_quick_products, container, false);
-        initialize(rootView);
-
-        return rootView;
-    }
-
-    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EventBus.getDefault().register(this);
@@ -112,7 +102,7 @@ public class QuickProductsFragment extends BaseDataFragment implements View.OnCl
                 newProduct();
                 return true;
             case R.id.action_delete_database:
-                DatabaseHelper.getInstance(getActivity()).deleteDatabase(getActivity());
+                DatabaseHelper.deleteDatabase(getActivity());
                 Toast.makeText(getActivity(), "Database deleted.", Toast.LENGTH_SHORT).show();
                 return true;
             case R.id.action_copy_database:
@@ -143,14 +133,6 @@ public class QuickProductsFragment extends BaseDataFragment implements View.OnCl
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        Log.d(TAG, "onViewCreated");
-
-        loadProductList();
-    }
-
-    @Override
     public void onStart() {
         super.onStart();
         Log.d(TAG, "onStart");
@@ -167,7 +149,13 @@ public class QuickProductsFragment extends BaseDataFragment implements View.OnCl
         }
     }
 
-    private void initialize(View view) {
+    @Override
+    public int getContentView() {
+        return R.layout.fragment_quick_products;
+    }
+
+    @Override
+    public void initialize(View view) {
         mViewHolder = new ViewHolder(view);
         mViewHolder.gridViewProducts.setChoiceMode(GridView.CHOICE_MODE_MULTIPLE_MODAL);
         mViewHolder.gridViewProducts.setMultiChoiceModeListener(new MultiChoiceModeListener());
@@ -195,21 +183,13 @@ public class QuickProductsFragment extends BaseDataFragment implements View.OnCl
     }
 
     @Override
+    public void load() {
+        loadProductList();
+    }
+
+    @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-    }
-
-    @Override
-    public void onResume() {
-        Log.d(TAG, "onResume");
-        super.onResume();
-    }
-
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        Log.d(TAG, "onStop");
     }
 
     @Override
@@ -233,7 +213,7 @@ public class QuickProductsFragment extends BaseDataFragment implements View.OnCl
     }
 
     public void loadProductList() {
-        switchToBusyView();
+        mViewHolder.dataContainerView.switchToBusyView();
         AsyncTask<Void, Void, List<Product>> task = new AsyncTask<Void, Void, List<Product>>() {
             @Override
             protected List<Product> doInBackground(Void... voids) {
@@ -274,7 +254,7 @@ public class QuickProductsFragment extends BaseDataFragment implements View.OnCl
             });
 
             mViewHolder.gridViewProducts.setAdapter(mAdapter);
-            switchToDataView();
+            mViewHolder.dataContainerView.switchToDataView();
         } else {
             switchToEmptyView();
         }
@@ -307,23 +287,8 @@ public class QuickProductsFragment extends BaseDataFragment implements View.OnCl
     }
 
     @Override
-    public String getActionBarTitle() {
-        return getString(R.string.products);
-    }
-
-    @Override
-    public void switchToBusyView() {
-        mViewHolder.dataContainerView.switchToBusyView();
-    }
-
-    @Override
-    public void switchToRetryView() {
-        mViewHolder.dataContainerView.switchToRetryView();
-    }
-
-    @Override
-    public void switchToDataView() {
-        mViewHolder.dataContainerView.switchToDataView();
+    public int getActionBarTitle() {
+        return R.string.products;
     }
 
     @Override
@@ -335,7 +300,7 @@ public class QuickProductsFragment extends BaseDataFragment implements View.OnCl
     }
 
     private void chooseTransactionDate() {
-        DatePickerFragment picker = DatePickerFragment.showDialog(getActivity().getSupportFragmentManager(), new OnDateSelectedListener() {
+        DatePickerFragment.showDialog(getActivity().getSupportFragmentManager(), new OnDateSelectedListener() {
             @Override
             public void onDateSelected(Date selectedDate) {
                 EventBus.getDefault().post(new DateSelectedEvent(selectedDate));

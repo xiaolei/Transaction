@@ -67,8 +67,8 @@ public class DashboardFragment extends BaseFragment implements GenericListAdapte
     }
 
     @Override
-    public String getActionBarTitle() {
-        return getString(R.string.dashboard);
+    public int getActionBarTitle() {
+        return R.string.dashboard;
     }
 
     @Override
@@ -190,7 +190,7 @@ public class DashboardFragment extends BaseFragment implements GenericListAdapte
     }
 
     @Override
-    public void findViews(View view) {
+    public void initialize(View view) {
         mViewHolder = new ViewHolder(view);
         mViewHolder.listViewDashboard.setLayoutManager(new LinearLayoutManager(getContext()));
     }

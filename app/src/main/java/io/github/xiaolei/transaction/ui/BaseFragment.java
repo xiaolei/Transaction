@@ -1,16 +1,14 @@
 package io.github.xiaolei.transaction.ui;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import io.github.xiaolei.transaction.R;
+import android.view.inputmethod.InputMethodManager;
 
 /**
  * TODO: add comment
@@ -18,18 +16,18 @@ import io.github.xiaolei.transaction.R;
 public abstract class BaseFragment extends Fragment {
     public abstract int getContentView();
 
-    public abstract void findViews(View view);
+    public abstract void initialize(View view);
 
     public abstract void load();
 
-    public abstract String getActionBarTitle();
+    public abstract int getActionBarTitle();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(getContentView(), container, false);
-        findViews(view);
+        initialize(view);
 
         return view;
     }
@@ -50,6 +48,16 @@ public abstract class BaseFragment extends Fragment {
     public void onPause() {
         super.onPause();
 
+    }
+
+    /**
+     * Indicates whether show the default action bar. If not,
+     * fragment layout should contains its own action bar.
+     *
+     * @return
+     */
+    public boolean useDefaultActionBar() {
+        return true;
     }
 
     public void refreshActivityTitle() {
@@ -75,5 +83,11 @@ public abstract class BaseFragment extends Fragment {
             }
         });
         snackbar.show();
+    }
+
+    protected void hideSoftKeyboard() {
+        InputMethodManager inputManager = (InputMethodManager) getActivity().getSystemService(
+                Context.INPUT_METHOD_SERVICE);
+        inputManager.hideSoftInputFromWindow((null == getActivity().getCurrentFocus()) ? null : getActivity().getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
     }
 }

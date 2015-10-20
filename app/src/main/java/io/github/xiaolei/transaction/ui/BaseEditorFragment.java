@@ -19,7 +19,7 @@ import io.github.xiaolei.transaction.R;
 /**
  * TODO: add comment
  */
-public abstract class BaseEditorFragment extends BaseDataFragment implements Validator.ValidationListener {
+public abstract class BaseEditorFragment extends BaseFragment implements Validator.ValidationListener {
     private Validator mValidator;
 
     protected abstract void readArguments(Bundle args);
@@ -54,7 +54,6 @@ public abstract class BaseEditorFragment extends BaseDataFragment implements Val
     }
 
     public void loadAsync(final long id) {
-        switchToBusyView();
         AsyncTask<Void, Void, Boolean> task = new AsyncTask<Void, Void, Boolean>() {
             @Override
             protected Boolean doInBackground(Void... voids) {
@@ -72,9 +71,7 @@ public abstract class BaseEditorFragment extends BaseDataFragment implements Val
             protected void onPostExecute(Boolean result) {
                 if (result == true) {
                     bind();
-                    switchToDataView();
                 } else {
-                    switchToRetryView();
                 }
             }
         };
@@ -113,8 +110,8 @@ public abstract class BaseEditorFragment extends BaseDataFragment implements Val
     }
 
     @Override
-    public String getActionBarTitle() {
-        return "";
+    public int getActionBarTitle() {
+        return R.string.app_name;
     }
 
     @Override
@@ -134,11 +131,5 @@ public abstract class BaseEditorFragment extends BaseDataFragment implements Val
                 Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
             }
         }
-    }
-
-    private void hideSoftKeyboard() {
-        InputMethodManager inputManager = (InputMethodManager) getActivity().getSystemService(
-                Context.INPUT_METHOD_SERVICE);
-        inputManager.hideSoftInputFromWindow((null == getActivity().getCurrentFocus()) ? null : getActivity().getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
     }
 }

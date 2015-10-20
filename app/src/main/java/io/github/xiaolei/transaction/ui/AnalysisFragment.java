@@ -22,8 +22,8 @@ public class AnalysisFragment extends BaseFragment {
     }
 
     @Override
-    public String getActionBarTitle() {
-        return getResources().getString(R.string.analysis_fragment_title);
+    public int getActionBarTitle() {
+        return R.string.analysis_fragment_title;
     }
 
     @Override
@@ -39,7 +39,7 @@ public class AnalysisFragment extends BaseFragment {
     }
 
     @Override
-    public void findViews(View view) {
+    public void initialize(View view) {
         mViewHolder = new ViewHolder(view);
     }
 

@@ -39,7 +39,7 @@ import io.github.xiaolei.transaction.widget.DataContainerView;
 /**
  * TODO: add comments
  */
-public class ProductsFragment extends BaseDataFragment {
+public class ProductsFragment extends BaseFragment {
     public static final String ARG_IS_SELECTION_MODE = "is_selection_mode";
     public static final String ARG_SHOW_ADD_BUTTON = "arg_show_add_button";
     private static final String TAG = ProductsFragment.class.getSimpleName();
@@ -69,13 +69,13 @@ public class ProductsFragment extends BaseDataFragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        Log.d(TAG, "onCreateView");
-        View rootView = inflater.inflate(R.layout.fragment_products, container, false);
-        initialize(rootView);
+    public int getContentView() {
+        return R.layout.fragment_products;
+    }
 
-        return rootView;
+    @Override
+    public void load() {
+        loadProductList();
     }
 
     @Override
@@ -129,21 +129,6 @@ public class ProductsFragment extends BaseDataFragment {
         this.mIsSelectionMode = isSelectionMode;
     }
 
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        Log.d(TAG, "onViewCreated");
-
-        loadProductList();
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        Log.d(TAG, "onStart");
-
-    }
-
     public void setOnProductSelectedListener(OnProductSelectedListener listener) {
         mOnProductSelectedListener = listener;
     }
@@ -154,7 +139,8 @@ public class ProductsFragment extends BaseDataFragment {
         }
     }
 
-    private void initialize(View view) {
+    @Override
+    public void initialize(View view) {
         mViewHolder = new ViewHolder(view);
         mViewHolder.gridViewProducts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -184,19 +170,6 @@ public class ProductsFragment extends BaseDataFragment {
     }
 
     @Override
-    public void onResume() {
-        Log.d(TAG, "onResume");
-        super.onResume();
-    }
-
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        Log.d(TAG, "onStop");
-    }
-
-    @Override
     public void onDestroy() {
         EventBus.getDefault().unregister(this);
 
@@ -209,7 +182,7 @@ public class ProductsFragment extends BaseDataFragment {
     }
 
     public void loadProductList() {
-        switchToBusyView();
+        mViewHolder.dataContainerView.switchToBusyView();
         AsyncTask<Void, Void, List<Product>> task = new AsyncTask<Void, Void, List<Product>>() {
             @Override
             protected List<Product> doInBackground(Void... voids) {
@@ -250,7 +223,7 @@ public class ProductsFragment extends BaseDataFragment {
             });
 
             mViewHolder.gridViewProducts.setAdapter(mAdapter);
-            switchToDataView();
+            mViewHolder.dataContainerView.switchToDataView();
         } else {
             switchToEmptyView();
         }
@@ -283,23 +256,8 @@ public class ProductsFragment extends BaseDataFragment {
     }
 
     @Override
-    public String getActionBarTitle() {
-        return getString(R.string.products);
-    }
-
-    @Override
-    public void switchToBusyView() {
-        mViewHolder.dataContainerView.switchToBusyView();
-    }
-
-    @Override
-    public void switchToRetryView() {
-        mViewHolder.dataContainerView.switchToRetryView();
-    }
-
-    @Override
-    public void switchToDataView() {
-        mViewHolder.dataContainerView.switchToDataView();
+    public int getActionBarTitle() {
+        return R.string.products;
     }
 
     @Override

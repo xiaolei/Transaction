@@ -81,9 +81,9 @@ public class MainActivity extends BaseActivity
     public void onBackPressed() {
         boolean goAhead = true;
         int currentFragmentIndex = mViewHolder.fragmentSwitcher.getCurrentItem();
-        if(currentFragmentIndex < 0){
+        if (currentFragmentIndex < 0) {
             goAhead = true;
-        }else{
+        } else {
             Fragment fragment = mAdapter.getItem(currentFragmentIndex);
             if (fragment instanceof CalculatorFragment) {
                 CalculatorFragment calculatorFragment = (CalculatorFragment) fragment;
@@ -153,8 +153,8 @@ public class MainActivity extends BaseActivity
     }
 
     @Override
-    public void setTitle(String title) {
-        this.getSupportActionBar().setTitle(title);
+    public void setTitle(int resId) {
+        this.getSupportActionBar().setTitle(resId);
     }
 
     @Override
@@ -163,6 +163,21 @@ public class MainActivity extends BaseActivity
             Intent intent = new Intent(this, TransactionListActivity.class);
             startActivity(intent);
         } else {
+            Fragment fragment = mAdapter.getItem(menuItem.getOrder());
+            if (fragment != null) {
+                if (fragment instanceof BaseFragment) {
+                    BaseFragment currentFragment = (BaseFragment) fragment;
+                    boolean useDefaultActionBar = currentFragment.useDefaultActionBar();
+                    if (!useDefaultActionBar) {
+                        getSupportActionBar().hide();
+                    } else {
+                        getSupportActionBar().show();
+                    }
+
+                    setTitle(currentFragment.getActionBarTitle());
+                }
+            }
+
             getFragmentSwitcher().setCurrentItem(menuItem.getOrder());
         }
 

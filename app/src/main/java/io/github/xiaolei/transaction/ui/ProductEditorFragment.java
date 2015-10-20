@@ -123,21 +123,8 @@ public class ProductEditorFragment extends BaseEditorFragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        if (savedInstanceState != null) {
-            mProductId = savedInstanceState.getInt(ARG_PRODUCT_ID);
-        }
-
-        // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_product_editor, container, false);
+    public void initialize(View view) {
         mViewHolder = new ViewHolder(view);
-        initialize();
-
-        return view;
-    }
-
-    private void initialize() {
         mViewHolder.editTextProductName.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -262,23 +249,18 @@ public class ProductEditorFragment extends BaseEditorFragment {
     }
 
     @Override
-    public String getActionBarTitle() {
-        return getString(R.string.product_editor);
+    public int getContentView() {
+        return R.layout.fragment_product_editor;
     }
 
     @Override
-    public void switchToBusyView() {
-        mViewHolder.dataContainerView.switchToBusyView();
+    public void load() {
+
     }
 
     @Override
-    public void switchToRetryView() {
-        mViewHolder.dataContainerView.switchToRetryView();
-    }
-
-    @Override
-    public void switchToDataView() {
-        mViewHolder.dataContainerView.switchToDataView();
+    public int getActionBarTitle() {
+        return R.string.product_editor;
     }
 
     public interface OnProductEditorFragmentInteractionListener {

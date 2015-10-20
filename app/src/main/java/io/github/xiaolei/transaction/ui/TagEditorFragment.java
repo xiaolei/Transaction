@@ -35,20 +35,6 @@ public class TagEditorFragment extends BaseEditorFragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        if (savedInstanceState != null) {
-            mTagId = savedInstanceState.getInt(ARG_TAG_ID);
-        }
-
-        // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_tag_editor, container, false);
-        mViewHolder = new ViewHolder(view);
-
-        return view;
-    }
-
-    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         menu.clear();
         inflater.inflate(R.menu.product_editor_fragment, menu);
@@ -107,7 +93,7 @@ public class TagEditorFragment extends BaseEditorFragment {
     @Override
     protected void onSaveCompleted(boolean success, Exception error) {
         if (success) {
-            getFragmentSwitcher().switchToTagList();
+
         } else {
             Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
         }
@@ -119,23 +105,24 @@ public class TagEditorFragment extends BaseEditorFragment {
     }
 
     @Override
-    public void switchToBusyView() {
-        mViewHolder.dataContainerView.switchToBusyView();
+    public int getContentView() {
+        return R.layout.fragment_tag_editor;
     }
 
     @Override
-    public void switchToRetryView() {
-        mViewHolder.dataContainerView.switchToRetryView();
+    public void initialize(View view) {
+        mViewHolder = new ViewHolder(view);
+
     }
 
     @Override
-    public void switchToDataView() {
-        mViewHolder.dataContainerView.switchToDataView();
+    public void load() {
+
     }
 
     @Override
-    public String getActionBarTitle() {
-        return getString(R.string.tag_editor);
+    public int getActionBarTitle() {
+        return R.string.tag_editor;
     }
 
     private class ViewHolder {

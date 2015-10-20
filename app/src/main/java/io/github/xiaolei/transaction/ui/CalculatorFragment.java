@@ -6,9 +6,7 @@ import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -43,7 +41,7 @@ import io.github.xiaolei.transaction.widget.CalculatorOutputView;
 /**
  * TODO: add comments
  */
-public class CalculatorFragment extends BaseDataFragment implements OnProductSelectedListener, OnCalculatorActionClickListener, OnCalculatorActionLongClickListener {
+public class CalculatorFragment extends BaseFragment implements OnProductSelectedListener, OnCalculatorActionClickListener, OnCalculatorActionLongClickListener {
     private static final String TAG = CalculatorFragment.class.getSimpleName();
     public static final int VIEW_INDEX_PRICE = 1;
     public static final int VIEW_INDEX_PRODUCTS = 0;
@@ -62,17 +60,12 @@ public class CalculatorFragment extends BaseDataFragment implements OnProductSel
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setHasOptionsMenu(false);
-        EventBus.getDefault().register(this);
+    public int getContentView() {
+        return R.layout.fragment_calculator;
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        Logger.d(TAG, "onCreateView");
-
+    public void initialize(View view) {
         Bundle args = getArguments();
         if (args != null) {
             String productJson = args.getString(ARG_PRODUCT, "");
@@ -81,23 +74,12 @@ public class CalculatorFragment extends BaseDataFragment implements OnProductSel
             }
         }
 
-        // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_calculator, container, false);
         mViewHolder = new ViewHolder(view);
-
-        return view;
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        Logger.d(TAG, "onViewCreated");
-
-        initialize();
-    }
-
-    private void initialize() {
-        Logger.d(TAG, "Initialize " + TAG);
+    public void load() {
+        Logger.d(TAG, "loading " + TAG);
 
         mAdapter = new CalculatorPagerAdapter(getChildFragmentManager(), mViewHolder.calculatorOutputView, this, this, this);
         mViewHolder.viewPagerCalculator.setAdapter(mAdapter);
@@ -111,23 +93,15 @@ public class CalculatorFragment extends BaseDataFragment implements OnProductSel
     }
 
     @Override
-    public String getActionBarTitle() {
-        return getString(R.string.calculator_title);
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(false);
+        EventBus.getDefault().register(this);
     }
 
     @Override
-    public void switchToBusyView() {
-
-    }
-
-    @Override
-    public void switchToRetryView() {
-
-    }
-
-    @Override
-    public void switchToDataView() {
-
+    public int getActionBarTitle() {
+        return R.string.calculator_title;
     }
 
     @Override

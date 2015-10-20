@@ -105,8 +105,8 @@ public class TransactionListFragment extends BaseFragment {
     }
 
     @Override
-    public String getActionBarTitle() {
-        return getResources().getString(R.string.transactions);
+    public int getActionBarTitle() {
+        return R.string.transactions;
     }
 
     @Override
@@ -175,7 +175,7 @@ public class TransactionListFragment extends BaseFragment {
     }
 
     @Override
-    public void findViews(View view) {
+    public void initialize(View view) {
         mViewHolder = new ViewHolder(view);
     }
 

@@ -15,8 +15,8 @@ public class FragmentTemplate extends BaseFragment {
     }
 
     @Override
-    public String getActionBarTitle() {
-        return getResources().getString(R.string.unlock);
+    public int getActionBarTitle() {
+        return R.string.app_name;
     }
 
     @Override
@@ -25,7 +25,7 @@ public class FragmentTemplate extends BaseFragment {
     }
 
     @Override
-    public void findViews(View view) {
+    public void initialize(View view) {
         mViewHolder = new ViewHolder(view);
     }
 

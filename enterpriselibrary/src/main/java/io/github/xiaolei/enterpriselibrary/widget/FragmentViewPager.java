@@ -13,10 +13,15 @@ public class FragmentViewPager extends ViewPager {
 
     public FragmentViewPager(Context context) {
         super(context);
+        initialize();
     }
 
     public FragmentViewPager(Context context, AttributeSet attrs) {
         super(context, attrs);
+        initialize();
+    }
+
+    protected void initialize() {
     }
 
     public void setPagingEnabled(boolean enable) {

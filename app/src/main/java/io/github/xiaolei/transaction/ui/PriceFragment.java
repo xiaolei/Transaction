@@ -3,9 +3,7 @@ package io.github.xiaolei.transaction.ui;
 
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
 
@@ -25,7 +23,7 @@ import io.github.xiaolei.transaction.widget.CalculatorOutputView;
 /**
  * TODO: add comments
  */
-public class PriceFragment extends BaseDataFragment implements AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener {
+public class PriceFragment extends BaseFragment implements AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener {
     private static final String TAG = PriceFragment.class.getSimpleName();
     public static final String ARG_PRODUCT = "arg_product";
     private static final int TEXT_SIZE_ACTION_BUTTON = 15;
@@ -42,6 +40,24 @@ public class PriceFragment extends BaseDataFragment implements AdapterView.OnIte
         setHasOptionsMenu(false);
     }
 
+    @Override
+    public int getContentView() {
+        return R.layout.fragment_price;
+    }
+
+    @Override
+    public void initialize(View view) {
+        Bundle args = getArguments();
+        if (args != null) {
+            String productJson = args.getString(ARG_PRODUCT, "");
+            if (!TextUtils.isEmpty(productJson)) {
+                mProduct = new Gson().fromJson(productJson, Product.class);
+            }
+        }
+
+        mViewHolder = new ViewHolder(view);
+    }
+
     public void setProduct(Product product) {
         mProduct = product;
     }
@@ -50,7 +66,8 @@ public class PriceFragment extends BaseDataFragment implements AdapterView.OnIte
         mOutputView = outputView;
     }
 
-    private void initialize() {
+    @Override
+    public void load() {
         mItems = new ArrayList<CalculatorItem>();
         mItems.add(new CalculatorItem("Erase", 3, TEXT_SIZE_ACTION_BUTTON, R.drawable.action_button_selector, R.drawable.action_button_text_selector));
         mItems.add(new CalculatorItem("7", 0, TEXT_SIZE_NUMBER_BUTTON, R.drawable.button_selector));
@@ -68,35 +85,7 @@ public class PriceFragment extends BaseDataFragment implements AdapterView.OnIte
         mItems.add(new CalculatorItem(getString(R.string.quantity), 5, TEXT_SIZE_ACTION_BUTTON, R.drawable.action_button_selector, R.drawable.action_button_text_selector));
         mItems.add(new CalculatorItem(".", 0, TEXT_SIZE_NUMBER_BUTTON, R.drawable.button_selector));
         mItems.add(new CalculatorItem("0", 0, TEXT_SIZE_NUMBER_BUTTON, R.drawable.button_selector));
-    }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        Bundle args = getArguments();
-        if (args != null) {
-            String productJson = args.getString(ARG_PRODUCT, "");
-            if (!TextUtils.isEmpty(productJson)) {
-                mProduct = new Gson().fromJson(productJson, Product.class);
-            }
-        }
-
-        // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_price, container, false);
-        mViewHolder = new ViewHolder(view);
-
-        return view;
-    }
-
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        initialize();
-        load();
-    }
-
-    public void load() {
         mAdapter = new CalculatorAdapter(getActivity(), mItems);
         mViewHolder.gridView.setOnItemClickListener(this);
         mViewHolder.gridView.setOnItemLongClickListener(this);
@@ -104,23 +93,8 @@ public class PriceFragment extends BaseDataFragment implements AdapterView.OnIte
     }
 
     @Override
-    public String getActionBarTitle() {
-        return getString(R.string.calculator_title);
-    }
-
-    @Override
-    public void switchToBusyView() {
-
-    }
-
-    @Override
-    public void switchToRetryView() {
-
-    }
-
-    @Override
-    public void switchToDataView() {
-
+    public int getActionBarTitle() {
+        return R.string.calculator_title;
     }
 
     @Override
