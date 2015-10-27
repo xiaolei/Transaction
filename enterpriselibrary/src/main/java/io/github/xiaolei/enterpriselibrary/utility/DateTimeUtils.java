@@ -146,9 +146,9 @@ public class DateTimeUtils {
         return result;
     }
 
-    public static Date getStartDayOfYear(Date date, int monthIndex) {
+    public static Date getStartDayOfYear(Date date, int yearIndex) {
         Date startDay = getStartDayOfYear(date);
-        Date result = addYears(startDay, monthIndex);
+        Date result = addYears(startDay, yearIndex);
         return result;
     }
 
