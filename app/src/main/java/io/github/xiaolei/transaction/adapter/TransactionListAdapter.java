@@ -18,9 +18,9 @@ import io.github.xiaolei.transaction.entity.Transaction;
 import io.github.xiaolei.transaction.widget.CurrencyTextView;
 
 /**
- * TODO: add comment
+ * Transaction list adapter.
  */
-public class TransactionListAdapter extends BaseAdapter implements IDataAdapter {
+public class TransactionListAdapter extends BaseAdapter implements IDataAdapter<Transaction> {
     private Context mContext;
     private List<Transaction> mTransactions;
     private LayoutInflater mInflater;
@@ -30,12 +30,6 @@ public class TransactionListAdapter extends BaseAdapter implements IDataAdapter 
         mContext = context;
         mTransactions = transactions != null ? transactions : new ArrayList<Transaction>();
         mInflater = LayoutInflater.from(context);
-    }
-
-    public void swapData(List<Transaction> transactions) {
-        mTransactions.clear();
-        mTransactions.addAll(transactions);
-        notifyDataSetChanged();
     }
 
     @Override
@@ -80,13 +74,13 @@ public class TransactionListAdapter extends BaseAdapter implements IDataAdapter 
     }
 
     @Override
-    public void append(List data) {
+    public void append(List<Transaction> data) {
         mTransactions.addAll(data);
         notifyDataSetChanged();
     }
 
     @Override
-    public void swapDate(List data) {
+    public void swap(List<Transaction> data) {
         mTransactions.clear();
         mTransactions.addAll(data);
         notifyDataSetChanged();

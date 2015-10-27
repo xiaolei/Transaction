@@ -81,7 +81,7 @@ public class TagListAdapter extends BaseAdapter implements IDataAdapter<Tag> {
     }
 
     @Override
-    public void swapDate(List<Tag> data) {
+    public void swap(List<Tag> data) {
         mTags.clear();
         mTags.addAll(data);
         notifyDataSetChanged();

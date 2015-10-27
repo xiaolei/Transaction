@@ -81,7 +81,7 @@ public class CalculatorAdapter extends BaseAdapter implements IDataAdapter<Calcu
     }
 
     @Override
-    public void swapDate(List<CalculatorItem> data) {
+    public void swap(List<CalculatorItem> data) {
         mItems.clear();
         mItems.addAll(data);
         notifyDataSetChanged();

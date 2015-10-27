@@ -10,5 +10,5 @@ import io.github.xiaolei.transaction.entity.TableEntity;
 public interface IDataAdapter<T> {
     void append(List<T> data);
 
-    void swapDate(List<T> data);
+    void swap(List<T> data);
 }

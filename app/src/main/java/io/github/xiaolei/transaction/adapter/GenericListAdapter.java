@@ -1,73 +1,103 @@
 package io.github.xiaolei.transaction.adapter;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
+import android.widget.BaseAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import io.github.xiaolei.transaction.R;
-import io.github.xiaolei.transaction.viewholder.BaseViewHolder;
-import io.github.xiaolei.transaction.viewmodel.BaseViewModel;
-
 /**
- * TODO: add comment
+ * 通用 ListAdapter. M: ViewModel 类型, V: ViewHolder 类型
  */
-public abstract class GenericListAdapter<T extends BaseViewModel, V extends BaseViewHolder> extends RecyclerView.Adapter<V> {
+public abstract class GenericListAdapter<M, V> extends BaseAdapter {
     protected Context mContext;
-    protected List<T> mItems = new ArrayList<T>();
+    protected int mLayoutResourceId;
+    protected List<M> mItems = new ArrayList<M>();
     protected V mViewHolder;
-    protected LayoutInflater mLayoutInflater;
-    protected OnRecyclerViewItemClickListener mOnItemClickListener;
 
-    public GenericListAdapter(Context context, List<T> items) {
-        mContext = context;
-        mLayoutInflater = LayoutInflater.from(mContext);
-        mItems = items;
+    public GenericListAdapter(Context context, List<M> items) {
+        initialize(context);
+        setItems(items);
     }
 
-    public void swap(List<T> items) {
-        mItems.clear();
+    public GenericListAdapter(Context context, M[] items) {
+        initialize(context);
+        setItems(items);
+    }
+
+    protected void initialize(Context context) {
+        mContext = context;
+        mLayoutResourceId = getLayoutResourceId();
+    }
+
+    protected void setItems(List<M> items) {
+        mItems = new ArrayList<M>();
+        if (items == null) {
+            return;
+        }
+
         mItems.addAll(items);
+    }
+
+    protected void setItems(M[] items) {
+        if (items == null) {
+            return;
+        }
+
+        List<M> list = new ArrayList<M>();
+        for (M item : items) {
+            list.add(item);
+        }
+
+        this.setItems(list);
+    }
+
+    public void swap(List<M> items) {
+        mItems.clear();
+        if (items != null) {
+            mItems.addAll(items);
+        }
+
         notifyDataSetChanged();
     }
 
-    public void setOnItemClickListener(OnRecyclerViewItemClickListener listener) {
-        mOnItemClickListener = listener;
-    }
-
-    protected void onItemClickListener(int position) {
-        if (mOnItemClickListener != null) {
-            mOnItemClickListener.onRecyclerViewItemClick(position);
-        }
-    }
-
-    protected OnRecyclerViewItemClickListener getOnItemClickListener() {
-        return mOnItemClickListener;
-    }
-
     @Override
-    public int getItemCount() {
+    public int getCount() {
         return mItems.size();
     }
 
-    protected LayoutInflater getLayoutInflater() {
-        return mLayoutInflater;
+    @Override
+    public Object getItem(int i) {
+        return mItems.get(i);
     }
 
-    protected Context getContext() {
-        return mContext;
+    @Override
+    public long getItemId(int i) {
+        return i;
     }
 
-    protected List<T> getItems() {
-        return mItems;
+    @Override
+    public View getView(int i, View view, ViewGroup viewGroup) {
+        if (view == null) {
+            view = View.inflate(mContext, mLayoutResourceId, null);
+            mViewHolder = createViewHolder(view);
+            view.setTag(mViewHolder);
+        } else {
+            mViewHolder = (V) view.getTag();
+        }
+
+        if (mViewHolder != null) {
+            bindData(mViewHolder, mItems.get(i));
+        }
+
+        return view;
     }
 
-    public interface OnRecyclerViewItemClickListener<T> {
-        void onRecyclerViewItemClick(int position);
-    }
+    public abstract int getLayoutResourceId();
+
+    public abstract V createViewHolder(View view);
+
+    public abstract void bindData(V viewHolder, M viewModel);
 }

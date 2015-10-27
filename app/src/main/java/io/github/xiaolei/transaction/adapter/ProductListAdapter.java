@@ -87,7 +87,7 @@ public class ProductListAdapter extends BaseAdapter implements IDataAdapter<Prod
     }
 
     @Override
-    public void swapDate(List<Product> data) {
+    public void swap(List<Product> data) {
         mProducts.clear();
         mProducts.addAll(data);
         notifyDataSetChanged();

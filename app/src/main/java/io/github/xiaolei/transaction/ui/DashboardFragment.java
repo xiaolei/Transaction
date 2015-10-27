@@ -19,7 +19,7 @@ import io.github.xiaolei.enterpriselibrary.utility.CurrencyHelper;
 import io.github.xiaolei.transaction.GlobalApplication;
 import io.github.xiaolei.transaction.R;
 import io.github.xiaolei.transaction.adapter.DashboardListAdapter;
-import io.github.xiaolei.transaction.adapter.GenericListAdapter;
+import io.github.xiaolei.transaction.adapter.GenericRecyclerViewAdapter;
 import io.github.xiaolei.transaction.entity.Transaction;
 import io.github.xiaolei.transaction.event.RefreshTransactionListEvent;
 import io.github.xiaolei.transaction.repository.RepositoryProvider;
@@ -34,7 +34,7 @@ import io.github.xiaolei.transaction.widget.ChartView;
 /**
  * TODO: add comment
  */
-public class DashboardFragment extends BaseFragment implements GenericListAdapter.OnRecyclerViewItemClickListener {
+public class DashboardFragment extends BaseFragment implements GenericRecyclerViewAdapter.OnRecyclerViewItemClickListener {
     private ViewHolder mViewHolder;
     private DashboardListAdapter mAdapter;
 

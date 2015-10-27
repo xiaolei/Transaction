@@ -64,7 +64,7 @@ public class GenericEndlessAdapter<T extends TableEntity> extends EndlessAdapter
     }
 
     public void swapData(List<T> data) {
-        ((IDataAdapter) mAdapter).swapDate(data);
+        ((IDataAdapter) mAdapter).swap(data);
         mCurrentPage = 0;
     }
 
