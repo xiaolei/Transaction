@@ -10,13 +10,15 @@ import java.util.concurrent.TimeUnit;
  * TODO: add comment
  */
 public class DateTimeUtils {
+    public static final String DATE_PATTERN = "yyyy-MM-dd";
+    public static final String DATE_TIME_PATTERN = "yyyy-MM-dd HH:mm:ss";
 
     public static Date parseDate(String date) {
-        return parseDateTime(date, "yyyy-MM-dd");
+        return parseDateTime(date, DATE_PATTERN);
     }
 
     public static Date parseDateTime(String datetime) {
-        return parseDateTime(datetime, "yyyy-MM-dd hh:mm:ss");
+        return parseDateTime(datetime, DATE_TIME_PATTERN);
     }
 
     public static Date parseDateTime(String datetime, String pattern) {
@@ -42,7 +44,7 @@ public class DateTimeUtils {
     }
 
     public static String formatDate(Date date) {
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat format = new SimpleDateFormat(DATE_PATTERN);
         return format.format(date);
     }
 
@@ -52,7 +54,7 @@ public class DateTimeUtils {
     }
 
     public static String formatDateTime(Date date) {
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        SimpleDateFormat format = new SimpleDateFormat(DATE_TIME_PATTERN);
         return format.format(date);
     }
 
@@ -67,7 +69,7 @@ public class DateTimeUtils {
     }
 
     public static Date getStartTimeOfDate(Date date) {
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        SimpleDateFormat format = new SimpleDateFormat(DATE_TIME_PATTERN);
         try {
             return format.parse(getStartTimeStringOfDate(date));
         } catch (ParseException e) {
@@ -78,7 +80,7 @@ public class DateTimeUtils {
     }
 
     public static Date getEndTimeOfDate(Date date) {
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        SimpleDateFormat format = new SimpleDateFormat(DATE_TIME_PATTERN);
         try {
             return format.parse(getEndTimeStringOfDate(date));
         } catch (ParseException e) {
