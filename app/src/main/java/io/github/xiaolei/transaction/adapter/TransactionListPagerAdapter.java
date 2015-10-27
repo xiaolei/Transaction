@@ -9,49 +9,84 @@ import java.util.Date;
 
 import io.github.xiaolei.enterpriselibrary.utility.DateTimeUtils;
 import io.github.xiaolei.transaction.ui.TransactionListFragment;
+import io.github.xiaolei.transaction.viewmodel.TransactionFilterType;
 
 /**
  * TODO: add comment
  */
 public class TransactionListPagerAdapter extends FragmentStatePagerAdapter {
-    private static final String TAG = TransactionListPagerAdapter.class.getSimpleName();
+    public static final String TAG = TransactionListPagerAdapter.class.getSimpleName();
+    public static final int DEFAULT_POSITION_OFFSET = 0; // 0 day
     private Date mStartDate;
-    private Date mEndDate;
     private int mCount;
+    private TransactionFilterType mTransactionFilterType = TransactionFilterType.TODAY;
 
     public TransactionListPagerAdapter(FragmentManager fm, Date startDate, Date endDate) {
         super(fm);
 
         mStartDate = startDate;
-        mEndDate = endDate;
         refreshCount();
-        Log.d(TAG, "betweenDays: " + mCount);
+        Log.d(TAG, "Page count: " + mCount);
     }
 
-    public void changeDateRange(Date startDate, Date endDate) {
+    public void changeDateRange(Date startDate, TransactionFilterType transactionFilterType) {
         mStartDate = startDate;
-        mEndDate = endDate;
-        refreshCount();
+        mTransactionFilterType = transactionFilterType;
 
+        refreshCount();
         notifyDataSetChanged();
     }
 
-    private void refreshCount(){
-        mCount = (int) (DateTimeUtils.betweenDays(mStartDate, mEndDate));
-        mCount = mCount > 0 ? mCount : 1;
+    private void refreshCount() {
+        switch (mTransactionFilterType) {
+            case TODAY:
+                mCount = 365;
+                break;
+            case THIS_WEEK:
+                mCount = 52;
+                break;
+            case THIS_MONTH:
+                mCount = 12;
+                break;
+            case THIS_YEAR:
+                mCount = 100;
+                break;
+            default:
+                break;
+        }
     }
-
 
     @Override
     public int getItemPosition(Object object) {
         return POSITION_NONE;
     }
 
-
     @Override
     public Fragment getItem(int position) {
-        Date date = DateTimeUtils.addDays(mStartDate, position);
-        return TransactionListFragment.newInstance(date, date);
+        Date startDate = DateTimeUtils.getStartTimeOfDate(mStartDate);
+        Date endDate = DateTimeUtils.getEndTimeOfDate(startDate);
+        switch (mTransactionFilterType) {
+            case TODAY:
+                startDate = DateTimeUtils.addDays(DateTimeUtils.getStartTimeOfDate(mStartDate), position);
+                endDate = DateTimeUtils.getEndTimeOfDate(startDate);
+                break;
+            case THIS_WEEK:
+                startDate = DateTimeUtils.getStartDayOfWeek(mStartDate, position);
+                endDate = DateTimeUtils.getEndDayOfWeek(startDate);
+                break;
+            case THIS_MONTH:
+                startDate = DateTimeUtils.getStartDayOfMonth(mStartDate, position);
+                endDate = DateTimeUtils.getEndDayOfMonth(startDate);
+                break;
+            case THIS_YEAR:
+                startDate = DateTimeUtils.getStartDayOfYear(mStartDate, position);
+                endDate = DateTimeUtils.getEndDayOfYear(startDate);
+                break;
+            default:
+                break;
+        }
+
+        return TransactionListFragment.newInstance(startDate, endDate);
     }
 
     @Override

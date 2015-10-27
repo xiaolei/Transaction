@@ -110,6 +110,48 @@ public class DateTimeUtils {
         return cal.getTime();
     }
 
+    public static Date addWeeks(Date date, int weeks) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        cal.add(Calendar.WEEK_OF_YEAR, weeks);
+
+        return cal.getTime();
+    }
+
+    public static Date addMonths(Date date, int months) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        cal.add(Calendar.MONTH, months);
+
+        return cal.getTime();
+    }
+
+    public static Date addYears(Date date, int years) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        cal.add(Calendar.YEAR, years);
+
+        return cal.getTime();
+    }
+
+    public static Date getStartDayOfWeek(Date date, int weekIndex) {
+        Date startDay = getStartDayOfWeek(date);
+        Date result = addWeeks(startDay, weekIndex);
+        return result;
+    }
+
+    public static Date getStartDayOfMonth(Date date, int monthIndex) {
+        Date startDay = getStartDayOfMonth(date);
+        Date result = addMonths(startDay, monthIndex);
+        return result;
+    }
+
+    public static Date getStartDayOfYear(Date date, int monthIndex) {
+        Date startDay = getStartDayOfYear(date);
+        Date result = addYears(startDay, monthIndex);
+        return result;
+    }
+
     public static Date getEndDayOfWeek(Date date) {
         Date startDayOfWeek = getStartDayOfWeek(date);
 

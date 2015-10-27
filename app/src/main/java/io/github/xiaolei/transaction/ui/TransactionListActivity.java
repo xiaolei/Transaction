@@ -57,30 +57,11 @@ public class TransactionListActivity extends BaseActivity {
         mViewHolder.viewPagerFragmentList.setAdapter(mTransactionListPagerAdapter);
     }
 
-    private void query(int transactionFilterType, Date date) {
-        switch (transactionFilterType) {
-            case TransactionFilterType.TODAY:
-                mTransactionListPagerAdapter.changeDateRange(DateTimeUtils.getStartTimeOfDate(date),
-                        DateTimeUtils.getEndTimeOfDate(date));
-                break;
-            case TransactionFilterType.THIS_WEEK:
-                mTransactionListPagerAdapter.changeDateRange(DateTimeUtils.getStartDayOfWeek(date),
-                        DateTimeUtils.getEndDayOfWeek(date));
-                break;
-            case TransactionFilterType.THIS_MONTH:
-                mTransactionListPagerAdapter.changeDateRange(DateTimeUtils.getStartDayOfMonth(date),
-                        DateTimeUtils.getEndDayOfMonth(date));
-                break;
-            case TransactionFilterType.THIS_YEAR:
-                mTransactionListPagerAdapter.changeDateRange(DateTimeUtils.getStartDayOfYear(date),
-                        DateTimeUtils.getEndDayOfYear(date));
-                break;
-            default:
-                break;
-        }
+    private void query(TransactionFilterType transactionFilterType, Date date) {
+        mTransactionListPagerAdapter.changeDateRange(date, transactionFilterType);
 
-        if(mTransactionListPagerAdapter.getCount() > 0) {
-            mViewHolder.viewPagerFragmentList.setCurrentItem(0);
+        if (mTransactionListPagerAdapter.getCount() > 0) {
+            mViewHolder.viewPagerFragmentList.setCurrentItem(Math.max(0, mTransactionListPagerAdapter.getCount() - 1), false);
         }
     }
 

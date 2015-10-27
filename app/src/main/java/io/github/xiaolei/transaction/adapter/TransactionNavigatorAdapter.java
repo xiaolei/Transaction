@@ -25,7 +25,7 @@ public class TransactionNavigatorAdapter extends BaseAdapter {
     private LayoutInflater mInflater;
     private List<TransactionNavigatorItem> mItems;
     private Date mTransactionDate;
-    private int mSelectedTransactionFilterType = TransactionFilterType.TODAY;
+    private TransactionFilterType mSelectedTransactionFilterType = TransactionFilterType.UNKNOWN;
     private String mCustomTitle;
     private ViewHolder mViewHolder;
 
@@ -36,7 +36,7 @@ public class TransactionNavigatorAdapter extends BaseAdapter {
         mTransactionDate = transactionDate;
     }
 
-    public void setSelectedItem(int transactionFilterType) {
+    public void setSelectedItem(TransactionFilterType transactionFilterType) {
         mSelectedTransactionFilterType = transactionFilterType;
         notifyDataSetChanged();
     }
@@ -47,7 +47,7 @@ public class TransactionNavigatorAdapter extends BaseAdapter {
         }
 
         mCustomTitle = title;
-        mSelectedTransactionFilterType = -1;
+        mSelectedTransactionFilterType = TransactionFilterType.TODAY;
         notifyDataSetChanged();
     }
 
@@ -63,7 +63,7 @@ public class TransactionNavigatorAdapter extends BaseAdapter {
 
     @Override
     public long getItemId(int i) {
-        return mItems.get(i).transactionFilterType;
+        return i;
     }
 
     @Override
@@ -90,7 +90,7 @@ public class TransactionNavigatorAdapter extends BaseAdapter {
         }
 
         TextView textView = (TextView) view.findViewById(android.R.id.text1);
-        if (mSelectedTransactionFilterType >= 0) {
+        if (mSelectedTransactionFilterType != TransactionFilterType.UNKNOWN) {
             textView.setText(mItems.get(i).textResourceId);
         } else {
             textView.setText(mCustomTitle);
@@ -114,23 +114,23 @@ public class TransactionNavigatorAdapter extends BaseAdapter {
         }
     }
 
-    private String getDateRange(Date date, int transactionFilterType) {
+    private String getDateRange(Date date, TransactionFilterType transactionFilterType) {
         String result = "";
         switch (transactionFilterType) {
-            case TransactionFilterType.TODAY:
+            case TODAY:
                 result = DateTimeUtils.formatShortDate(date);
                 break;
-            case TransactionFilterType.THIS_WEEK:
+            case THIS_WEEK:
                 result = String.format(DATE_RANGE_TEXT_FORMAT,
                         DateTimeUtils.formatShortDate(DateTimeUtils.getStartDayOfWeek(date)),
                         DateTimeUtils.formatShortDate(DateTimeUtils.getEndDayOfWeek(date)));
                 break;
-            case TransactionFilterType.THIS_MONTH:
+            case THIS_MONTH:
                 result = String.format(DATE_RANGE_TEXT_FORMAT,
                         DateTimeUtils.formatShortDate(DateTimeUtils.getStartDayOfMonth(date)),
                         DateTimeUtils.formatShortDate(DateTimeUtils.getEndDayOfMonth(date)));
                 break;
-            case TransactionFilterType.THIS_YEAR:
+            case THIS_YEAR:
                 result = String.format(DATE_RANGE_TEXT_FORMAT,
                         DateTimeUtils.formatShortDate(DateTimeUtils.getStartDayOfYear(date)),
                         DateTimeUtils.formatShortDate(DateTimeUtils.getEndDayOfYear(date)));

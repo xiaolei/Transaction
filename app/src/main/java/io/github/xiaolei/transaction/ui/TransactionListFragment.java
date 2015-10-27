@@ -68,16 +68,19 @@ public class TransactionListFragment extends BaseFragment {
     }
 
     private void showDateRange(Date startDate, Date endDate) {
-        String dateRange = String.format("%s ~ %s",
-                DateTimeUtils.formatShortDate(startDate),
-                DateTimeUtils.formatShortDate(endDate));
+        String dateRange = "";
         if (DateTimeUtils.isDateEqualsIgnoreTime(startDate, endDate)) {
             if (!DateUtils.isToday(startDate.getTime())) {
                 dateRange = DateUtils.formatDateTime(getContext(), startDate.getTime(), DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_WEEKDAY);
             } else {
                 dateRange = getString(R.string.today);
             }
+        } else {
+            dateRange = String.format("%s ~ %s",
+                    DateUtils.formatDateTime(getContext(), startDate.getTime(), DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_WEEKDAY),
+                    DateUtils.formatDateTime(getContext(), endDate.getTime(), DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_WEEKDAY));
         }
+
         mViewHolder.textViewTransactionDateRange.setText(dateRange);
     }
 
@@ -146,7 +149,7 @@ public class TransactionListFragment extends BaseFragment {
 
             @Override
             protected void onPostExecute(List<Transaction> result) {
-                if(!isAdded()){
+                if (!isAdded()) {
                     return;
                 }
 
