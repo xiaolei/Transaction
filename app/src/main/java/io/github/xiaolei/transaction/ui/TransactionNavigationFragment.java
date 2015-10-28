@@ -19,24 +19,46 @@ import io.github.xiaolei.transaction.adapter.TransactionNavigatorAdapter;
 import io.github.xiaolei.transaction.viewmodel.TransactionFilterType;
 import io.github.xiaolei.transaction.viewmodel.TransactionNavigatorItem;
 
-public class TransactionListActivity extends BaseActivity {
+/**
+ * TODO: add comment
+ */
+public class TransactionNavigationFragment extends BaseFragment {
+    public static final String TAG = TransactionNavigationFragment.class.getSimpleName();
+    public static final String ARG_TRANSACTION_DATE = "arg_transaction_date";
+
     private ViewHolder mViewHolder;
     private Date mTransactionDate = DateTimeUtils.getStartTimeOfDate(new Date());
     private TransactionNavigatorAdapter mSpinnerAdapter;
     private TransactionListPagerAdapter mTransactionListPagerAdapter;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_transaction_list);
-
-        initialize();
+    public static TransactionNavigationFragment newInstance(Date transactionDate) {
+        TransactionNavigationFragment result = new TransactionNavigationFragment();
+        Bundle args = new Bundle();
+        args.putLong(ARG_TRANSACTION_DATE, transactionDate.getTime());
+        return result;
     }
 
-    private void initialize() {
-        mViewHolder = new ViewHolder(this);
-        setupToolbar(false);
-        setTitle("");
+    @Override
+    public boolean useDefaultActionBar() {
+        return false;
+    }
+
+    @Override
+    public int getContentView() {
+        return R.layout.activity_transaction_list;
+    }
+
+    @Override
+    public void initialize(View view) {
+        Bundle args = getArguments();
+        if (args != null) {
+            long value = args.getLong(ARG_TRANSACTION_DATE, -1);
+            if (value > 0) {
+                mTransactionDate = new Date(value);
+            }
+        }
+
+        mViewHolder = new ViewHolder(view);
         mViewHolder.spinnerTransactionNavigator.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
@@ -50,10 +72,13 @@ public class TransactionListActivity extends BaseActivity {
 
             }
         });
+    }
 
+    @Override
+    public void load() {
         setupTransactionNavigator();
 
-        mTransactionListPagerAdapter = new TransactionListPagerAdapter(getSupportFragmentManager(), mTransactionDate, mTransactionDate);
+        mTransactionListPagerAdapter = new TransactionListPagerAdapter(getActivity().getSupportFragmentManager(), mTransactionDate, mTransactionDate);
         mViewHolder.viewPagerFragmentList.setAdapter(mTransactionListPagerAdapter);
     }
 
@@ -76,45 +101,22 @@ public class TransactionListActivity extends BaseActivity {
         items.add(new TransactionNavigatorItem(TransactionFilterType.THIS_YEAR,
                 R.drawable.ic_calendar_black_24dp, R.string.transaction_navigator_by_year));
 
-        mSpinnerAdapter = new TransactionNavigatorAdapter(this, items, mTransactionDate);
+        mSpinnerAdapter = new TransactionNavigatorAdapter(getActivity(), items, mTransactionDate);
         mViewHolder.spinnerTransactionNavigator.setAdapter(mSpinnerAdapter);
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_transaction_list, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public boolean onSupportNavigateUp() {
-        onBackPressed();
-        return true;
+    public int getActionBarTitle() {
+        return R.string.transactions;
     }
 
     private class ViewHolder {
         public Spinner spinnerTransactionNavigator;
         public ViewPager viewPagerFragmentList;
 
-        public ViewHolder(Activity activity) {
-            spinnerTransactionNavigator = (Spinner) activity.findViewById(R.id.spinnerTransactionNavigator);
-            viewPagerFragmentList = (ViewPager) activity.findViewById(R.id.viewPagerFragmentList);
+        public ViewHolder(View view) {
+            spinnerTransactionNavigator = (Spinner) view.findViewById(R.id.spinnerTransactionNavigator);
+            viewPagerFragmentList = (ViewPager) view.findViewById(R.id.viewPagerFragmentList);
         }
     }
 }

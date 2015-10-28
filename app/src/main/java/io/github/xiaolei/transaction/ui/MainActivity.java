@@ -96,6 +96,23 @@ public class MainActivity extends BaseActivity
         mViewHolder.drawerLayout.setDrawerListener(toggle);
         toggle.syncState();
 
+        mViewHolder.fragmentSwitcher.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                refreshActionBar(position);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+
         mAdapter = new FragmentListPagerAdapter(getSupportFragmentManager());
         mViewHolder.fragmentSwitcher.setAdapter(mAdapter);
     }
@@ -180,29 +197,26 @@ public class MainActivity extends BaseActivity
         this.getSupportActionBar().setTitle(resId);
     }
 
-    @Override
-    public boolean onNavigationItemSelected(MenuItem menuItem) {
-        if (menuItem.getOrder() == 2) {
-            Intent intent = new Intent(this, TransactionListActivity.class);
-            startActivity(intent);
-        } else {
-            Fragment fragment = mAdapter.getItem(menuItem.getOrder());
-            if (fragment != null) {
-                if (fragment instanceof BaseFragment) {
-                    BaseFragment currentFragment = (BaseFragment) fragment;
-                    boolean useDefaultActionBar = currentFragment.useDefaultActionBar();
-                    if (!useDefaultActionBar) {
-                        getSupportActionBar().hide();
-                    } else {
-                        getSupportActionBar().show();
-                    }
+    private void refreshActionBar(int position) {
+        Fragment fragment = mAdapter.getItem(position);
+        if (fragment != null) {
+            if (fragment instanceof BaseFragment) {
+                BaseFragment currentFragment = (BaseFragment) fragment;
+                boolean useDefaultActionBar = currentFragment.useDefaultActionBar();
+                if (!useDefaultActionBar) {
+                    getSupportActionBar().hide();
+                } else {
+                    getSupportActionBar().show();
                 }
             }
-
-            getFragmentSwitcher().setCurrentItem(menuItem.getOrder());
         }
+    }
 
+    @Override
+    public boolean onNavigationItemSelected(MenuItem menuItem) {
         mViewHolder.drawerLayout.closeDrawers();
+        getFragmentSwitcher().setCurrentItem(menuItem.getOrder());
+
         return true;
     }
 

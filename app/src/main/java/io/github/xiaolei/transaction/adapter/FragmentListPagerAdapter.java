@@ -14,7 +14,7 @@ import io.github.xiaolei.transaction.ui.CalculatorFragment;
 import io.github.xiaolei.transaction.ui.DashboardFragment;
 import io.github.xiaolei.transaction.ui.ProductsFragment;
 import io.github.xiaolei.transaction.ui.TagsFragment;
-import io.github.xiaolei.transaction.ui.TransactionListFragment;
+import io.github.xiaolei.transaction.ui.TransactionNavigationFragment;
 
 /**
  * TODO: add comment
@@ -29,8 +29,7 @@ public class FragmentListPagerAdapter extends FragmentPagerAdapter {
         mFragments = new ArrayList<Fragment>();
         mFragments.add(CalculatorFragment.newInstance());
         mFragments.add(DashboardFragment.newInstance());
-        mFragments.add(TransactionListFragment.newInstance(DateTimeUtils.getStartTimeOfDate(transactionDate),
-                DateTimeUtils.getEndTimeOfDate(transactionDate)));
+        mFragments.add(TransactionNavigationFragment.newInstance(DateTimeUtils.getStartTimeOfDate(transactionDate)));
         mFragments.add(AnalysisFragment.newInstance());
         mFragments.add(ProductsFragment.newInstance(false, false));
         mFragments.add(TagsFragment.newInstance());

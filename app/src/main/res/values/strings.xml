@@ -65,10 +65,10 @@
     <string name="action_button_new_product">New Product</string>
     <string name="transaction_date">Date: %s</string>
     <string name="title_activity_transaction_list">Transactions</string>
-    <string name="transaction_navigator_today">Today</string>
-    <string name="transaction_navigator_this_week">This Week</string>
-    <string name="transaction_navigator_this_month">This Month</string>
-    <string name="transaction_navigator_this_year">This Year</string>
+    <string name="transaction_navigator_by_day">By Day</string>
+    <string name="transaction_navigator_by_week">By Week</string>
+    <string name="transaction_navigator_by_month">By Month</string>
+    <string name="transaction_navigator_by_year">By Year</string>
     <string name="title_activity_barcode_scanner">Scan Barcode</string>
     <string name="create_product">Create or Search Product</string>
     <string name="label_product_name">Product Name</string>
