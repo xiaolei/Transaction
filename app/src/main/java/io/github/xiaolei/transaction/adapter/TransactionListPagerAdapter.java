@@ -63,23 +63,23 @@ public class TransactionListPagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        Date startDate = DateTimeUtils.getStartTimeOfDate(mStartDate);
+        Date startDate = DateTimeUtils.addDays(DateTimeUtils.getStartTimeOfDate(mStartDate), -mCount + 1 + position);
         Date endDate = DateTimeUtils.getEndTimeOfDate(startDate);
         switch (mTransactionFilterType) {
             case TODAY:
-                startDate = DateTimeUtils.addDays(DateTimeUtils.getStartTimeOfDate(mStartDate), position);
+                startDate = DateTimeUtils.addDays(DateTimeUtils.getStartTimeOfDate(mStartDate), -mCount + 1 + position);
                 endDate = DateTimeUtils.getEndTimeOfDate(startDate);
                 break;
             case THIS_WEEK:
-                startDate = DateTimeUtils.getStartDayOfWeek(mStartDate, position);
+                startDate = DateTimeUtils.getStartDayOfWeek(mStartDate, -mCount + 1 + position);
                 endDate = DateTimeUtils.getEndDayOfWeek(startDate);
                 break;
             case THIS_MONTH:
-                startDate = DateTimeUtils.getStartDayOfMonth(mStartDate, position);
+                startDate = DateTimeUtils.getStartDayOfMonth(mStartDate, -mCount + 1 + position);
                 endDate = DateTimeUtils.getEndDayOfMonth(startDate);
                 break;
             case THIS_YEAR:
-                startDate = DateTimeUtils.getStartDayOfYear(mStartDate, position);
+                startDate = DateTimeUtils.getStartDayOfYear(mStartDate, -mCount + 1 + position);
                 endDate = DateTimeUtils.getEndDayOfYear(startDate);
                 break;
             default:
