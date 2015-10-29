@@ -4,34 +4,34 @@
         <item
             android:id="@+id/navigation_item_calculator"
             android:checked="true"
-            android:icon="@android:drawable/ic_menu_send"
+            android:icon="@drawable/ic_home_white_24dp"
             android:orderInCategory="0"
-            android:title="@string/calculator_title" />
+            android:title="@string/home" />
         <item
             android:id="@+id/navigation_item_dashboard"
-            android:icon="@android:drawable/ic_menu_send"
+            android:icon="@drawable/ic_dashboard_white_24dp"
             android:orderInCategory="1"
             android:title="@string/dashboard" />
 
         <item
             android:id="@+id/navigation_item_transactions"
-            android:icon="@android:drawable/ic_menu_send"
+            android:icon="@drawable/ic_attach_money_white_24dp"
             android:orderInCategory="2"
             android:title="@string/transactions" />
         <item
             android:id="@+id/navigation_item_analysis"
-            android:icon="@android:drawable/ic_menu_send"
+            android:icon="@drawable/ic_insert_chart_white_24dp"
             android:orderInCategory="3"
             android:title="@string/analysis" />
 
         <item
             android:id="@+id/navigation_item_products"
-            android:icon="@android:drawable/ic_menu_send"
+            android:icon="@drawable/ic_local_mall_white_24dp"
             android:orderInCategory="4"
             android:title="@string/products" />
         <item
             android:id="@+id/navigation_item_tags"
-            android:icon="@android:drawable/ic_menu_send"
+            android:icon="@drawable/ic_loyalty_white_24dp"
             android:orderInCategory="5"
             android:title="@string/tags" />
     </group>

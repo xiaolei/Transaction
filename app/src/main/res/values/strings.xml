@@ -82,4 +82,5 @@
     <string name="validation_error_invalid_quantity">Quantity is invalid</string>
     <string name="validation_error_invalid_price">Price is invalid</string>
     <string name="today">Today</string>
+    <string name="home">Home</string>
 </resources>
