@@ -31,10 +31,6 @@
             android:label="@string/title_activity_product_editor"
             android:launchMode="singleTask" />
         <activity
-            android:name=".ui.TransactionListActivity"
-            android:label="@string/title_activity_transaction_list" >
-        </activity>
-        <activity
             android:name=".ui.BarcodeScannerActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
