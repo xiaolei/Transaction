@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 
 import de.greenrobot.event.EventBus;
+import io.github.xiaolei.enterpriselibrary.logging.Logger;
 import io.github.xiaolei.transaction.R;
 import io.github.xiaolei.transaction.event.NavigationDrawerStateEvent;
 
@@ -19,6 +20,8 @@ import io.github.xiaolei.transaction.event.NavigationDrawerStateEvent;
  * TODO: add comment
  */
 public abstract class BaseFragment extends Fragment {
+    private static final String TAG = BaseFragment.class.getSimpleName();
+
     public abstract int getContentView();
 
     public abstract void initialize(View view);
@@ -38,8 +41,20 @@ public abstract class BaseFragment extends Fragment {
     }
 
     @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        Logger.d(TAG, "setUserVisibleHint: " + isVisibleToUser);
+        super.setUserVisibleHint(isVisibleToUser);
+
+        if (getView() != null) {
+            onFragmentShown();
+        }
+    }
+
+    @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
+        Logger.d(TAG, "onViewCreated");
         super.onViewCreated(view, savedInstanceState);
+
         load();
     }
 
@@ -100,8 +115,14 @@ public abstract class BaseFragment extends Fragment {
      *
      * @return
      */
-    public boolean useDefaultActionBar() {
+    protected boolean useDefaultActionBar() {
         return true;
+    }
+
+    /**
+     * Every time when the fragment is shown, this method will be invoked.
+     */
+    protected void onFragmentShown() {
     }
 
     public void refreshActivityTitle() {
@@ -133,16 +154,5 @@ public abstract class BaseFragment extends Fragment {
         InputMethodManager inputManager = (InputMethodManager) getActivity().getSystemService(
                 Context.INPUT_METHOD_SERVICE);
         inputManager.hideSoftInputFromWindow((null == getActivity().getCurrentFocus()) ? null : getActivity().getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-    }
-
-    protected void setupToolbar() {
-        if (!isAdded()) {
-            return;
-        }
-
-        BaseActivity baseActivity = (BaseActivity) getActivity();
-        if (baseActivity != null) {
-            baseActivity.setupToolbar(true);
-        }
     }
 }
