@@ -3,6 +3,7 @@ package io.github.xiaolei.transaction.ui;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -72,6 +73,8 @@ public class TransactionNavigationFragment extends BaseFragment {
 
             }
         });
+
+        supportNavigationDrawer(R.id.toolbar);
     }
 
     @Override
@@ -111,10 +114,12 @@ public class TransactionNavigationFragment extends BaseFragment {
     }
 
     private class ViewHolder {
+        public Toolbar toolbar;
         public Spinner spinnerTransactionNavigator;
         public ViewPager viewPagerFragmentList;
 
         public ViewHolder(View view) {
+            toolbar = (Toolbar) view.findViewById(R.id.toolbar);
             spinnerTransactionNavigator = (Spinner) view.findViewById(R.id.spinnerTransactionNavigator);
             viewPagerFragmentList = (ViewPager) view.findViewById(R.id.viewPagerFragmentList);
         }

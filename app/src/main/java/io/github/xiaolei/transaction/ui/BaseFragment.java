@@ -5,10 +5,15 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+
+import de.greenrobot.event.EventBus;
+import io.github.xiaolei.transaction.R;
+import io.github.xiaolei.transaction.event.NavigationDrawerStateEvent;
 
 /**
  * TODO: add comment
@@ -50,6 +55,52 @@ public abstract class BaseFragment extends Fragment {
 
     }
 
+    protected <T extends Activity> T getAttachedActivity(T activityType) {
+        Activity activity = getActivity();
+        if (activity == null || activityType.getClass().isInstance(activity)) {
+            return null;
+        }
+
+        return (T) getActivity();
+    }
+
+    protected void setNavigationDrawerVisibility(boolean visible) {
+        EventBus.getDefault().post(new NavigationDrawerStateEvent(visible));
+    }
+
+    protected void openDrawers() {
+        setNavigationDrawerVisibility(true);
+    }
+
+    protected void closeDrawers() {
+        setNavigationDrawerVisibility(false);
+    }
+
+    /**
+     * Supports to show a navigation menu button on the left of specified toolbar.
+     * When click it, show the navigation drawer.
+     *
+     * @param toolbarResourceId
+     */
+    protected void supportNavigationDrawer(int toolbarResourceId) {
+        if (!isAdded()) {
+            return;
+        }
+
+        Toolbar toolbar = (Toolbar) getView().findViewById(toolbarResourceId);
+        if (toolbar == null) {
+            return;
+        }
+
+        toolbar.setNavigationIcon(R.drawable.ic_menu);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openDrawers();
+            }
+        });
+    }
+
     /**
      * Indicates whether show the default action bar. If not,
      * fragment layout should contains its own action bar.
@@ -89,5 +140,16 @@ public abstract class BaseFragment extends Fragment {
         InputMethodManager inputManager = (InputMethodManager) getActivity().getSystemService(
                 Context.INPUT_METHOD_SERVICE);
         inputManager.hideSoftInputFromWindow((null == getActivity().getCurrentFocus()) ? null : getActivity().getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+    }
+
+    protected void setupToolbar() {
+        if (!isAdded()) {
+            return;
+        }
+
+        BaseActivity baseActivity = (BaseActivity) getActivity();
+        if (baseActivity != null) {
+            baseActivity.setupToolbar(true);
+        }
     }
 }

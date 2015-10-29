@@ -5,11 +5,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
@@ -27,6 +29,7 @@ import io.github.xiaolei.transaction.adapter.FragmentListPagerAdapter;
 import io.github.xiaolei.transaction.entity.Product;
 import io.github.xiaolei.transaction.event.AccountInfoLoadCompletedEvent;
 import io.github.xiaolei.transaction.event.AppInitCompletedEvent;
+import io.github.xiaolei.transaction.event.NavigationDrawerStateEvent;
 import io.github.xiaolei.transaction.event.PickPhotoEvent;
 import io.github.xiaolei.transaction.widget.AccountView;
 
@@ -222,6 +225,18 @@ public class MainActivity extends BaseActivity
 
     public void onEvent(AccountInfoLoadCompletedEvent event) {
         showAccountInfo();
+    }
+
+    public void onEvent(NavigationDrawerStateEvent event) {
+        if (mViewHolder == null) {
+            return;
+        }
+
+        if (event.visibility) {
+            mViewHolder.drawerLayout.openDrawer(GravityCompat.START);
+        } else {
+            mViewHolder.drawerLayout.closeDrawers();
+        }
     }
 
     public void onEvent(AppInitCompletedEvent event) {
