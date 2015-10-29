@@ -74,7 +74,7 @@ public class TransactionNavigationFragment extends BaseFragment {
             }
         });
 
-        supportNavigationDrawer(R.id.toolbar);
+        supportNavigationDrawer(mViewHolder.toolbar);
     }
 
     @Override

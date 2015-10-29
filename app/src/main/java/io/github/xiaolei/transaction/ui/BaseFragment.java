@@ -79,16 +79,9 @@ public abstract class BaseFragment extends Fragment {
     /**
      * Supports to show a navigation menu button on the left of specified toolbar.
      * When click it, show the navigation drawer.
-     *
-     * @param toolbarResourceId
      */
-    protected void supportNavigationDrawer(int toolbarResourceId) {
-        if (!isAdded()) {
-            return;
-        }
-
-        Toolbar toolbar = (Toolbar) getView().findViewById(toolbarResourceId);
-        if (toolbar == null) {
+    protected void supportNavigationDrawer(Toolbar toolbar) {
+        if (!isAdded() || toolbar == null) {
             return;
         }
 
