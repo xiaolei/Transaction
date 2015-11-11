@@ -11,7 +11,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
@@ -53,28 +52,6 @@ public class MainActivity extends BaseActivity
         EventBus.getDefault().register(this);
         mViewHolder = new ViewHolder(this);
         mTitle = getTitle();
-        mViewHolder.fragmentSwitcher.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                Fragment fragment = mAdapter.getItem(position);
-                if (fragment instanceof BaseFragment) {
-                    BaseFragment currentFragment = (BaseFragment) fragment;
-                    if (currentFragment != null) {
-                        setActionBarTitle(currentFragment.getActionBarTitle());
-                    }
-                }
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
 
         start();
     }
@@ -197,7 +174,7 @@ public class MainActivity extends BaseActivity
 
     @Override
     public void setActionBarTitle(int resId) {
-        this.getSupportActionBar().setTitle(resId);
+        this.getSupportActionBar().setTitle(getString(resId));
     }
 
     private void refreshActionBar(int position) {
@@ -205,6 +182,8 @@ public class MainActivity extends BaseActivity
         if (fragment != null) {
             if (fragment instanceof BaseFragment) {
                 BaseFragment currentFragment = (BaseFragment) fragment;
+                setActionBarTitle(currentFragment.getActionBarTitle());
+
                 boolean useDefaultActionBar = currentFragment.useDefaultActionBar();
                 if (!useDefaultActionBar) {
                     getSupportActionBar().hide();
