@@ -15,5 +15,8 @@
         android:layout_height="wrap_content"
         android:hint="Type Product Name"
         android:maxLength="64"
-        android:singleLine="true" />
+        android:singleLine="true">
+
+        <requestFocus />
+    </io.github.xiaolei.transaction.widget.ProductNameAutoCompleteTextView>
 </LinearLayout>

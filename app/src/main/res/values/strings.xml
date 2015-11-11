@@ -83,4 +83,5 @@
     <string name="validation_error_invalid_price">Price is invalid</string>
     <string name="today">Today</string>
     <string name="home">Home</string>
+    <string name="execute_sql">Execute SQL</string>
 </resources>

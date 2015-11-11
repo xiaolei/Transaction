@@ -6,12 +6,14 @@ import android.text.TextUtils;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.GenericRawResults;
 import com.j256.ormlite.dao.RawRowMapper;
+import com.j256.ormlite.misc.TransactionManager;
 import com.j256.ormlite.stmt.QueryBuilder;
 
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import io.github.xiaolei.enterpriselibrary.utility.DateTimeUtils;
 import io.github.xiaolei.transaction.GlobalApplication;
@@ -41,8 +43,17 @@ public class TransactionRepository extends BaseRepository {
         exchangeRateRepository = RepositoryProvider.getInstance(getContext()).resolve(ExchangeRateRepository.class);
     }
 
-    public Dao.CreateOrUpdateStatus save(Transaction transaction) throws SQLException {
-        return transactionDao.createOrUpdate(transaction);
+    public Dao.CreateOrUpdateStatus save(final Transaction transaction) throws SQLException {
+        Dao.CreateOrUpdateStatus result = TransactionManager.callInTransaction(getDatabase().getConnectionSource(), new Callable<Dao.CreateOrUpdateStatus>() {
+            @Override
+            public Dao.CreateOrUpdateStatus call() throws Exception {
+                ProductRepository productRepository = RepositoryProvider.getInstance(getContext()).resolve(ProductRepository.class);
+                productRepository.increaseProductFrequency(transaction.getProduct().getId(), ProductRepository.FREQUENCY_INCREMENTAL_STEP);
+                return transactionDao.createOrUpdate(transaction);
+            }
+        });
+
+        return result;
     }
 
     public List<Transaction> query(long accountId, Date fromDate, Date toDate, long offset, long limit) throws SQLException {
@@ -302,7 +313,7 @@ public class TransactionRepository extends BaseRepository {
         }
     }
 
-    public List<ChartValue> getExpenseTransactionsGroupByDay(long accountId,String targetCurrencyCode) throws SQLException {
+    public List<ChartValue> getExpenseTransactionsGroupByDay(long accountId, String targetCurrencyCode) throws SQLException {
         int targetCurrencyExchangeRate = exchangeRateRepository.getExchangeRate(targetCurrencyCode);
         String sql = String.format(SQL_EXPENSE_TRANSACTION_AMOUNT_GROUP_BY_DAY, targetCurrencyCode, String.valueOf(targetCurrencyExchangeRate));
         GenericRawResults<ChartValue> result = transactionDao.queryRaw(sql, new RawRowMapper<ChartValue>() {
@@ -318,7 +329,7 @@ public class TransactionRepository extends BaseRepository {
         return result.getResults();
     }
 
-    public List<ChartValue> getIncomeTransactionsGroupByDay(long accountId,String targetCurrencyCode) throws SQLException {
+    public List<ChartValue> getIncomeTransactionsGroupByDay(long accountId, String targetCurrencyCode) throws SQLException {
         int targetCurrencyExchangeRate = exchangeRateRepository.getExchangeRate(targetCurrencyCode);
         String sql = String.format(SQL_INCOME_TRANSACTION_AMOUNT_GROUP_BY_DAY, targetCurrencyCode, String.valueOf(targetCurrencyExchangeRate));
         GenericRawResults<ChartValue> result = transactionDao.queryRaw(sql, new RawRowMapper<ChartValue>() {

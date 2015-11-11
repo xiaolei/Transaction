@@ -140,15 +140,15 @@ public class CalculatorOutputView extends RelativeLayout {
         boolean containsQuantitySymbol = value.contains(QUANTITY_SYMBOL);
         boolean isQuantitySymbol = output.equals(QUANTITY_SYMBOL);
 
-        if(value.contains(QUANTITY_SYMBOL)){
+        if (value.contains(QUANTITY_SYMBOL)) {
             String[] array = value.split(QUANTITY_SYMBOL);
             priceText = array[0];
-            if(array.length > 1){
+            if (array.length > 1) {
                 quantityText = array[1];
             }
         }
 
-        if(!TextUtils.isEmpty(quantityText) && quantityText.length() + increaseLength > MAX_QUANTITY_LENGTH){
+        if (!TextUtils.isEmpty(quantityText) && quantityText.length() + increaseLength > MAX_QUANTITY_LENGTH) {
             return true;
         }
 
@@ -170,58 +170,62 @@ public class CalculatorOutputView extends RelativeLayout {
         return false;
     }
 
-    public void output(String text) {
+    public void output(String inputText) {
         if (mIsLastPrice) {
             mIsLastPrice = false;
-            clear();
+
+            // If currently displaying text is the last price and the input text is not quantity symbol, then clear output
+            if (!inputText.equals(QUANTITY_SYMBOL)) {
+                clear();
+            }
         }
 
-        if (exceedLengthLimitation(text)) {
+        if (exceedLengthLimitation(inputText)) {
             return;
         }
 
         String value = getOutputText();
 
         // Allow input only 1 dot symbol
-        if (value.contains(".") && text.equals(".")) {
+        if (value.contains(".") && inputText.equals(".")) {
             return;
         }
 
         // Allow input only 1 quantity symbol
-        if (value.contains(QUANTITY_SYMBOL) && text.equals(QUANTITY_SYMBOL)) {
+        if (value.contains(QUANTITY_SYMBOL) && inputText.equals(QUANTITY_SYMBOL)) {
             removeQuantity();
             return;
         }
 
         // When quantity symbol is visible, do not allow input dot symbol
-        if (value.contains(QUANTITY_SYMBOL) && text.equals(".")) {
+        if (value.contains(QUANTITY_SYMBOL) && inputText.equals(".")) {
             return;
         }
 
         // Do not allow input quantity symbol, if current value is zero
-        if (value.equals("0") && text.equals(QUANTITY_SYMBOL)) {
+        if (value.equals("0") && inputText.equals(QUANTITY_SYMBOL)) {
             return;
         }
 
-        if (value.equals("0") && text.startsWith("00")) {
+        if (value.equals("0") && inputText.startsWith("00")) {
             mViewHolder.textViewCalculatorPrice.setText("0");
             return;
         }
 
-        if (value.equals("0") && text.equals(".")) {
-            mViewHolder.textViewCalculatorPrice.setText("0" + text);
+        if (value.equals("0") && inputText.equals(".")) {
+            mViewHolder.textViewCalculatorPrice.setText("0" + inputText);
             return;
         }
 
-        if (value.startsWith("00") && text.equals(".")) {
-            mViewHolder.textViewCalculatorPrice.setText("0" + text);
+        if (value.startsWith("00") && inputText.equals(".")) {
+            mViewHolder.textViewCalculatorPrice.setText("0" + inputText);
             return;
         }
 
         if (!value.startsWith("0") || value.contains(".")) {
-            mViewHolder.textViewCalculatorPrice.setText(value + text);
+            mViewHolder.textViewCalculatorPrice.setText(value + inputText);
         } else {
-            mViewHolder.textViewCalculatorPrice.setText(text);
+            mViewHolder.textViewCalculatorPrice.setText(inputText);
         }
     }
 
@@ -366,9 +370,9 @@ public class CalculatorOutputView extends RelativeLayout {
 
     private BigDecimal getPrice() {
         String outputText = getOutputText();
-        if(!outputText.contains(QUANTITY_SYMBOL)) {
+        if (!outputText.contains(QUANTITY_SYMBOL)) {
             return new BigDecimal(outputText);
-        }else{
+        } else {
             String[] array = outputText.split(QUANTITY_SYMBOL);
             return new BigDecimal(array[0]);
         }

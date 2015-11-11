@@ -59,6 +59,7 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:maxLines="1"
+                android:scrollHorizontally="true"
                 android:text="Product"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
 
@@ -67,6 +68,7 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:maxLines="1"
+                android:scrollHorizontally="true"
                 android:text="Product"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
 

@@ -14,4 +14,9 @@
         android:id="@+id/action_copy_database"
         android:title="@string/copy_database"
         app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_execute_sql"
+        android:title="@string/execute_sql"
+        app:showAsAction="never" />
 </menu>

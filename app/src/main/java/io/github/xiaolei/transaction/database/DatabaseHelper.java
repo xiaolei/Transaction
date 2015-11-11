@@ -19,8 +19,10 @@ import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.Objects;
 
 import io.github.xiaolei.enterpriselibrary.utility.FileUtils;
+import io.github.xiaolei.transaction.common.ContextReference;
 import io.github.xiaolei.transaction.entity.TableEntity;
 
 /**
@@ -29,7 +31,7 @@ import io.github.xiaolei.transaction.entity.TableEntity;
 public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     public static final String TAG = DatabaseHelper.class.getSimpleName();
     private static DatabaseHelper mInstance;
-    private static Context mContext;
+    private static ContextReference mContextReference;
 
     public static final String DATABASE_NAME = "data.db";
     public static final int DATABASE_VERSION = 1;
@@ -72,12 +74,15 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
      */
     public synchronized static DatabaseHelper getInstance(Context context) {
         if (mInstance == null) {
-            mContext = context;
-            mInstance = new DatabaseHelper(mContext);
+            mContextReference = new ContextReference(context);
+            mInstance = new DatabaseHelper(mContextReference.context);
         }
         if (mDaoInstances == null) {
             mDaoInstances = new HashMap<Class<? extends TableEntity>, Object>();
         }
+
+        mContextReference.context = context;
+
         return mInstance;
     }
 
@@ -89,8 +94,8 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
      */
     private boolean fileExists(String fileName) {
         try {
-            String[] fileNames = mContext.getAssets().list(SQL_FILE_FOLDER);
-            boolean result = Arrays.asList(mContext.getAssets().list(SQL_FILE_FOLDER))
+            String[] fileNames = mContextReference.context.getAssets().list(SQL_FILE_FOLDER);
+            boolean result = Arrays.asList(mContextReference.context.getAssets().list(SQL_FILE_FOLDER))
                     .contains(fileName);
             return result;
         } catch (IOException e) {
@@ -120,7 +125,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
         db.beginTransaction();
         try {
             BufferedReader reader = null;
-            reader = new BufferedReader(new InputStreamReader(mContext.getAssets().open(sqlFileName)));
+            reader = new BufferedReader(new InputStreamReader(mContextReference.context.getAssets().open(sqlFileName)));
             try {
                 String sql = null;
                 while ((sql = reader.readLine()) != null) {
@@ -151,14 +156,31 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
      */
     public static void deleteDatabase(Context context) {
         if (context != null) {
-            mContext.getDatabasePath(DATABASE_NAME).getAbsoluteFile().delete();
+            DatabaseHelper.getInstance(context).close();
+            context.getDatabasePath(DATABASE_NAME).getAbsoluteFile().delete();
         }
+    }
+
+    public void executeSql(String sql) {
+        if(TextUtils.isEmpty(sql)){
+            return;
+        }
+
+        getWritableDatabase().execSQL(sql);
+    }
+
+    public void executeSql(String sql, Objects[] bindArgs) {
+        if(TextUtils.isEmpty(sql)){
+            return;
+        }
+
+        getWritableDatabase().execSQL(sql, bindArgs);
     }
 
     public void copy() throws IOException {
         File targetFile = new File(Environment.getExternalStorageDirectory() + java.io.File.separator + DATABASE_NAME);
         targetFile.createNewFile();
-        File dbFile = mContext.getDatabasePath(DATABASE_NAME).getAbsoluteFile();
+        File dbFile = mContextReference.context.getDatabasePath(DATABASE_NAME).getAbsoluteFile();
         FileUtils.copyToFile(dbFile, targetFile);
     }
 

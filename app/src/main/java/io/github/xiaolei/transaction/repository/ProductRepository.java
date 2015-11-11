@@ -32,6 +32,7 @@ import io.github.xiaolei.transaction.event.RefreshProductListEvent;
  * TODO: add comment
  */
 public class ProductRepository extends BaseRepository {
+    public static final double FREQUENCY_INCREMENTAL_STEP = 0.0001;
 
     private Dao<Product, Long> productDao;
     private Dao<ProductTag, Long> productTagDao;
@@ -43,6 +44,18 @@ public class ProductRepository extends BaseRepository {
         productDao = getDataAccessObject(Product.class);
         productTagDao = getDataAccessObject(ProductTag.class);
         tagRepository = RepositoryProvider.getInstance(getContext()).resolve(TagRepository.class);
+    }
+
+    /**
+     * Increases the using frequency of the specified product.
+     *
+     * @param productId
+     * @param increaseFrequency
+     * @return
+     * @throws SQLException
+     */
+    public int increaseProductFrequency(long productId, double increaseFrequency) throws SQLException {
+        return productDao.executeRaw("update product set frequency = frequency + " + String.valueOf(increaseFrequency) + " where id = ? ", String.valueOf(productId));
     }
 
     public boolean exists(Product product) throws SQLException {
@@ -80,7 +93,7 @@ public class ProductRepository extends BaseRepository {
         }
 
         Product existProduct = getProductByName(productName);
-        if(existProduct != null){
+        if (existProduct != null) {
             return existProduct;
         }
 
@@ -129,7 +142,11 @@ public class ProductRepository extends BaseRepository {
             queryBuilder.where().eq(Product.ACTIVE, true).and().like(Tag.NAME, "%" + keywords + "%");
         }
 
-        return dao.query(queryBuilder.orderBy(Product.LAST_MODIFIED, false).orderBy(Product.CREATION_TIME, false).offset(offset).limit(limit).prepare());
+        return dao.query(queryBuilder
+                .orderBy(Product.FREQUENCY, false)
+                .orderBy(Product.LAST_MODIFIED, false)
+                .orderBy(Product.CREATION_TIME, false)
+                .offset(offset).limit(limit).prepare());
     }
 
     public List<Product> query(long offset, long limit) throws SQLException {

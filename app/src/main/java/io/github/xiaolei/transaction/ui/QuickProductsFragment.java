@@ -114,6 +114,10 @@ public class QuickProductsFragment extends BaseFragment implements View.OnClickL
                     Log.e(TAG, e.toString());
                 }
                 return true;
+            case R.id.action_execute_sql:
+                DatabaseHelper.getInstance(getActivity()).executeSql("ALTER TABLE \"product\" ADD COLUMN \"frequency\" DOUBLE NOT NULL  DEFAULT 0");
+                Toast.makeText(getActivity(), "SQL executed.", Toast.LENGTH_SHORT).show();
+                return true;
             default:
                 return false;
         }
