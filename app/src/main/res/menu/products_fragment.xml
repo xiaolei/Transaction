@@ -5,7 +5,7 @@
         android:id="@+id/action_new_product"
         android:icon="@drawable/ic_add_white_24dp"
         android:title="@string/action_new_product"
-        app:showAsAction="ifRoom|collapseActionView" />
+        app:showAsAction="always" />
     <item
         android:id="@+id/action_delete_database"
         android:title="@string/delete_database"

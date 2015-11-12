@@ -26,6 +26,7 @@ import java.util.List;
 
 import de.greenrobot.event.EventBus;
 import io.github.xiaolei.enterpriselibrary.utility.PhotoPicker;
+import io.github.xiaolei.transaction.event.CreateProductEvent;
 import io.github.xiaolei.transaction.event.DateSelectedEvent;
 import io.github.xiaolei.transaction.event.GetBarcodeResultEvent;
 import io.github.xiaolei.transaction.event.RefreshProductListEvent;
@@ -73,7 +74,7 @@ public class QuickProductsFragment extends BaseFragment implements View.OnClickL
     }
 
     public QuickProductsFragment() {
-        setHasOptionsMenu(true);
+
     }
 
     @Override
@@ -85,41 +86,6 @@ public class QuickProductsFragment extends BaseFragment implements View.OnClickL
         if (args != null) {
             mIsSelectionMode = args.getBoolean(ARG_IS_SELECTION_MODE, false);
             mShowAddButton = args.getBoolean(ARG_SHOW_ADD_BUTTON, false);
-        }
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        menu.clear();
-        inflater.inflate(R.menu.products_fragment, menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_new_product:
-                newProduct();
-                return true;
-            case R.id.action_delete_database:
-                DatabaseHelper.deleteDatabase(getActivity());
-                Toast.makeText(getActivity(), "Database deleted.", Toast.LENGTH_SHORT).show();
-                return true;
-            case R.id.action_copy_database:
-                try {
-                    DatabaseHelper.getInstance(getActivity()).copy();
-                    Toast.makeText(getActivity(), "Database copied.", Toast.LENGTH_SHORT).show();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Log.e(TAG, e.toString());
-                }
-                return true;
-            case R.id.action_execute_sql:
-                DatabaseHelper.getInstance(getActivity()).executeSql("ALTER TABLE \"product\" ADD COLUMN \"frequency\" DOUBLE NOT NULL  DEFAULT 0");
-                Toast.makeText(getActivity(), "SQL executed.", Toast.LENGTH_SHORT).show();
-                return true;
-            default:
-                return false;
         }
     }
 
@@ -214,6 +180,10 @@ public class QuickProductsFragment extends BaseFragment implements View.OnClickL
 
     public void onEvent(GetBarcodeResultEvent event) {
         Toast.makeText(getActivity(), event.barcodeResult.getText(), Toast.LENGTH_SHORT).show();
+    }
+
+    public void onEvent(CreateProductEvent event) {
+        newProduct();
     }
 
     public void loadProductList() {

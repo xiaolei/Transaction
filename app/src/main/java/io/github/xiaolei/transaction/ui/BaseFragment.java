@@ -36,6 +36,7 @@ public abstract class BaseFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(getContentView(), container, false);
         initialize(view);
+        setHasOptionsMenu(true);
 
         return view;
     }
@@ -60,17 +61,24 @@ public abstract class BaseFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        setActionBarTitle(getString(getActionBarTitle()));
     }
 
     @Override
     public void onPause() {
         super.onPause();
-
     }
 
-    protected <T extends Activity> T getAttachedActivity(T activityType) {
+    protected <T extends BaseFragment> void switchToFragment(Class<T> fragmentType) {
+        MainActivity activity = getAttachedActivity(MainActivity.class);
+        if (activity != null) {
+            activity.switchToFragment(fragmentType, null);
+        }
+    }
+
+    protected <T extends Activity> T getAttachedActivity(Class<T> activityType) {
         Activity activity = getActivity();
-        if (activity == null || activityType.getClass().isInstance(activity)) {
+        if (activity == null || !activityType.isInstance(activity)) {
             return null;
         }
 
@@ -108,16 +116,6 @@ public abstract class BaseFragment extends Fragment {
     }
 
     /**
-     * Indicates whether show the default action bar. If not,
-     * fragment layout should contains its own action bar.
-     *
-     * @return
-     */
-    protected boolean useDefaultActionBar() {
-        return true;
-    }
-
-    /**
      * Every time when the fragment is shown, this method will be invoked.
      */
     protected void onFragmentShown() {
@@ -152,5 +150,9 @@ public abstract class BaseFragment extends Fragment {
         InputMethodManager inputManager = (InputMethodManager) getActivity().getSystemService(
                 Context.INPUT_METHOD_SERVICE);
         inputManager.hideSoftInputFromWindow((null == getActivity().getCurrentFocus()) ? null : getActivity().getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+    }
+
+    public void onPoppedFromBackStack() {
+
     }
 }

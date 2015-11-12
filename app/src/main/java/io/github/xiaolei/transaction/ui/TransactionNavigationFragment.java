@@ -1,24 +1,20 @@
 package io.github.xiaolei.transaction.ui;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.Spinner;
 
-import java.util.ArrayList;
 import java.util.Date;
 
 import io.github.xiaolei.enterpriselibrary.utility.DateTimeUtils;
 import io.github.xiaolei.transaction.R;
 import io.github.xiaolei.transaction.adapter.TransactionListPagerAdapter;
-import io.github.xiaolei.transaction.adapter.TransactionNavigatorAdapter;
+import io.github.xiaolei.transaction.util.ActivityHelper;
+import io.github.xiaolei.transaction.viewmodel.DateRange;
 import io.github.xiaolei.transaction.viewmodel.TransactionFilterType;
-import io.github.xiaolei.transaction.viewmodel.TransactionNavigatorItem;
 
 /**
  * TODO: add comment
@@ -29,8 +25,8 @@ public class TransactionNavigationFragment extends BaseFragment {
 
     private ViewHolder mViewHolder;
     private Date mTransactionDate = DateTimeUtils.getStartTimeOfDate(new Date());
-    private TransactionNavigatorAdapter mSpinnerAdapter;
     private TransactionListPagerAdapter mTransactionListPagerAdapter;
+    private TransactionFilterType mFilterType = TransactionFilterType.BY_DAY;
 
     public static TransactionNavigationFragment newInstance(Date transactionDate) {
         TransactionNavigationFragment result = new TransactionNavigationFragment();
@@ -39,9 +35,58 @@ public class TransactionNavigationFragment extends BaseFragment {
         return result;
     }
 
+    public TransactionNavigationFragment() {
+
+    }
+
     @Override
-    public boolean useDefaultActionBar() {
-        return false;
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        // Show add action button, only when filter type is by day.
+        menu.getItem(0).setVisible(mFilterType == TransactionFilterType.BY_DAY);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+
+        menu.clear();
+        inflater.inflate(R.menu.transactions_fragment, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (!isAdded()) {
+            return true;
+        }
+
+        switch (item.getItemId()) {
+            case R.id.action_new_transaction:
+                if (mFilterType == TransactionFilterType.BY_DAY) {
+                    DateRange currentDateRange = mTransactionListPagerAdapter.getCurrentDateRange(mViewHolder.viewPagerFragmentList.getCurrentItem());
+                    ActivityHelper.startNewTransactionActivity(getActivity(), DateTimeUtils.replaceWithCurrentTime(currentDateRange.startDate));
+                }
+                return true;
+            case R.id.action_by_day:
+                query(TransactionFilterType.BY_DAY, mTransactionDate);
+                return true;
+            case R.id.action_by_week:
+                query(TransactionFilterType.BY_WEEK, mTransactionDate);
+                return true;
+            case R.id.action_by_month:
+                query(TransactionFilterType.BY_MONTH, mTransactionDate);
+                return true;
+            case R.id.action_by_year:
+                query(TransactionFilterType.BY_YEAR, mTransactionDate);
+                return true;
+            default:
+                return true;
+        }
     }
 
     @Override
@@ -60,32 +105,24 @@ public class TransactionNavigationFragment extends BaseFragment {
         }
 
         mViewHolder = new ViewHolder(view);
-        mViewHolder.spinnerTransactionNavigator.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
-                TransactionNavigatorItem selectedItem = (TransactionNavigatorItem) adapterView.getItemAtPosition(position);
-                mSpinnerAdapter.setSelectedItem(selectedItem.transactionFilterType);
-                query(selectedItem.transactionFilterType, mTransactionDate);
-            }
+    }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
-
-        supportNavigationDrawer(mViewHolder.toolbar);
+    @Override
+    public void onPoppedFromBackStack() {
+        super.onPoppedFromBackStack();
     }
 
     @Override
     public void load() {
-        setupTransactionNavigator();
-
         mTransactionListPagerAdapter = new TransactionListPagerAdapter(getActivity().getSupportFragmentManager(), mTransactionDate, mTransactionDate);
         mViewHolder.viewPagerFragmentList.setAdapter(mTransactionListPagerAdapter);
+        mViewHolder.viewPagerFragmentList.setCurrentItem(Math.max(0, mTransactionListPagerAdapter.getCount() - 1), false);
     }
 
     private void query(TransactionFilterType transactionFilterType, Date date) {
+        mFilterType = transactionFilterType;
+        getAttachedActivity(MainActivity.class).supportInvalidateOptionsMenu();
+
         mTransactionListPagerAdapter.changeDateRange(date, transactionFilterType);
 
         if (mTransactionListPagerAdapter.getCount() > 0) {
@@ -93,34 +130,15 @@ public class TransactionNavigationFragment extends BaseFragment {
         }
     }
 
-    private void setupTransactionNavigator() {
-        ArrayList<TransactionNavigatorItem> items = new ArrayList<TransactionNavigatorItem>();
-        items.add(new TransactionNavigatorItem(TransactionFilterType.TODAY,
-                R.drawable.ic_calendar_black_24dp, R.string.transaction_navigator_by_day));
-        items.add(new TransactionNavigatorItem(TransactionFilterType.THIS_WEEK,
-                R.drawable.ic_calendar_black_24dp, R.string.transaction_navigator_by_week));
-        items.add(new TransactionNavigatorItem(TransactionFilterType.THIS_MONTH,
-                R.drawable.ic_calendar_black_24dp, R.string.transaction_navigator_by_month));
-        items.add(new TransactionNavigatorItem(TransactionFilterType.THIS_YEAR,
-                R.drawable.ic_calendar_black_24dp, R.string.transaction_navigator_by_year));
-
-        mSpinnerAdapter = new TransactionNavigatorAdapter(getActivity(), items, mTransactionDate);
-        mViewHolder.spinnerTransactionNavigator.setAdapter(mSpinnerAdapter);
-    }
-
     @Override
     public int getActionBarTitle() {
-        return R.string.transactions;
+        return R.string.empty;
     }
 
     private class ViewHolder {
-        public Toolbar toolbar;
-        public Spinner spinnerTransactionNavigator;
         public ViewPager viewPagerFragmentList;
 
         public ViewHolder(View view) {
-            toolbar = (Toolbar) view.findViewById(R.id.toolbar);
-            spinnerTransactionNavigator = (Spinner) view.findViewById(R.id.spinnerTransactionNavigator);
             viewPagerFragmentList = (ViewPager) view.findViewById(R.id.viewPagerFragmentList);
         }
     }

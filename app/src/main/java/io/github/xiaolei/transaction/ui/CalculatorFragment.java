@@ -6,6 +6,9 @@ import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
@@ -21,8 +24,10 @@ import io.github.xiaolei.transaction.GlobalApplication;
 import io.github.xiaolei.transaction.R;
 import io.github.xiaolei.transaction.adapter.CalculatorItem;
 import io.github.xiaolei.transaction.adapter.CalculatorPagerAdapter;
+import io.github.xiaolei.transaction.database.DatabaseHelper;
 import io.github.xiaolei.transaction.entity.Product;
 import io.github.xiaolei.transaction.entity.Transaction;
+import io.github.xiaolei.transaction.event.CreateProductEvent;
 import io.github.xiaolei.transaction.event.DateSelectedEvent;
 import io.github.xiaolei.transaction.event.NewProductCreatedEvent;
 import io.github.xiaolei.transaction.event.PickPhotoEvent;
@@ -42,21 +47,38 @@ import io.github.xiaolei.transaction.widget.CalculatorOutputView;
  * TODO: add comments
  */
 public class CalculatorFragment extends BaseFragment implements OnProductSelectedListener, OnCalculatorActionClickListener, OnCalculatorActionLongClickListener {
-    private static final String TAG = CalculatorFragment.class.getSimpleName();
+    public static final String TAG = CalculatorFragment.class.getSimpleName();
+    public static final String ARG_TRANSACTION_DATE = "arg_transaction_date";
+
     public static final int VIEW_INDEX_PRICE = 1;
     public static final int VIEW_INDEX_PRODUCTS = 0;
     public static final String ARG_PRODUCT = "arg_product";
     private ViewHolder mViewHolder;
     private Product mProduct;
     private CalculatorPagerAdapter mAdapter;
+    private Date mTransactionDate;
 
     public CalculatorFragment() {
 
     }
 
-    public static CalculatorFragment newInstance() {
+    public static CalculatorFragment newInstance(Date transactionDate) {
         CalculatorFragment fragment = new CalculatorFragment();
+
+        if (transactionDate != null) {
+            Bundle args = new Bundle();
+            args.putLong(ARG_TRANSACTION_DATE, transactionDate.getTime());
+            fragment.setArguments(args);
+        }
+
         return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+        EventBus.getDefault().register(this);
     }
 
     @Override
@@ -72,9 +94,52 @@ public class CalculatorFragment extends BaseFragment implements OnProductSelecte
             if (!TextUtils.isEmpty(productJson)) {
                 mProduct = new Gson().fromJson(productJson, Product.class);
             }
+
+            long date = args.getLong(ARG_TRANSACTION_DATE, -1);
+            if (date > 0) {
+                mTransactionDate = new Date(date);
+            } else {
+                mTransactionDate = null;
+            }
         }
 
         mViewHolder = new ViewHolder(view);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+
+        menu.clear();
+        inflater.inflate(R.menu.products_fragment, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_new_product:
+                EventBus.getDefault().post(new CreateProductEvent());
+                return true;
+            case R.id.action_delete_database:
+                DatabaseHelper.deleteDatabase(getActivity());
+                Toast.makeText(getActivity(), "Database deleted.", Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.action_copy_database:
+                try {
+                    DatabaseHelper.getInstance(getActivity()).copy();
+                    Toast.makeText(getActivity(), "Database copied.", Toast.LENGTH_SHORT).show();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Log.e(TAG, e.toString());
+                }
+                return true;
+            case R.id.action_execute_sql:
+                DatabaseHelper.getInstance(getActivity()).executeSql("ALTER TABLE \"product\" ADD COLUMN \"frequency\" DOUBLE NOT NULL  DEFAULT 0");
+                Toast.makeText(getActivity(), "SQL executed.", Toast.LENGTH_SHORT).show();
+                return true;
+            default:
+                return false;
+        }
     }
 
     @Override
@@ -90,13 +155,7 @@ public class CalculatorFragment extends BaseFragment implements OnProductSelecte
         CalculatorOutputInfo calculatorOutputInfo = new CalculatorOutputInfo();
         calculatorOutputInfo.currencyCode = GlobalApplication.getCurrentAccount().getDefaultCurrencyCode();
         mViewHolder.calculatorOutputView.bind(calculatorOutputInfo);
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setHasOptionsMenu(false);
-        EventBus.getDefault().register(this);
+        mViewHolder.calculatorOutputView.setTransactionDate(mTransactionDate);
     }
 
     @Override
@@ -305,6 +364,8 @@ public class CalculatorFragment extends BaseFragment implements OnProductSelecte
 
             @Override
             protected void onPostExecute(Exception result) {
+                mViewHolder.calculatorOutputView.setTransactionDate(null); // Reset transaction date
+
                 String transactionType = outputInfo.transactionType == TransactionType.Incoming ? getString(R.string.incoming) : getString(R.string.outgoing);
                 String message = String.format("%s %s: %s %s", transactionType, mProduct.getName(), outputInfo.currencyCode,
                         outputInfo.price.multiply(new BigDecimal(outputInfo.quantity)).toString());

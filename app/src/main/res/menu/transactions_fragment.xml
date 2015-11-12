@@ -1,4 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_new_transaction"
+        android:icon="@drawable/ic_add_white_24dp"
+        android:title="@string/new_transaction"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/action_by_day"
+        android:title="@string/transaction_navigator_by_day"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_by_week"
+        android:title="@string/transaction_navigator_by_week"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_by_month"
+        android:title="@string/transaction_navigator_by_month"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_by_year"
+        android:title="@string/transaction_navigator_by_year"
+        app:showAsAction="never" />
 </menu>

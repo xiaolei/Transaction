@@ -1,10 +1,6 @@
 package io.github.xiaolei.transaction.adapter;
 
-import android.content.Context;
-
 import io.github.xiaolei.transaction.R;
-import io.github.xiaolei.transaction.ui.IFragmentSwitchable;
-import io.github.xiaolei.transaction.widget.CalculatorOutputView;
 
 /**
  * TODO: add comment

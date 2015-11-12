@@ -4,7 +4,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.format.DateUtils;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -28,7 +27,7 @@ import io.github.xiaolei.transaction.util.ConfigurationManager;
 import io.github.xiaolei.transaction.widget.DataContainerView;
 
 /**
- * TODO: add comment
+ * Transaction list fragment
  */
 public class TransactionListFragment extends BaseFragment {
     public static final String TAG = TransactionListFragment.class.getSimpleName();
@@ -41,7 +40,7 @@ public class TransactionListFragment extends BaseFragment {
     private Date mEndDate;
 
     public TransactionListFragment() {
-        setHasOptionsMenu(true);
+
     }
 
     public static TransactionListFragment newInstance(Date startDate, Date endDate) {
@@ -54,11 +53,31 @@ public class TransactionListFragment extends BaseFragment {
         return fragment;
     }
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EventBus.getDefault().register(this);
+
+        Bundle args = getArguments();
+        if (args != null) {
+            mStartDate = new Date(args.getLong(ARG_TRANSACTION_START_DATE, DateTimeUtils.getStartTimeOfDate(new Date()).getTime()));
+            mEndDate = new Date(args.getLong(ARG_TRANSACTION_END_DATE, DateTimeUtils.getEndTimeOfDate(new Date()).getTime()));
+        }
+    }
+
     public void load(Date startDate, Date endDate) {
         mStartDate = DateTimeUtils.getStartTimeOfDate(startDate);
         mEndDate = DateTimeUtils.getEndTimeOfDate(endDate);
 
         load();
+    }
+
+    public Date getStartDate() {
+        return mStartDate;
+    }
+
+    public Date getEndDate() {
+        return mEndDate;
     }
 
     @Override
@@ -85,18 +104,6 @@ public class TransactionListFragment extends BaseFragment {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        EventBus.getDefault().register(this);
-
-        Bundle args = getArguments();
-        if (args != null) {
-            mStartDate = new Date(args.getLong(ARG_TRANSACTION_START_DATE, DateTimeUtils.getStartTimeOfDate(new Date()).getTime()));
-            mEndDate = new Date(args.getLong(ARG_TRANSACTION_END_DATE, DateTimeUtils.getEndTimeOfDate(new Date()).getTime()));
-        }
-    }
-
-    @Override
     public void onDestroy() {
         EventBus.getDefault().unregister(this);
         super.onDestroy();
@@ -110,13 +117,6 @@ public class TransactionListFragment extends BaseFragment {
     @Override
     public int getActionBarTitle() {
         return R.string.transactions;
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        menu.clear();
-        inflater.inflate(R.menu.transactions_fragment, menu);
     }
 
     private List<Transaction> query(Date startDate, Date endDate, long offset,

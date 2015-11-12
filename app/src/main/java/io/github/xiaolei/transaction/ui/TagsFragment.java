@@ -2,9 +2,8 @@ package io.github.xiaolei.transaction.ui;
 
 
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.text.TextUtils;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -40,13 +39,20 @@ public class TagsFragment extends BaseFragment implements AdapterView.OnItemClic
     }
 
     public TagsFragment() {
-        this.setHasOptionsMenu(true);
+
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(false);
     }
 
     @Override
     public int getContentView() {
         return R.layout.fragment_tags;
     }
+
 
     @Override
     public void initialize(View view) {
@@ -58,13 +64,6 @@ public class TagsFragment extends BaseFragment implements AdapterView.OnItemClic
     @Override
     public void load() {
         loadData(mViewHolder.searchBoxForTags.getKeywords(), false);
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        menu.clear();
-        inflater.inflate(R.menu.tags_fragment, menu);
     }
 
     @Override

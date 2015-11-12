@@ -5,17 +5,11 @@ import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.Toast;
-
-import net.i2p.android.ext.floatingactionbutton.FloatingActionsMenu;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -26,7 +20,6 @@ import io.github.xiaolei.transaction.R;
 import io.github.xiaolei.transaction.adapter.GenericEndlessAdapter;
 import io.github.xiaolei.transaction.adapter.IPaginationDataLoader;
 import io.github.xiaolei.transaction.adapter.ProductListAdapter;
-import io.github.xiaolei.transaction.database.DatabaseHelper;
 import io.github.xiaolei.transaction.entity.Product;
 import io.github.xiaolei.transaction.event.RefreshProductListEvent;
 import io.github.xiaolei.transaction.listener.OnProductSelectedListener;
@@ -65,22 +58,12 @@ public class ProductsFragment extends BaseFragment {
     }
 
     public ProductsFragment() {
-        setHasOptionsMenu(true);
-    }
-
-    @Override
-    public int getContentView() {
-        return R.layout.fragment_products;
-    }
-
-    @Override
-    public void load() {
-        loadProductList();
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(false);
         EventBus.getDefault().register(this);
 
         Bundle args = getArguments();
@@ -91,34 +74,13 @@ public class ProductsFragment extends BaseFragment {
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        menu.clear();
-        inflater.inflate(R.menu.products_fragment, menu);
+    public int getContentView() {
+        return R.layout.fragment_products;
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_new_product:
-                newProduct();
-                return true;
-            case R.id.action_delete_database:
-                DatabaseHelper.getInstance(getActivity()).deleteDatabase(getActivity());
-                Toast.makeText(getActivity(), "Database deleted.", Toast.LENGTH_SHORT).show();
-                return true;
-            case R.id.action_copy_database:
-                try {
-                    DatabaseHelper.getInstance(getActivity()).copy();
-                    Toast.makeText(getActivity(), "Database copied.", Toast.LENGTH_SHORT).show();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Log.e(TAG, e.toString());
-                }
-                return true;
-            default:
-                return false;
-        }
+    public void load() {
+        loadProductList();
     }
 
     private void newProduct() {

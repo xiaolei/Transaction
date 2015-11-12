@@ -12,7 +12,6 @@
 
     <string name="action_settings">Settings</string>
 
-<!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="delete_database">Delete Database</string>
     <string name="tags">Tags</string>
@@ -84,4 +83,6 @@
     <string name="today">Today</string>
     <string name="home">Home</string>
     <string name="execute_sql">Execute SQL</string>
+    <string name="new_transaction">New Transaction</string>
+    <string name="empty" />
 </resources>

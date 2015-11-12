@@ -37,7 +37,7 @@ public class PriceFragment extends BaseFragment implements AdapterView.OnItemCli
     private OnCalculatorActionLongClickListener mActionLongClickListener;
 
     public PriceFragment() {
-        setHasOptionsMenu(false);
+
     }
 
     @Override

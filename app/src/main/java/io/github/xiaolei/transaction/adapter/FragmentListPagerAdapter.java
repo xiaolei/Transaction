@@ -9,7 +9,9 @@ import java.util.Date;
 import java.util.List;
 
 import io.github.xiaolei.enterpriselibrary.utility.DateTimeUtils;
+import io.github.xiaolei.enterpriselibrary.widget.FragmentViewPager;
 import io.github.xiaolei.transaction.ui.AnalysisFragment;
+import io.github.xiaolei.transaction.ui.BaseFragment;
 import io.github.xiaolei.transaction.ui.CalculatorFragment;
 import io.github.xiaolei.transaction.ui.DashboardFragment;
 import io.github.xiaolei.transaction.ui.ProductsFragment;
@@ -20,19 +22,23 @@ import io.github.xiaolei.transaction.ui.TransactionNavigationFragment;
  * TODO: add comment
  */
 public class FragmentListPagerAdapter extends FragmentPagerAdapter {
-    private List<Fragment> mFragments;
+    private List<BaseFragment> mFragments;
 
     public FragmentListPagerAdapter(FragmentManager fm) {
         super(fm);
 
         Date transactionDate = new Date();
-        mFragments = new ArrayList<Fragment>();
-        mFragments.add(CalculatorFragment.newInstance());
+        mFragments = new ArrayList<BaseFragment>();
+        mFragments.add(CalculatorFragment.newInstance(new Date()));
         mFragments.add(DashboardFragment.newInstance());
         mFragments.add(TransactionNavigationFragment.newInstance(DateTimeUtils.getStartTimeOfDate(transactionDate)));
         mFragments.add(AnalysisFragment.newInstance());
         mFragments.add(ProductsFragment.newInstance(false, false));
         mFragments.add(TagsFragment.newInstance());
+    }
+
+    public List<BaseFragment> getAllFragments() {
+        return mFragments;
     }
 
     @Override

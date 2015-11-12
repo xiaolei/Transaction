@@ -1,5 +1,7 @@
 package io.github.xiaolei.enterpriselibrary.utility;
 
+import android.text.TextUtils;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -22,6 +24,10 @@ public class DateTimeUtils {
     }
 
     public static Date parseDateTime(String datetime, String pattern) {
+        if (TextUtils.isEmpty(datetime) || TextUtils.isEmpty(pattern)) {
+            return null;
+        }
+
         SimpleDateFormat format = new SimpleDateFormat(pattern);
         try {
             return format.parse(datetime);
@@ -32,7 +38,35 @@ public class DateTimeUtils {
         return null;
     }
 
+    public static Date replaceWithCurrentTime(Date date) {
+        Calendar cal2 = Calendar.getInstance();
+        cal2.setTime(date);
+
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.YEAR, cal2.get(Calendar.YEAR));
+        cal.set(Calendar.MONTH, cal2.get(Calendar.MONTH));
+        cal.set(Calendar.DAY_OF_MONTH, cal2.get(Calendar.DAY_OF_MONTH));
+
+        return cal.getTime();
+    }
+
     public static boolean isDateEqualsIgnoreTime(Date date1, Date date2) {
+        if (date1 == null && date2 == null) {
+            return false;
+        }
+
+        if (date1 == null && date2 != null) {
+            return true;
+        }
+
+        if (date2 == null && date1 != null) {
+            return true;
+        }
+
+        if (date1 == date2) {
+            return true;
+        }
+
         Calendar cal1 = Calendar.getInstance();
         Calendar cal2 = Calendar.getInstance();
         cal1.setTime(date1);

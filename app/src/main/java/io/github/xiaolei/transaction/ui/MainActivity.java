@@ -4,28 +4,26 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
-import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
-import com.google.gson.Gson;
+import java.util.HashMap;
+import java.util.Map;
 
 import de.greenrobot.event.EventBus;
 import io.github.xiaolei.enterpriselibrary.logging.Logger;
 import io.github.xiaolei.enterpriselibrary.utility.PhotoPicker;
-import io.github.xiaolei.enterpriselibrary.widget.FragmentViewPager;
 import io.github.xiaolei.transaction.GlobalApplication;
 import io.github.xiaolei.transaction.R;
-import io.github.xiaolei.transaction.adapter.FragmentListPagerAdapter;
-import io.github.xiaolei.transaction.entity.Product;
 import io.github.xiaolei.transaction.event.AccountInfoLoadCompletedEvent;
 import io.github.xiaolei.transaction.event.AppInitCompletedEvent;
 import io.github.xiaolei.transaction.event.NavigationDrawerStateEvent;
@@ -34,15 +32,13 @@ import io.github.xiaolei.transaction.widget.AccountView;
 
 
 public class MainActivity extends BaseActivity
-        implements ITitleChangeable, IFragmentSwitchable, NavigationView.OnNavigationItemSelectedListener {
+        implements ITitleChangeable, NavigationView.OnNavigationItemSelectedListener {
     public static final String TAG = MainActivity.class.getSimpleName();
     public static final int VIEW_INDEX_SPLASH = 0;
     public static final int VIEW_INDEX_CONTENT = 1;
 
-    private CharSequence mTitle;
     private ViewHolder mViewHolder;
-    private FragmentListPagerAdapter mAdapter;
-
+    private HashMap<Integer, String> mMenuItemAndFragmentMapping = new HashMap<Integer, String>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,9 +47,41 @@ public class MainActivity extends BaseActivity
 
         EventBus.getDefault().register(this);
         mViewHolder = new ViewHolder(this);
-        mTitle = getTitle();
+
+        mMenuItemAndFragmentMapping.put(R.id.navigation_item_calculator, CalculatorFragment.class.getName());
+        mMenuItemAndFragmentMapping.put(R.id.navigation_item_dashboard, DashboardFragment.class.getName());
+        mMenuItemAndFragmentMapping.put(R.id.navigation_item_transactions, TransactionNavigationFragment.class.getName());
+        mMenuItemAndFragmentMapping.put(R.id.navigation_item_analysis, AnalysisFragment.class.getName());
+        mMenuItemAndFragmentMapping.put(R.id.navigation_item_products, ProductsFragment.class.getName());
+        mMenuItemAndFragmentMapping.put(R.id.navigation_item_tags, TagsFragment.class.getName());
 
         start();
+    }
+
+    private String getMenuItemRelatedFragmentTagName(int menuItemId) {
+        if (mMenuItemAndFragmentMapping.containsKey(menuItemId)) {
+            return mMenuItemAndFragmentMapping.get(menuItemId);
+        }
+
+        return null;
+    }
+
+    private int getMenuItemIdByFragmentTagName(String fragmentTagName){
+        for(Map.Entry<Integer, String> entry: mMenuItemAndFragmentMapping.entrySet()){
+            if(entry.getValue().equalsIgnoreCase(fragmentTagName)){
+                return entry.getKey();
+            }
+        }
+
+        return -1;
+    }
+
+    @Override
+    protected void onFragmentPoppedFromBackStack(BaseFragment fragment){
+        int menuId = getMenuItemIdByFragmentTagName(fragment.getClass().getName());
+        if(menuId > 0){
+            mViewHolder.navigationView.setCheckedItem(menuId);
+        }
     }
 
     private void start() {
@@ -75,46 +103,15 @@ public class MainActivity extends BaseActivity
                 this, mViewHolder.drawerLayout, mViewHolder.toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         mViewHolder.drawerLayout.setDrawerListener(toggle);
         toggle.syncState();
-
-        mViewHolder.fragmentSwitcher.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                refreshActionBar(position);
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
-
-        mAdapter = new FragmentListPagerAdapter(getSupportFragmentManager());
-        mViewHolder.fragmentSwitcher.setAdapter(mAdapter);
     }
 
     @Override
     public void onBackPressed() {
         boolean goAhead = true;
-        int currentFragmentIndex = mViewHolder.fragmentSwitcher.getCurrentItem();
-        if (currentFragmentIndex < 0) {
-            goAhead = true;
-        } else {
-            Fragment fragment = mAdapter.getItem(currentFragmentIndex);
-            if (fragment instanceof CalculatorFragment) {
-                CalculatorFragment calculatorFragment = (CalculatorFragment) fragment;
-                if (calculatorFragment.getCurrentViewIndex() != CalculatorFragment.VIEW_INDEX_PRODUCTS) {
-                    calculatorFragment.switchToProductListView();
-                    goAhead = false;
-                }
-            } else {
-                switchToHomeFragment();
-                goAhead = false;
-            }
+
+        if (mViewHolder.drawerLayout.isDrawerOpen(Gravity.LEFT)) {
+            mViewHolder.drawerLayout.closeDrawers();
+            goAhead = false;
         }
 
         if (goAhead) {
@@ -122,48 +119,14 @@ public class MainActivity extends BaseActivity
         }
     }
 
+    @Override
+    public void onResume(){
+        super.onResume();
+    }
+
     public void switchToHomeFragment() {
-        mViewHolder.fragmentSwitcher.setCurrentItem(0);
+        switchToFragment(CalculatorFragment.class, null);
         mViewHolder.navigationView.setCheckedItem(R.id.navigation_item_calculator);
-    }
-
-    @Override
-    public FragmentViewPager getFragmentSwitcher() {
-        return mViewHolder.fragmentSwitcher;
-    }
-
-    @Override
-    public void switchToProductEditor(final long productId) {
-        Bundle args = new Bundle();
-        args.putLong(ProductEditorFragment.ARG_PRODUCT_ID, productId);
-
-    }
-
-    @Override
-    public void switchToTagEditor(final long tagId) {
-        Bundle args = new Bundle();
-        args.putLong(TagEditorFragment.ARG_TAG_ID, tagId);
-
-    }
-
-    @Override
-    public void switchToTagList() {
-        getFragmentSwitcher().setCurrentItem(2);
-    }
-
-    @Override
-    public void switchToProductList(final boolean reload, final boolean isSelectionMode) {
-        Bundle args = new Bundle();
-        args.putBoolean(QuickProductsFragment.ARG_IS_SELECTION_MODE, isSelectionMode);
-
-        getFragmentSwitcher().setCurrentItem(1);
-    }
-
-    @Override
-    public void switchToCalculator(final Product product) {
-        Bundle args = new Bundle();
-        args.putString(CalculatorFragment.ARG_PRODUCT, new Gson().toJson(product));
-        getFragmentSwitcher().setCurrentItem(0);
     }
 
     @Override
@@ -177,27 +140,11 @@ public class MainActivity extends BaseActivity
         this.getSupportActionBar().setTitle(getString(resId));
     }
 
-    private void refreshActionBar(int position) {
-        Fragment fragment = mAdapter.getItem(position);
-        if (fragment != null) {
-            if (fragment instanceof BaseFragment) {
-                BaseFragment currentFragment = (BaseFragment) fragment;
-                setActionBarTitle(currentFragment.getActionBarTitle());
-
-                boolean useDefaultActionBar = currentFragment.useDefaultActionBar();
-                if (!useDefaultActionBar) {
-                    getSupportActionBar().hide();
-                } else {
-                    getSupportActionBar().show();
-                }
-            }
-        }
-    }
-
     @Override
     public boolean onNavigationItemSelected(MenuItem menuItem) {
         mViewHolder.drawerLayout.closeDrawers();
-        getFragmentSwitcher().setCurrentItem(menuItem.getOrder());
+        String fragmentTagName = getMenuItemRelatedFragmentTagName(menuItem.getItemId());
+        switchToFragment(fragmentTagName, null);
 
         return true;
     }
@@ -244,7 +191,7 @@ public class MainActivity extends BaseActivity
     }
 
     private class ViewHolder {
-        public FragmentViewPager fragmentSwitcher;
+        public FrameLayout fragmentContainer;
         public NavigationView navigationView;
         public DrawerLayout drawerLayout;
         public AccountView accountView;
@@ -252,7 +199,7 @@ public class MainActivity extends BaseActivity
         public Toolbar toolbar;
 
         public ViewHolder(Activity activity) {
-            fragmentSwitcher = (FragmentViewPager) activity.findViewById(R.id.fragmentSwitcher);
+            fragmentContainer = (FrameLayout) activity.findViewById(R.id.fragmentContainer);
             navigationView = (NavigationView) activity.findViewById(R.id.navigationView);
             drawerLayout = (DrawerLayout) activity.findViewById(R.id.drawer_layout);
             accountView = (AccountView) activity.findViewById(R.id.accountView);

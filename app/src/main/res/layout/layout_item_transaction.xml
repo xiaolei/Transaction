@@ -13,9 +13,10 @@
         android:layout_marginRight="@dimen/margin_medium"
         android:layout_marginTop="5dp"
         android:background="@drawable/circle_bg"
-        android:gravity="center"
         android:checked="false"
+        android:gravity="center"
         android:text="测"
+        android:textAlignment="gravity"
         android:textAllCaps="true"
         android:textColor="@color/white"
         android:textSize="20dp" />

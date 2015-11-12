@@ -47,7 +47,7 @@ public class TransactionNavigatorAdapter extends BaseAdapter {
         }
 
         mCustomTitle = title;
-        mSelectedTransactionFilterType = TransactionFilterType.TODAY;
+        mSelectedTransactionFilterType = TransactionFilterType.BY_DAY;
         notifyDataSetChanged();
     }
 
@@ -117,20 +117,20 @@ public class TransactionNavigatorAdapter extends BaseAdapter {
     private String getDateRange(Date date, TransactionFilterType transactionFilterType) {
         String result = "";
         switch (transactionFilterType) {
-            case TODAY:
+            case BY_DAY:
                 result = DateTimeUtils.formatShortDate(date);
                 break;
-            case THIS_WEEK:
+            case BY_WEEK:
                 result = String.format(DATE_RANGE_TEXT_FORMAT,
                         DateTimeUtils.formatShortDate(DateTimeUtils.getStartDayOfWeek(date)),
                         DateTimeUtils.formatShortDate(DateTimeUtils.getEndDayOfWeek(date)));
                 break;
-            case THIS_MONTH:
+            case BY_MONTH:
                 result = String.format(DATE_RANGE_TEXT_FORMAT,
                         DateTimeUtils.formatShortDate(DateTimeUtils.getStartDayOfMonth(date)),
                         DateTimeUtils.formatShortDate(DateTimeUtils.getEndDayOfMonth(date)));
                 break;
-            case THIS_YEAR:
+            case BY_YEAR:
                 result = String.format(DATE_RANGE_TEXT_FORMAT,
                         DateTimeUtils.formatShortDate(DateTimeUtils.getStartDayOfYear(date)),
                         DateTimeUtils.formatShortDate(DateTimeUtils.getEndDayOfYear(date)));

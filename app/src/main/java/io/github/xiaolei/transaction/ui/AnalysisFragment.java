@@ -1,7 +1,6 @@
 package io.github.xiaolei.transaction.ui;
 
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 
 import io.github.xiaolei.transaction.R;
@@ -13,7 +12,7 @@ public class AnalysisFragment extends BaseFragment {
     private ViewHolder mViewHolder;
 
     public AnalysisFragment() {
-        setHasOptionsMenu(true);
+        setHasOptionsMenu(false);
     }
 
     public static AnalysisFragment newInstance() {
@@ -27,10 +26,8 @@ public class AnalysisFragment extends BaseFragment {
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
+    public void onPrepareOptionsMenu(Menu menu) {
         menu.clear();
-        inflater.inflate(R.menu.empty_menu, menu);
     }
 
     @Override
