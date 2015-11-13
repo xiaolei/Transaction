@@ -26,6 +26,8 @@ public class Transaction extends BaseEntity {
     @DatabaseField(canBeNull = false, columnName = "currency_code")
     private String currencyCode;
 
+    public boolean checked;
+
     public Transaction(){
         this.setActive(true);
     }

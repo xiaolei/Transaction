@@ -4,7 +4,10 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.format.DateUtils;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.AbsListView;
+import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -38,6 +41,9 @@ public class TransactionListFragment extends BaseFragment {
     private ViewHolder mViewHolder;
     private Date mStartDate;
     private Date mEndDate;
+
+    private android.view.ActionMode mActionMode;
+    private boolean mIsSelectionMode = false;
 
     public TransactionListFragment() {
 
@@ -180,6 +186,71 @@ public class TransactionListFragment extends BaseFragment {
     @Override
     public void initialize(View view) {
         mViewHolder = new ViewHolder(view);
+        mViewHolder.listViewTransactions.setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE);
+        mViewHolder.listViewTransactions.setMultiChoiceModeListener(new MultiChoiceModeListener());
+    }
+
+    private void removeTransactions(List<Transaction> transactions){
+
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (mActionMode != null) {
+            mActionMode.finish();
+        }
+    }
+
+    private class MultiChoiceModeListener implements GridView.MultiChoiceModeListener {
+        @Override
+        public void onItemCheckedStateChanged(android.view.ActionMode actionMode, int position, long id, boolean checked) {
+            int selectCount = mViewHolder.listViewTransactions.getCheckedItemCount();
+            switch (selectCount) {
+                case 1:
+                    actionMode.setSubtitle("One selected");
+                    break;
+                default:
+                    actionMode.setSubtitle("" + selectCount + " selected");
+                    break;
+            }
+        }
+
+        @Override
+        public boolean onCreateActionMode(android.view.ActionMode actionMode, Menu menu) {
+            if (mIsSelectionMode) {
+                return false;
+            }
+
+            mActionMode = actionMode;
+            actionMode.getMenuInflater().inflate(R.menu.action_mode_product_list, menu);
+            actionMode.setTitle("Select Transactions");
+            actionMode.setSubtitle("One Transaction selected");
+
+            return true;
+        }
+
+        @Override
+        public boolean onPrepareActionMode(android.view.ActionMode actionMode, Menu menu) {
+            return true;
+        }
+
+        @Override
+        public boolean onActionItemClicked(android.view.ActionMode actionMode, MenuItem menuItem) {
+            switch (menuItem.getItemId()) {
+                case R.id.action_delete_product:
+                    removeTransactions(mAdapter.getInnerAdapter(TransactionListAdapter.class).getCheckedItems());
+                    break;
+                default:
+                    break;
+            }
+            return true;
+        }
+
+        @Override
+        public void onDestroyActionMode(android.view.ActionMode actionMode) {
+            mActionMode = null;
+        }
     }
 
     private class ViewHolder {

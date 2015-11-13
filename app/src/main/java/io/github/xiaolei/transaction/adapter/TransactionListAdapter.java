@@ -7,7 +7,9 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.CheckedTextView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +22,7 @@ import io.github.xiaolei.transaction.widget.CurrencyTextView;
 /**
  * Transaction list adapter.
  */
-public class TransactionListAdapter extends BaseAdapter implements IDataAdapter<Transaction> {
+public class TransactionListAdapter extends BaseAdapter implements IDataAdapter<Transaction>, View.OnClickListener {
     private Context mContext;
     private List<Transaction> mTransactions;
     private LayoutInflater mInflater;
@@ -70,7 +72,25 @@ public class TransactionListAdapter extends BaseAdapter implements IDataAdapter<
         mViewHolder.textViewProductName.setText(transaction.getProduct().getName());
         mViewHolder.textViewCreationTime.setText(DateTimeUtils.formatDateTime(transaction.getCreationTime()));
         mViewHolder.textViewPrice.setPrice(CurrencyHelper.castToBigDecimal(transaction.getPrice()), transaction.getCurrencyCode());
-        mViewHolder.checkedTextViewTransactionIcon.setText(transaction.getProduct().getName().substring(0, 1).toUpperCase());
+        mViewHolder.checkedTextViewTransactionIcon.setTag(transaction);
+        mViewHolder.checkedTextViewTransactionIcon.setOnClickListener(this);
+        mViewHolder.checkedTextViewTransactionIcon.setChecked(transaction.checked);
+        if (!transaction.checked) {
+            mViewHolder.checkedTextViewTransactionIcon.setText(transaction.getProduct().getName().substring(0, 1).toUpperCase());
+        } else {
+            mViewHolder.checkedTextViewTransactionIcon.setText("");
+        }
+    }
+
+    public List<Transaction> getCheckedItems() {
+        ArrayList<Transaction> result = new ArrayList<Transaction>();
+        for (Transaction transaction : mTransactions) {
+            if (transaction.checked) {
+                result.add(transaction);
+            }
+        }
+
+        return result;
     }
 
     @Override
@@ -83,6 +103,17 @@ public class TransactionListAdapter extends BaseAdapter implements IDataAdapter<
     public void swap(List<Transaction> data) {
         mTransactions.clear();
         mTransactions.addAll(data);
+        notifyDataSetChanged();
+    }
+
+    @Override
+    public void onClick(View v) {
+        Transaction currentTransaction = (Transaction) v.getTag();
+        currentTransaction.checked = !currentTransaction.checked;
+
+        CheckedTextView checkedTextView = (CheckedTextView) v;
+        checkedTextView.setChecked(currentTransaction.checked);
+
         notifyDataSetChanged();
     }
 

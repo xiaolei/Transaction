@@ -37,12 +37,13 @@ public class ProductsFragment extends BaseFragment {
     public static final String ARG_SHOW_ADD_BUTTON = "arg_show_add_button";
     private static final String TAG = ProductsFragment.class.getSimpleName();
     private ViewHolder mViewHolder;
-    private boolean mIsSelectionMode = false;
     private boolean mShowAddButton = false;
     private GenericEndlessAdapter<Product> mAdapter;
     private List<Product> mProductList = new ArrayList<Product>();
     private OnProductSelectedListener mOnProductSelectedListener;
+
     private android.view.ActionMode mActionMode;
+    private boolean mIsSelectionMode = false;
 
     /**
      * Returns a new instance of this fragment for the given section
