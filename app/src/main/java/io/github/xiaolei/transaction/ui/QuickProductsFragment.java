@@ -175,7 +175,7 @@ public class QuickProductsFragment extends BaseFragment implements View.OnClickL
     }
 
     public void onEvent(ShowDatePickerEvent event) {
-        chooseTransactionDate();
+        chooseTransactionDate(event.initialDate);
     }
 
     public void onEvent(GetBarcodeResultEvent event) {
@@ -273,13 +273,14 @@ public class QuickProductsFragment extends BaseFragment implements View.OnClickL
         }
     }
 
-    private void chooseTransactionDate() {
-        DatePickerFragment.showDialog(getActivity().getSupportFragmentManager(), new OnDateSelectedListener() {
-            @Override
-            public void onDateSelected(Date selectedDate) {
-                EventBus.getDefault().post(new DateSelectedEvent(selectedDate));
-            }
-        });
+    private void chooseTransactionDate(Date initialDate) {
+        DatePickerFragment.showDialog(getActivity().getSupportFragmentManager(), initialDate,
+                new OnDateSelectedListener() {
+                    @Override
+                    public void onDateSelected(Date selectedDate) {
+                        EventBus.getDefault().post(new DateSelectedEvent(selectedDate));
+                    }
+                });
     }
 
     @Override
@@ -290,7 +291,7 @@ public class QuickProductsFragment extends BaseFragment implements View.OnClickL
                 mViewHolder.famProduct.collapse();
                 break;
             case R.id.fabChooseDate:
-                chooseTransactionDate();
+                chooseTransactionDate(null);
                 mViewHolder.famProduct.collapse();
                 break;
             case R.id.fabScanBarcode:

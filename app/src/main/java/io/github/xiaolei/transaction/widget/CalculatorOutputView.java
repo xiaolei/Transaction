@@ -87,7 +87,7 @@ public class CalculatorOutputView extends RelativeLayout {
         mViewHolder.textViewTransactionDate.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                EventBus.getDefault().post(new ShowDatePickerEvent());
+                EventBus.getDefault().post(new ShowDatePickerEvent(mCalculatorOutputInfo.date));
             }
         });
     }

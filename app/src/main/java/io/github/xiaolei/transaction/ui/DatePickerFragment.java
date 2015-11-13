@@ -17,14 +17,22 @@ import io.github.xiaolei.transaction.listener.OnDateSelectedListener;
  */
 public class DatePickerFragment extends DialogFragment
         implements DatePickerDialog.OnDateSetListener {
+    public static final String ARG_INITIAL_DATE = "arg_initial_date";
     private OnDateSelectedListener mOnDateSelectedListener;
 
     public DatePickerFragment() {
 
     }
 
-    public static DatePickerFragment showDialog(FragmentManager fragmentManager, OnDateSelectedListener listener) {
+    public static DatePickerFragment showDialog(FragmentManager fragmentManager,
+                                                Date initialDate, OnDateSelectedListener listener) {
         DatePickerFragment fragment = new DatePickerFragment();
+        if (initialDate != null) {
+            Bundle args = new Bundle();
+            args.putLong(ARG_INITIAL_DATE, initialDate.getTime());
+            fragment.setArguments(args);
+        }
+
         fragment.setOnDateSelectedListener(listener);
         fragment.show(fragmentManager, DatePickerFragment.class.getSimpleName());
 
@@ -43,8 +51,18 @@ public class DatePickerFragment extends DialogFragment
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        Date initialDate = new Date();
+        Bundle args = getArguments();
+        if (args != null) {
+            long value = args.getLong(ARG_INITIAL_DATE, -1);
+            if (value > 0) {
+                initialDate = new Date(value);
+            }
+        }
+
         // Use the current date as the default date in the picker
         final Calendar c = Calendar.getInstance();
+        c.setTime(initialDate);
         int year = c.get(Calendar.YEAR);
         int month = c.get(Calendar.MONTH);
         int day = c.get(Calendar.DAY_OF_MONTH);
