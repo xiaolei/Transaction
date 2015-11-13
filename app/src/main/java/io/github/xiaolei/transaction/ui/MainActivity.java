@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -66,9 +67,9 @@ public class MainActivity extends BaseActivity
         return null;
     }
 
-    private int getMenuItemIdByFragmentTagName(String fragmentTagName){
-        for(Map.Entry<Integer, String> entry: mMenuItemAndFragmentMapping.entrySet()){
-            if(entry.getValue().equalsIgnoreCase(fragmentTagName)){
+    private int getMenuItemIdByFragmentTagName(String fragmentTagName) {
+        for (Map.Entry<Integer, String> entry : mMenuItemAndFragmentMapping.entrySet()) {
+            if (entry.getValue().equalsIgnoreCase(fragmentTagName)) {
                 return entry.getKey();
             }
         }
@@ -77,9 +78,9 @@ public class MainActivity extends BaseActivity
     }
 
     @Override
-    protected void onFragmentPoppedFromBackStack(BaseFragment fragment){
+    protected void onFragmentPoppedFromBackStack(BaseFragment fragment) {
         int menuId = getMenuItemIdByFragmentTagName(fragment.getClass().getName());
-        if(menuId > 0){
+        if (menuId > 0) {
             mViewHolder.navigationView.setCheckedItem(menuId);
         }
     }
@@ -112,6 +113,15 @@ public class MainActivity extends BaseActivity
         if (mViewHolder.drawerLayout.isDrawerOpen(Gravity.LEFT)) {
             mViewHolder.drawerLayout.closeDrawers();
             goAhead = false;
+        } else {
+            Fragment currentFragment = getCurrentFragment();
+            if (currentFragment instanceof CalculatorFragment) {
+                CalculatorFragment calculatorFragment = (CalculatorFragment) currentFragment;
+                if (calculatorFragment.getCurrentViewIndex() != CalculatorFragment.VIEW_INDEX_PRODUCTS) {
+                    calculatorFragment.switchToProductListView();
+                    goAhead = false;
+                }
+            }
         }
 
         if (goAhead) {
@@ -120,8 +130,13 @@ public class MainActivity extends BaseActivity
     }
 
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
+    }
+
+    private Fragment getCurrentFragment() {
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragmentContainer);
+        return fragment;
     }
 
     public void switchToHomeFragment() {
