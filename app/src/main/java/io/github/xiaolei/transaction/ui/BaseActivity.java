@@ -47,6 +47,10 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     }
 
+    protected int getFragmentContainerId() {
+        return R.id.fragmentContainer;
+    }
+
     protected Toolbar setupToolbar(final DrawerLayout drawerLayout) {
         Toolbar toolbar = setupToolbar(true);
         if (toolbar != null && drawerLayout != null) {
@@ -119,6 +123,12 @@ public abstract class BaseActivity extends AppCompatActivity {
         return toolbar;
     }
 
+    protected Fragment getCurrentFragment() {
+        int fragmentContainerId = getFragmentContainerId();
+        Fragment fragment = getSupportFragmentManager().findFragmentById(fragmentContainerId);
+        return fragment;
+    }
+
     protected <T extends BaseFragment> void switchToFragment(Class<T> fragmentType, Bundle arguments) {
         String fragmentTagName = fragmentType.getName();
 
@@ -131,8 +141,9 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
 
         FragmentManager fragmentManager = getSupportFragmentManager();
+        int fragmentContainerId = getFragmentContainerId();
 
-        Fragment currentFragment = fragmentManager.findFragmentById(R.id.fragmentContainer);
+        Fragment currentFragment = fragmentManager.findFragmentById(fragmentContainerId);
         if (currentFragment != null && fragmentTagName.equalsIgnoreCase(currentFragment.getClass().getName())) {
             return;
         }
@@ -146,7 +157,7 @@ public abstract class BaseActivity extends AppCompatActivity {
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.addToBackStack(fragmentTagName);
-        transaction.replace(R.id.fragmentContainer, fragment).commit();
+        transaction.replace(fragmentContainerId, fragment).commit();
     }
 
     private boolean containsInFragmentBackStack(String fragmentTagName) {

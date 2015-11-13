@@ -134,11 +134,6 @@ public class MainActivity extends BaseActivity
         super.onResume();
     }
 
-    private Fragment getCurrentFragment() {
-        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragmentContainer);
-        return fragment;
-    }
-
     public void switchToHomeFragment() {
         switchToFragment(CalculatorFragment.class, null);
         mViewHolder.navigationView.setCheckedItem(R.id.navigation_item_calculator);
@@ -162,6 +157,10 @@ public class MainActivity extends BaseActivity
         switchToFragment(fragmentTagName, null);
 
         return true;
+    }
+
+    public Toolbar getToolbar(){
+        return mViewHolder.toolbar;
     }
 
     public void onEvent(AccountInfoLoadCompletedEvent event) {

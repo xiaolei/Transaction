@@ -27,7 +27,7 @@ public class PriceFragment extends BaseFragment implements AdapterView.OnItemCli
     private static final String TAG = PriceFragment.class.getSimpleName();
     public static final String ARG_PRODUCT = "arg_product";
     private static final int TEXT_SIZE_ACTION_BUTTON = 15;
-    private static final int TEXT_SIZE_NUMBER_BUTTON = 20;
+    private static final int TEXT_SIZE_NUMBER_BUTTON = 22;
     private List<CalculatorItem> mItems;
     private CalculatorAdapter mAdapter;
     private ViewHolder mViewHolder;
