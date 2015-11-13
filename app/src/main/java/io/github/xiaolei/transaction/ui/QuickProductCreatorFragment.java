@@ -102,6 +102,12 @@ public class QuickProductCreatorFragment extends DialogFragment {
         return dialog;
     }
 
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+    }
+
     private void chooseProduct() {
         if (TextUtils.isEmpty(mTypedProductName)) {
             return;
