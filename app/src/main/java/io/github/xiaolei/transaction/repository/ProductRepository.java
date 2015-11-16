@@ -102,9 +102,10 @@ public class ProductRepository extends BaseRepository {
     }
 
     public void remove(long productId) throws SQLException {
-        DeleteBuilder<Product, Long> deleteBuilder = productDao.deleteBuilder();
-        deleteBuilder.where().eq(Product.ID, productId);
-        productDao.delete(deleteBuilder.prepare());
+        UpdateBuilder<Product, Long> updateBuilder = productDao.updateBuilder();
+        updateBuilder.updateColumnValue(Product.ACTIVE, false)
+                .where().eq(Product.ID, productId);
+        productDao.update(updateBuilder.prepare());
     }
 
     public Product rename(Product product, String newName) throws SQLException, ValidationException {
@@ -183,6 +184,8 @@ public class ProductRepository extends BaseRepository {
     public List<Product> query(String keywords, long offset, long limit) throws SQLException {
         Dao<Product, Long> dao = getDataAccessObject(Product.class);
         QueryBuilder<Product, Long> queryBuilder = dao.queryBuilder();
+        queryBuilder.where().eq(Product.ACTIVE, true);
+
         if (!TextUtils.isEmpty(keywords)) {
             queryBuilder.where().eq(Product.ACTIVE, true).and().like(Tag.NAME, "%" + keywords + "%");
         }
