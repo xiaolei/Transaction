@@ -165,14 +165,24 @@ public class CalculatorFragment extends BaseFragment implements OnProductSelecte
 
     @Override
     public void onProductSelected(Product product) {
-        mProduct = product;
-        mViewHolder.calculatorOutputView.setProductName(product.getName());
-        if (mViewHolder.calculatorOutputView.getTransactionType() == TransactionType.Unknown) {
-            mViewHolder.calculatorOutputView.setTransactionType(TransactionType.Outgoing);
+        if(mProduct != null && product != null && TextUtils.equals(product.getName(), mProduct.getName())){
+            return;
         }
 
-        switchToPriceView();
-        showLastTransactionPriceAsync(product.getName());
+        mProduct = product;
+
+        if(product != null) {
+            mViewHolder.calculatorOutputView.setProduct(product);
+
+            if (mViewHolder.calculatorOutputView.getTransactionType() == TransactionType.Unknown) {
+                mViewHolder.calculatorOutputView.setTransactionType(TransactionType.Outgoing);
+            }
+
+            switchToPriceView();
+            showLastTransactionPriceAsync(product.getName());
+        }else{
+            reset();
+        }
     }
 
     public int getCurrentViewIndex() {
@@ -289,8 +299,7 @@ public class CalculatorFragment extends BaseFragment implements OnProductSelecte
     }
 
     public void onEvent(ProductSelectedEvent event) {
-        mProduct = event.product;
-        onProductSelected(mProduct);
+        onProductSelected(event.product);
     }
 
     public void onEvent(NewProductCreatedEvent event) {
@@ -385,9 +394,10 @@ public class CalculatorFragment extends BaseFragment implements OnProductSelecte
         task.execute();
     }
 
-    private void reset() {
+    public void reset() {
         mProduct = null;
         mViewHolder.calculatorOutputView.setProductName("");
+        mViewHolder.calculatorOutputView.setProduct(null);
         mViewHolder.calculatorOutputView.setPrice(new BigDecimal("0"));
         mViewHolder.calculatorOutputView.setTransactionType(TransactionType.Unknown);
         mViewHolder.calculatorOutputView.setTransactionDate(null);

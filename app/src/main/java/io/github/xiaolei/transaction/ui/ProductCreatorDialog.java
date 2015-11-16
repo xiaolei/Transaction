@@ -30,23 +30,23 @@ import io.github.xiaolei.transaction.repository.RepositoryProvider;
 /**
  * TODO: add comment
  */
-public class QuickProductCreatorFragment extends DialogFragment {
-    private static final String TAG = QuickProductCreatorFragment.class.getSimpleName();
+public class ProductCreatorDialog extends DialogFragment {
+    private static final String TAG = ProductCreatorDialog.class.getSimpleName();
     private ViewHolder mViewHolder;
     private Product mCurrentProduct;
     private String mTypedProductName;
 
-    public QuickProductCreatorFragment() {
+    public ProductCreatorDialog() {
 
     }
 
-    public static QuickProductCreatorFragment newInstance() {
-        QuickProductCreatorFragment fragment = new QuickProductCreatorFragment();
+    public static ProductCreatorDialog newInstance() {
+        ProductCreatorDialog fragment = new ProductCreatorDialog();
         return fragment;
     }
 
     public static void showDialog(FragmentManager fragmentManager) {
-        QuickProductCreatorFragment fragment = newInstance();
+        ProductCreatorDialog fragment = newInstance();
         fragment.show(fragmentManager, TAG);
     }
 

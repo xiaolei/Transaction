@@ -86,7 +86,7 @@ public class QuickProductsFragment extends BaseFragment implements View.OnClickL
     }
 
     private void newProduct() {
-        QuickProductCreatorFragment.showDialog(getActivity().getSupportFragmentManager());
+        ProductCreatorDialog.showDialog(getActivity().getSupportFragmentManager());
     }
 
     private void scanBarcode() {

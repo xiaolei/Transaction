@@ -86,4 +86,9 @@
     <string name="new_transaction">New Transaction</string>
     <string name="empty" />
     <string name="erase">Erase</string>
+    <string name="remove">Remove</string>
+    <string name="rename">Rename</string>
+    <string name="name_duplicate">This name has already been taken. Please change another one.</string>
+    <string name="fail_rename_product">Rename failed, please try again.</string>
+    <string name="confirm_remove_product">Are you sure to remove this product?</string>
 </resources>

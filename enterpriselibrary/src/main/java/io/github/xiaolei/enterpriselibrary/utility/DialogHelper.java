@@ -50,6 +50,10 @@ public class DialogHelper {
      * @param message
      */
     public static AlertDialog showAlertDialog(Context context, String message) {
+        if (context == null || TextUtils.isEmpty(message)) {
+            return null;
+        }
+
         AlertDialogButton button = new AlertDialogButton(
                 AlertDialog.BUTTON_POSITIVE, "确定",
                 new DialogInterface.OnClickListener() {
@@ -59,7 +63,7 @@ public class DialogHelper {
                         dialog.dismiss();
                     }
                 });
-        return showAlertDialog(context, "提示", message, true, button);
+        return showAlertDialog(context, "", message, true, button);
     }
 
     /**
@@ -72,6 +76,19 @@ public class DialogHelper {
                                               DialogInterface.OnClickListener onOkButtonClickListener) {
         AlertDialogButton button = new AlertDialogButton(
                 AlertDialog.BUTTON_POSITIVE, "确定", onOkButtonClickListener);
-        return showAlertDialog(context, "提示", message, true, button);
+        return showAlertDialog(context, "", message, true, button);
+    }
+
+    public static AlertDialog showConfirmDialog(Context context, String message, DialogInterface.OnClickListener onYesButtonClickListener) {
+        AlertDialogButton yesButton = new AlertDialogButton(
+                AlertDialog.BUTTON_POSITIVE, context.getString(android.R.string.yes), onYesButtonClickListener);
+        AlertDialogButton noButton = new AlertDialogButton(
+                AlertDialog.BUTTON_NEGATIVE, context.getString(android.R.string.no), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        return showAlertDialog(context, "", message, true, yesButton, noButton);
     }
 }

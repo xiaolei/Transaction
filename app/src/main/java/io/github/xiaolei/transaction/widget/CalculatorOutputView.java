@@ -1,11 +1,17 @@
 package io.github.xiaolei.transaction.widget;
 
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.PopupMenu;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextSwitcher;
@@ -16,15 +22,24 @@ import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.math.BigDecimal;
+import java.sql.SQLException;
 import java.util.Date;
 
 import de.greenrobot.event.EventBus;
+import io.github.xiaolei.enterpriselibrary.utility.AlertDialogButton;
 import io.github.xiaolei.enterpriselibrary.utility.DateTimeUtils;
+import io.github.xiaolei.enterpriselibrary.utility.DialogHelper;
 import io.github.xiaolei.transaction.R;
 import io.github.xiaolei.transaction.common.ValidationHelper;
+import io.github.xiaolei.transaction.entity.Product;
+import io.github.xiaolei.transaction.event.ProductSelectedEvent;
+import io.github.xiaolei.transaction.event.RefreshProductListEvent;
 import io.github.xiaolei.transaction.event.ShowDatePickerEvent;
 import io.github.xiaolei.transaction.listener.OnFragmentDialogDismissListener;
+import io.github.xiaolei.transaction.repository.ProductRepository;
+import io.github.xiaolei.transaction.repository.RepositoryProvider;
 import io.github.xiaolei.transaction.ui.ChooseCurrencyFragment;
+import io.github.xiaolei.transaction.ui.ProductRenameDialog;
 import io.github.xiaolei.transaction.util.ConfigurationManager;
 import io.github.xiaolei.transaction.util.PreferenceHelper;
 import io.github.xiaolei.transaction.viewmodel.CalculatorOutputInfo;
@@ -45,6 +60,8 @@ public class CalculatorOutputView extends RelativeLayout {
     private CalculatorOutputInfo mCalculatorOutputInfo = new CalculatorOutputInfo();
     private boolean mIsLastPrice = false;
     private boolean mQuantityOn = false;
+
+    private PopupMenu mPopupMenu;
 
     public CalculatorOutputView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -90,6 +107,83 @@ public class CalculatorOutputView extends RelativeLayout {
                 EventBus.getDefault().post(new ShowDatePickerEvent(mCalculatorOutputInfo.date));
             }
         });
+
+        mPopupMenu = new PopupMenu(getContext(), mViewHolder.textViewCalculatorProductName);
+        mPopupMenu.getMenuInflater().inflate(R.menu.product_name, mPopupMenu.getMenu());
+        mPopupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                if (mCalculatorOutputInfo.product == null) {
+                    return true;
+                }
+
+                switch (item.getItemId()) {
+                    case R.id.menu_rename_product:
+                        AppCompatActivity activity = (AppCompatActivity) getContext();
+                        ProductRenameDialog.showDialog(getContext(), activity.getSupportFragmentManager(), mCalculatorOutputInfo.product);
+
+                        return true;
+                    case R.id.menu_remove_product:
+                        DialogHelper.showConfirmDialog(getContext(), getContext().getString(R.string.confirm_remove_product),
+                                new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        long productId = mCalculatorOutputInfo.product.getId();
+                                        removeProductAsync(productId);
+                                    }
+                                });
+
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+        });
+
+        mViewHolder.textViewCalculatorProductName.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String text = ((TextView) mViewHolder.textViewCalculatorProductName.getCurrentView()).getText().toString();
+                if (TextUtils.isEmpty(text)) {
+                    return;
+                }
+
+                if (mPopupMenu != null) {
+                    mPopupMenu.show();
+                }
+            }
+        });
+    }
+
+    private void removeProductAsync(long productId) {
+        final ProductRepository productRepository = RepositoryProvider.getInstance(getContext()).resolve(ProductRepository.class);
+        AsyncTask<Long, Void, String> task = new AsyncTask<Long, Void, String>() {
+
+            @Override
+            protected String doInBackground(Long... params) {
+                String errorMessage = null;
+                long productId = params[0];
+
+                try {
+                    productRepository.remove(productId);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+
+                return errorMessage;
+            }
+
+            @Override
+            public void onPostExecute(String errorMessage) {
+                if (!TextUtils.isEmpty(errorMessage)) {
+                    DialogHelper.showAlertDialog(getContext(), errorMessage);
+                }else{
+                    EventBus.getDefault().post(new ProductSelectedEvent(null));
+                    EventBus.getDefault().post(new RefreshProductListEvent());
+                }
+            }
+        };
+        task.execute(productId);
     }
 
     public void bind(CalculatorOutputInfo outputInfo) {
@@ -336,6 +430,11 @@ public class CalculatorOutputView extends RelativeLayout {
     public void setProductName(String name) {
         mCalculatorOutputInfo.productName = name;
         mViewHolder.textViewCalculatorProductName.setText(name);
+    }
+
+    public void setProduct(Product product) {
+        mCalculatorOutputInfo.product = product;
+        setProductName(product != null ? product.getName() : "");
     }
 
     public void setCurrencyCode(String currencyCode) {

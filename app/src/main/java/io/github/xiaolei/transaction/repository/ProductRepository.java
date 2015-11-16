@@ -8,11 +8,13 @@ import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.misc.TransactionManager;
 import com.j256.ormlite.stmt.DeleteBuilder;
 import com.j256.ormlite.stmt.QueryBuilder;
+import com.j256.ormlite.stmt.UpdateBuilder;
 
 import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -76,6 +78,18 @@ public class ProductRepository extends BaseRepository {
         return productDao.queryForFirst(queryBuilder.prepare()) != null;
     }
 
+    public boolean isNameDuplicate(long productId, String productName) throws SQLException {
+        if (TextUtils.isEmpty(productName) || productId <= 0) {
+            return true;
+        }
+
+        QueryBuilder<Product, Long> queryBuilder = productDao.queryBuilder();
+        queryBuilder.where().ne(Product.ID, productId)
+                .and().eq(Product.NAME, productName).queryForFirst();
+
+        return productDao.queryForFirst(queryBuilder.prepare()) != null;
+    }
+
     public Product getProductByName(String productName) throws SQLException {
         if (TextUtils.isEmpty(productName)) {
             return null;
@@ -85,6 +99,37 @@ public class ProductRepository extends BaseRepository {
         queryBuilder.where().eq(Product.NAME, productName).queryForFirst();
 
         return productDao.queryForFirst(queryBuilder.prepare());
+    }
+
+    public void remove(long productId) throws SQLException {
+        DeleteBuilder<Product, Long> deleteBuilder = productDao.deleteBuilder();
+        deleteBuilder.where().eq(Product.ID, productId);
+        productDao.delete(deleteBuilder.prepare());
+    }
+
+    public Product rename(Product product, String newName) throws SQLException, ValidationException {
+        if (product == null || TextUtils.isEmpty(newName) || TextUtils.equals(newName, product.getName())) {
+            return product;
+        }
+
+        newName = newName.trim();
+
+        if (isNameDuplicate(product.getId(), newName)) {
+            throw new ValidationException(getContext().getString(R.string.name_duplicate));
+        }
+
+        product.setName(newName);
+
+        UpdateBuilder<Product, Long> updateBuilder = productDao.updateBuilder();
+        updateBuilder.updateColumnValue(Product.LAST_MODIFIED, new Date());
+        updateBuilder.updateColumnValue(Product.NAME, newName).where()
+                .eq(Product.ID, product.getId())
+                .and().eq(Product.ACCOUNT_ID, product.getAccountId());
+        productDao.update(updateBuilder.prepare());
+
+        Product result = productDao.queryForId(product.getId());
+
+        return result;
     }
 
     public Product createOrGetProductByName(String productName) throws SQLException {
