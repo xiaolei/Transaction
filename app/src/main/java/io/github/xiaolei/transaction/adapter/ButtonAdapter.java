@@ -17,19 +17,19 @@ import io.github.xiaolei.transaction.widget.SquareRelativeLayout;
 /**
  * TODO: add comment
  */
-public class CalculatorAdapter extends BaseAdapter implements IDataAdapter<CalculatorItem> {
-    private List<CalculatorItem> mItems = new ArrayList<CalculatorItem>();
+public class ButtonAdapter extends BaseAdapter implements IDataAdapter<ButtonInfo> {
+    private List<ButtonInfo> mItems = new ArrayList<ButtonInfo>();
     private Context mContext;
     private LayoutInflater mInflater;
     private ViewHolder mViewHolder;
 
-    public CalculatorAdapter(Context context, List<CalculatorItem> items) {
+    public ButtonAdapter(Context context, List<ButtonInfo> items) {
         mItems.addAll(items);
         mContext = context;
         mInflater = LayoutInflater.from(context);
     }
 
-    public void setProducts(List<CalculatorItem> items) {
+    public void setProducts(List<ButtonInfo> items) {
         mItems = items;
     }
 
@@ -62,7 +62,7 @@ public class CalculatorAdapter extends BaseAdapter implements IDataAdapter<Calcu
         return view;
     }
 
-    private void bindData(CalculatorItem item) {
+    private void bindData(ButtonInfo item) {
         if (mViewHolder == null) {
             return;
         }
@@ -74,14 +74,14 @@ public class CalculatorAdapter extends BaseAdapter implements IDataAdapter<Calcu
     }
 
     @Override
-    public void append(List<CalculatorItem> data) {
+    public void append(List<ButtonInfo> data) {
         if (data != null) {
             mItems.addAll(data);
         }
     }
 
     @Override
-    public void swap(List<CalculatorItem> data) {
+    public void swap(List<ButtonInfo> data) {
         mItems.clear();
         mItems.addAll(data);
         notifyDataSetChanged();

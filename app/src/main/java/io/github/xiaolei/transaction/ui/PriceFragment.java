@@ -13,8 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.github.xiaolei.transaction.R;
-import io.github.xiaolei.transaction.adapter.CalculatorAdapter;
-import io.github.xiaolei.transaction.adapter.CalculatorItem;
+import io.github.xiaolei.transaction.adapter.ButtonAdapter;
+import io.github.xiaolei.transaction.adapter.ButtonInfo;
 import io.github.xiaolei.transaction.entity.Product;
 import io.github.xiaolei.transaction.listener.OnCalculatorActionClickListener;
 import io.github.xiaolei.transaction.listener.OnCalculatorActionLongClickListener;
@@ -28,8 +28,9 @@ public class PriceFragment extends BaseFragment implements AdapterView.OnItemCli
     public static final String ARG_PRODUCT = "arg_product";
     private static final int TEXT_SIZE_ACTION_BUTTON = 15;
     private static final int TEXT_SIZE_NUMBER_BUTTON = 22;
-    private List<CalculatorItem> mItems;
-    private CalculatorAdapter mAdapter;
+
+    private ButtonAdapter mButtonsAdapter;
+
     private ViewHolder mViewHolder;
     private Product mProduct;
     private CalculatorOutputView mOutputView;
@@ -68,28 +69,34 @@ public class PriceFragment extends BaseFragment implements AdapterView.OnItemCli
 
     @Override
     public void load() {
-        mItems = new ArrayList<CalculatorItem>();
-        mItems.add(new CalculatorItem("Erase", 3, TEXT_SIZE_ACTION_BUTTON, R.drawable.action_button_selector, R.drawable.action_button_text_selector));
-        mItems.add(new CalculatorItem("7", 0, TEXT_SIZE_NUMBER_BUTTON, R.drawable.button_selector));
-        mItems.add(new CalculatorItem("8", 0, TEXT_SIZE_NUMBER_BUTTON, R.drawable.button_selector));
-        mItems.add(new CalculatorItem("9", 0, TEXT_SIZE_NUMBER_BUTTON, R.drawable.button_selector));
-        mItems.add(new CalculatorItem(getString(R.string.outgoing) + "\n－", 2, TEXT_SIZE_ACTION_BUTTON, R.drawable.action_button_selector, R.drawable.action_button_text_selector));
-        mItems.add(new CalculatorItem("4", 0, TEXT_SIZE_NUMBER_BUTTON, R.drawable.button_selector));
-        mItems.add(new CalculatorItem("5", 0, TEXT_SIZE_NUMBER_BUTTON, R.drawable.button_selector));
-        mItems.add(new CalculatorItem("6", 0, TEXT_SIZE_NUMBER_BUTTON, R.drawable.button_selector));
-        mItems.add(new CalculatorItem(getString(R.string.incoming) + "\n＋", 1, TEXT_SIZE_ACTION_BUTTON, R.drawable.action_button_selector, R.drawable.action_button_text_selector));
-        mItems.add(new CalculatorItem("1", 0, TEXT_SIZE_NUMBER_BUTTON, R.drawable.button_selector));
-        mItems.add(new CalculatorItem("2", 0, TEXT_SIZE_NUMBER_BUTTON, R.drawable.button_selector));
-        mItems.add(new CalculatorItem("3", 0, TEXT_SIZE_NUMBER_BUTTON, R.drawable.button_selector));
-        mItems.add(new CalculatorItem(getString(R.string.ok), 4, TEXT_SIZE_ACTION_BUTTON, R.drawable.confirm_button_selector, R.drawable.confirm_button_text_selector));
-        mItems.add(new CalculatorItem(getString(R.string.quantity), 5, TEXT_SIZE_ACTION_BUTTON, R.drawable.action_button_selector, R.drawable.action_button_text_selector));
-        mItems.add(new CalculatorItem(".", 0, TEXT_SIZE_NUMBER_BUTTON, R.drawable.button_selector));
-        mItems.add(new CalculatorItem("0", 0, TEXT_SIZE_NUMBER_BUTTON, R.drawable.button_selector));
+        List<ButtonInfo> buttons = new ArrayList<ButtonInfo>();
 
-        mAdapter = new CalculatorAdapter(getActivity(), mItems);
+        buttons.add(new ButtonInfo("7", 0, TEXT_SIZE_NUMBER_BUTTON, R.drawable.button_selector));
+        buttons.add(new ButtonInfo("8", 0, TEXT_SIZE_NUMBER_BUTTON, R.drawable.button_selector));
+        buttons.add(new ButtonInfo("9", 0, TEXT_SIZE_NUMBER_BUTTON, R.drawable.button_selector));
+        buttons.add(new ButtonInfo(getString(R.string.erase), 3, TEXT_SIZE_ACTION_BUTTON, R.drawable.action_button_selector, R.drawable.action_button_text_selector));
+
+        buttons.add(new ButtonInfo("4", 0, TEXT_SIZE_NUMBER_BUTTON, R.drawable.button_selector));
+        buttons.add(new ButtonInfo("5", 0, TEXT_SIZE_NUMBER_BUTTON, R.drawable.button_selector));
+        buttons.add(new ButtonInfo("6", 0, TEXT_SIZE_NUMBER_BUTTON, R.drawable.button_selector));
+        buttons.add(new ButtonInfo(getString(R.string.outgoing) + "\n－", 2, TEXT_SIZE_ACTION_BUTTON, R.drawable.action_button_selector, R.drawable.action_button_text_selector));
+
+        buttons.add(new ButtonInfo("1", 0, TEXT_SIZE_NUMBER_BUTTON, R.drawable.button_selector));
+        buttons.add(new ButtonInfo("2", 0, TEXT_SIZE_NUMBER_BUTTON, R.drawable.button_selector));
+        buttons.add(new ButtonInfo("3", 0, TEXT_SIZE_NUMBER_BUTTON, R.drawable.button_selector));
+        buttons.add(new ButtonInfo(getString(R.string.incoming) + "\n＋", 1, TEXT_SIZE_ACTION_BUTTON, R.drawable.action_button_selector, R.drawable.action_button_text_selector));
+
+        buttons.add(new ButtonInfo(".", 0, TEXT_SIZE_NUMBER_BUTTON, R.drawable.button_selector));
+        buttons.add(new ButtonInfo("0", 0, TEXT_SIZE_NUMBER_BUTTON, R.drawable.button_selector));
+
+        buttons.add(new ButtonInfo(getString(R.string.quantity), 5, TEXT_SIZE_ACTION_BUTTON, R.drawable.action_button_selector, R.drawable.action_button_text_selector));
+        buttons.add(new ButtonInfo(getString(R.string.ok), 4, TEXT_SIZE_ACTION_BUTTON, R.drawable.confirm_button_selector, R.drawable.confirm_button_text_selector));
+
+        mButtonsAdapter = new ButtonAdapter(getActivity(), buttons);
+
         mViewHolder.gridView.setOnItemClickListener(this);
         mViewHolder.gridView.setOnItemLongClickListener(this);
-        mViewHolder.gridView.setAdapter(mAdapter);
+        mViewHolder.gridView.setAdapter(mButtonsAdapter);
     }
 
     @Override
@@ -99,7 +106,7 @@ public class PriceFragment extends BaseFragment implements AdapterView.OnItemCli
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-        CalculatorItem actionItem = (CalculatorItem) adapterView.getAdapter().getItem(position);
+        ButtonInfo actionItem = (ButtonInfo) adapterView.getAdapter().getItem(position);
         if (actionItem != null && mOutputView != null) {
             if (mActionClickListener != null) {
                 mActionClickListener.onCalculatorActionClick(actionItem);
@@ -110,7 +117,7 @@ public class PriceFragment extends BaseFragment implements AdapterView.OnItemCli
     @Override
     public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long l) {
         if (mActionLongClickListener != null) {
-            CalculatorItem actionItem = (CalculatorItem) adapterView.getAdapter().getItem(position);
+            ButtonInfo actionItem = (ButtonInfo) adapterView.getAdapter().getItem(position);
             mActionLongClickListener.onCalculatorActionLongClick(actionItem);
             return true;
         }

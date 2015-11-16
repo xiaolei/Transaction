@@ -22,7 +22,7 @@ import de.greenrobot.event.EventBus;
 import io.github.xiaolei.enterpriselibrary.logging.Logger;
 import io.github.xiaolei.transaction.GlobalApplication;
 import io.github.xiaolei.transaction.R;
-import io.github.xiaolei.transaction.adapter.CalculatorItem;
+import io.github.xiaolei.transaction.adapter.ButtonInfo;
 import io.github.xiaolei.transaction.adapter.CalculatorPagerAdapter;
 import io.github.xiaolei.transaction.database.DatabaseHelper;
 import io.github.xiaolei.transaction.entity.Product;
@@ -170,8 +170,8 @@ public class CalculatorFragment extends BaseFragment implements OnProductSelecte
         if (mViewHolder.calculatorOutputView.getTransactionType() == TransactionType.Unknown) {
             mViewHolder.calculatorOutputView.setTransactionType(TransactionType.Outgoing);
         }
-        switchToPriceView();
 
+        switchToPriceView();
         showLastTransactionPriceAsync(product.getName());
     }
 
@@ -244,7 +244,7 @@ public class CalculatorFragment extends BaseFragment implements OnProductSelecte
     }
 
     @Override
-    public void onCalculatorActionClick(CalculatorItem item) {
+    public void onCalculatorActionClick(ButtonInfo item) {
         switch (item.actionId) {
             case 0:
                 mViewHolder.calculatorOutputView.output(item.text);
@@ -278,7 +278,7 @@ public class CalculatorFragment extends BaseFragment implements OnProductSelecte
     }
 
     @Override
-    public void onCalculatorActionLongClick(CalculatorItem item) {
+    public void onCalculatorActionLongClick(ButtonInfo item) {
         switch (item.actionId) {
             case 3:
                 mViewHolder.calculatorOutputView.clear();

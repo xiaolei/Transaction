@@ -8,5 +8,5 @@ import io.github.xiaolei.transaction.widget.CalculatorOutputView;
  * TODO: add comment
  */
 public interface IActionHandler {
-    void performAction(Context context, CalculatorItem actionItem, CalculatorOutputView outputView);
+    void performAction(Context context, ButtonInfo actionItem, CalculatorOutputView outputView);
 }

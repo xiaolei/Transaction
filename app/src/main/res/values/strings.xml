@@ -85,4 +85,5 @@
     <string name="execute_sql">Execute SQL</string>
     <string name="new_transaction">New Transaction</string>
     <string name="empty" />
+    <string name="erase">Erase</string>
 </resources>

@@ -1,21 +1,23 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
+
 
     <GridView
         android:id="@+id/gridViewCalculator"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/calculatorOutputView"
+        android:layout_weight="1"
         android:choiceMode="singleChoice"
         android:columnWidth="@dimen/product_item_width"
         android:drawSelectorOnTop="true"
-        android:horizontalSpacing="5dp"
+        android:horizontalSpacing="@dimen/grid_view_button_spacing"
         android:listSelector="@android:color/transparent"
-        android:numColumns="auto_fit"
+        android:numColumns="4"
         android:stretchMode="columnWidth"
-        android:verticalSpacing="5dp" />
+        android:verticalSpacing="@dimen/grid_view_button_spacing" />
 
-</RelativeLayout>
+</LinearLayout>
