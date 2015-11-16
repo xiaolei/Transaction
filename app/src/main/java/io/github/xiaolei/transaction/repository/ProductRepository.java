@@ -62,7 +62,9 @@ public class ProductRepository extends BaseRepository {
 
     public boolean exists(Product product) throws SQLException {
         QueryBuilder<Product, Long> queryBuilder = productDao.queryBuilder();
-        queryBuilder.where().eq(Product.NAME, product.getName()).and().ne(Product.ID, product.getId()).queryForFirst();
+        queryBuilder.where().eq(Product.NAME, product.getName())
+                .and().eq(Product.ACTIVE, true)
+                .and().ne(Product.ID, product.getId()).queryForFirst();
 
         return productDao.queryForFirst(queryBuilder.prepare()) != null;
     }
@@ -85,7 +87,8 @@ public class ProductRepository extends BaseRepository {
 
         QueryBuilder<Product, Long> queryBuilder = productDao.queryBuilder();
         queryBuilder.where().ne(Product.ID, productId)
-                .and().eq(Product.NAME, productName).queryForFirst();
+                .and().eq(Product.NAME, productName)
+                .and().eq(Product.ACTIVE, true).queryForFirst();
 
         return productDao.queryForFirst(queryBuilder.prepare()) != null;
     }
