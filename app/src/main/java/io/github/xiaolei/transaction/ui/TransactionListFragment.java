@@ -7,7 +7,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AbsListView;
-import android.widget.GridView;
+import android.widget.AdapterView;
+import android.widget.CheckedTextView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -42,8 +43,8 @@ public class TransactionListFragment extends BaseFragment {
     private Date mStartDate;
     private Date mEndDate;
 
+    private MultiChoiceModeListener mActionModeCallback = new MultiChoiceModeListener();
     private android.view.ActionMode mActionMode;
-    private boolean mIsSelectionMode = false;
 
     public TransactionListFragment() {
 
@@ -190,10 +191,6 @@ public class TransactionListFragment extends BaseFragment {
         mViewHolder.listViewTransactions.setMultiChoiceModeListener(new MultiChoiceModeListener());
     }
 
-    private void removeTransactions(List<Transaction> transactions){
-
-    }
-
     @Override
     public void onPause() {
         super.onPause();
@@ -202,7 +199,11 @@ public class TransactionListFragment extends BaseFragment {
         }
     }
 
-    private class MultiChoiceModeListener implements GridView.MultiChoiceModeListener {
+    private void removeTransactions(List<Transaction> transactions) {
+
+    }
+
+    private class MultiChoiceModeListener implements ListView.MultiChoiceModeListener {
         @Override
         public void onItemCheckedStateChanged(android.view.ActionMode actionMode, int position, long id, boolean checked) {
             int selectCount = mViewHolder.listViewTransactions.getCheckedItemCount();
@@ -218,10 +219,6 @@ public class TransactionListFragment extends BaseFragment {
 
         @Override
         public boolean onCreateActionMode(android.view.ActionMode actionMode, Menu menu) {
-            if (mIsSelectionMode) {
-                return false;
-            }
-
             mActionMode = actionMode;
             actionMode.getMenuInflater().inflate(R.menu.action_mode_product_list, menu);
             actionMode.setTitle("Select Transactions");

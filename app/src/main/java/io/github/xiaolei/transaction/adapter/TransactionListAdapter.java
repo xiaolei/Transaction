@@ -1,11 +1,17 @@
 package io.github.xiaolei.transaction.adapter;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.view.ActionMode;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.CheckedTextView;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,6 +23,7 @@ import io.github.xiaolei.enterpriselibrary.utility.CurrencyHelper;
 import io.github.xiaolei.enterpriselibrary.utility.DateTimeUtils;
 import io.github.xiaolei.transaction.R;
 import io.github.xiaolei.transaction.entity.Transaction;
+import io.github.xiaolei.transaction.listener.OnCheckedStateChangedListener;
 import io.github.xiaolei.transaction.widget.CurrencyTextView;
 
 /**
@@ -27,11 +34,22 @@ public class TransactionListAdapter extends BaseAdapter implements IDataAdapter<
     private List<Transaction> mTransactions;
     private LayoutInflater mInflater;
     private ViewHolder mViewHolder;
+    private OnCheckedStateChangedListener<CheckedTextView> mOnItemCheckedStateChangedListener;
 
     public TransactionListAdapter(Context context, List<Transaction> transactions) {
         mContext = context;
         mTransactions = transactions != null ? transactions : new ArrayList<Transaction>();
         mInflater = LayoutInflater.from(context);
+    }
+
+    public void setOnItemCheckedStateChanged(OnCheckedStateChangedListener<CheckedTextView> listener){
+        mOnItemCheckedStateChangedListener = listener;
+    }
+
+    protected void onItemCheckedStateChanged(CheckedTextView sender, boolean checked){
+        if(mOnItemCheckedStateChangedListener != null){
+            mOnItemCheckedStateChangedListener.onCheckedStateChanged(sender, checked);
+        }
     }
 
     @Override
@@ -69,7 +87,11 @@ public class TransactionListAdapter extends BaseAdapter implements IDataAdapter<
             return;
         }
 
-        mViewHolder.textViewProductName.setText(transaction.getProduct().getName());
+        int count = transaction.getProductCount();
+        String name = count == 1 ? transaction.getProduct().getName() :
+                String.format("%s × %d", transaction.getProduct().getName(), count);
+
+        mViewHolder.textViewProductName.setText(name);
         mViewHolder.textViewCreationTime.setText(DateTimeUtils.formatDateTime(transaction.getCreationTime()));
         mViewHolder.textViewPrice.setPrice(CurrencyHelper.castToBigDecimal(transaction.getPrice()), transaction.getCurrencyCode());
         mViewHolder.checkedTextViewTransactionIcon.setTag(transaction);
@@ -115,6 +137,8 @@ public class TransactionListAdapter extends BaseAdapter implements IDataAdapter<
         checkedTextView.setChecked(currentTransaction.checked);
 
         notifyDataSetChanged();
+
+        onItemCheckedStateChanged(checkedTextView, currentTransaction.checked);
     }
 
     private class ViewHolder {
