@@ -90,5 +90,6 @@
     <string name="rename">Rename</string>
     <string name="name_duplicate">This name has already been taken. Please change another one.</string>
     <string name="fail_rename_product">Rename failed, please try again.</string>
-    <string name="confirm_remove_product">Are you sure to remove this product?</string>
+    <string name="confirm_remove_product">Are you sure you want to remove this product?</string>
+    <string name="msg_confirm_remove_transactions">Are you sure you want to remove the selected transactions?</string>
 </resources>

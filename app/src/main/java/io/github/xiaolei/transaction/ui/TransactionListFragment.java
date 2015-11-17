@@ -1,29 +1,31 @@
 package io.github.xiaolei.transaction.ui;
 
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.format.DateUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AbsListView;
-import android.widget.AdapterView;
-import android.widget.CheckedTextView;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import bolts.Task;
 import de.greenrobot.event.EventBus;
 import io.github.xiaolei.enterpriselibrary.utility.DateTimeUtils;
+import io.github.xiaolei.enterpriselibrary.utility.DialogHelper;
 import io.github.xiaolei.transaction.GlobalApplication;
 import io.github.xiaolei.transaction.R;
 import io.github.xiaolei.transaction.adapter.GenericEndlessAdapter;
 import io.github.xiaolei.transaction.adapter.IPaginationDataLoader;
 import io.github.xiaolei.transaction.adapter.TransactionListAdapter;
 import io.github.xiaolei.transaction.entity.Transaction;
+import io.github.xiaolei.transaction.event.FinishActionMode;
 import io.github.xiaolei.transaction.event.RefreshTransactionListEvent;
 import io.github.xiaolei.transaction.repository.RepositoryProvider;
 import io.github.xiaolei.transaction.repository.TransactionRepository;
@@ -39,6 +41,7 @@ public class TransactionListFragment extends BaseFragment {
     public static final String ARG_TRANSACTION_END_DATE = "arg_transaction_end_date";
 
     private GenericEndlessAdapter<Transaction> mAdapter;
+    private TransactionListAdapter mTransactionListAdapter;
     private ViewHolder mViewHolder;
     private Date mStartDate;
     private Date mEndDate;
@@ -58,6 +61,13 @@ public class TransactionListFragment extends BaseFragment {
         fragment.setArguments(args);
 
         return fragment;
+    }
+
+    @Override
+    public void initialize(View view) {
+        mViewHolder = new ViewHolder(view);
+        mViewHolder.listViewTransactions.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+        mViewHolder.listViewTransactions.setMultiChoiceModeListener(new MultiChoiceModeListener());
     }
 
     @Override
@@ -163,15 +173,20 @@ public class TransactionListFragment extends BaseFragment {
                 if (result != null && result.size() > 0) {
                     mViewHolder.dataContainerViewTransactions.switchToDataView();
 
-                    TransactionListAdapter adapter = new TransactionListAdapter(getActivity(), result);
-                    mAdapter = new GenericEndlessAdapter<Transaction>(getActivity(), adapter, new IPaginationDataLoader<Transaction>() {
-                        @Override
-                        public List<Transaction> load(int offset, int limit) throws SQLException {
-                            return query(mStartDate, mEndDate, offset, limit);
-                        }
-                    });
-                    mViewHolder.listViewTransactions.setAdapter(mAdapter);
+                    if (mTransactionListAdapter == null) {
+                        mTransactionListAdapter = new TransactionListAdapter(getActivity(), result);
 
+                        mAdapter = new GenericEndlessAdapter<Transaction>(getActivity(), mTransactionListAdapter, new IPaginationDataLoader<Transaction>() {
+                            @Override
+                            public List<Transaction> load(int offset, int limit) throws SQLException {
+                                return query(mStartDate, mEndDate, offset, limit);
+                            }
+                        });
+
+                        mViewHolder.listViewTransactions.setAdapter(mAdapter);
+                    } else {
+                        mTransactionListAdapter.swap(result);
+                    }
                 } else {
                     mViewHolder.dataContainerViewTransactions.switchToEmptyView(getString(R.string.no_transaction));
                 }
@@ -184,29 +199,67 @@ public class TransactionListFragment extends BaseFragment {
         load();
     }
 
-    @Override
-    public void initialize(View view) {
-        mViewHolder = new ViewHolder(view);
-        mViewHolder.listViewTransactions.setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE);
-        mViewHolder.listViewTransactions.setMultiChoiceModeListener(new MultiChoiceModeListener());
+    public void onEvent(FinishActionMode event) {
+        finishActionModeIfNeeded();
     }
 
     @Override
     public void onPause() {
         super.onPause();
+        finishActionModeIfNeeded();
+    }
+
+    public void finishActionModeIfNeeded() {
         if (mActionMode != null) {
             mActionMode.finish();
         }
     }
 
     private void removeTransactions(List<Transaction> transactions) {
+        if (transactions == null || transactions.size() == 0) {
+            return;
+        }
 
+        List<Long> transactionIds = new ArrayList<>();
+        for (Transaction transaction : transactions) {
+            transactionIds.add(transaction.getId());
+        }
+
+        AsyncTask<List<Long>, Void, String> task = new AsyncTask<List<Long>, Void, String>() {
+
+            @Override
+            protected String doInBackground(List<Long>... params) {
+                List<Long> ids = params[0];
+                String errorMessage = null;
+                try {
+                    RepositoryProvider.getInstance(getActivity()).resolve(TransactionRepository.class)
+                            .removeTransactions(ids);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    errorMessage = e.getMessage();
+
+                }
+
+                return errorMessage;
+            }
+
+            @Override
+            public void onPostExecute(String errorMessage) {
+                load();
+            }
+        };
+        task.execute(transactionIds);
     }
 
     private class MultiChoiceModeListener implements ListView.MultiChoiceModeListener {
         @Override
         public void onItemCheckedStateChanged(android.view.ActionMode actionMode, int position, long id, boolean checked) {
             int selectCount = mViewHolder.listViewTransactions.getCheckedItemCount();
+            TransactionListAdapter adapter = mAdapter.getInnerAdapter(TransactionListAdapter.class);
+            Transaction transaction = (Transaction) adapter.getItem(position);
+            transaction.checked = checked;
+            adapter.notifyDataSetChanged();
+
             switch (selectCount) {
                 case 1:
                     actionMode.setSubtitle("One selected");
@@ -220,7 +273,7 @@ public class TransactionListFragment extends BaseFragment {
         @Override
         public boolean onCreateActionMode(android.view.ActionMode actionMode, Menu menu) {
             mActionMode = actionMode;
-            actionMode.getMenuInflater().inflate(R.menu.action_mode_product_list, menu);
+            actionMode.getMenuInflater().inflate(R.menu.action_mode_transaction_list, menu);
             actionMode.setTitle("Select Transactions");
             actionMode.setSubtitle("One Transaction selected");
 
@@ -235,8 +288,14 @@ public class TransactionListFragment extends BaseFragment {
         @Override
         public boolean onActionItemClicked(android.view.ActionMode actionMode, MenuItem menuItem) {
             switch (menuItem.getItemId()) {
-                case R.id.action_delete_product:
-                    removeTransactions(mAdapter.getInnerAdapter(TransactionListAdapter.class).getCheckedItems());
+                case R.id.action_delete_transaction:
+                    DialogHelper.showConfirmDialog(getActivity(), getString(R.string.msg_confirm_remove_transactions), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            removeTransactions(mAdapter.getInnerAdapter(TransactionListAdapter.class).getCheckedItems());
+                        }
+                    });
+
                     break;
                 default:
                     break;
@@ -247,6 +306,7 @@ public class TransactionListFragment extends BaseFragment {
         @Override
         public void onDestroyActionMode(android.view.ActionMode actionMode) {
             mActionMode = null;
+            mTransactionListAdapter.uncheckAll();
         }
     }
 

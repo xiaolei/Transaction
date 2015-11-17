@@ -8,6 +8,7 @@ import com.j256.ormlite.dao.GenericRawResults;
 import com.j256.ormlite.dao.RawRowMapper;
 import com.j256.ormlite.misc.TransactionManager;
 import com.j256.ormlite.stmt.QueryBuilder;
+import com.j256.ormlite.stmt.UpdateBuilder;
 
 import java.math.BigDecimal;
 import java.sql.SQLException;
@@ -79,6 +80,17 @@ public class TransactionRepository extends BaseRepository {
 
     public List<Transaction> query(long accountId, Date transactionDate) throws SQLException {
         return query(accountId, transactionDate, transactionDate);
+    }
+
+    public void removeTransactions(List<Long> transactionIds) throws SQLException {
+        if (transactionIds == null || transactionIds.size() == 0) {
+            return;
+        }
+
+        UpdateBuilder<Transaction, Long> updateBuilder = transactionDao.updateBuilder();
+        updateBuilder.updateColumnValue(Transaction.ACTIVE, false)
+                .where().in(Transaction.ID, transactionIds);
+        transactionDao.update(updateBuilder.prepare());
     }
 
     public BigDecimal getLastTransactionPrice(long accountId, String productName) throws SQLException {

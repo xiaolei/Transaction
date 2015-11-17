@@ -9,9 +9,11 @@ import android.view.View;
 
 import java.util.Date;
 
+import de.greenrobot.event.EventBus;
 import io.github.xiaolei.enterpriselibrary.utility.DateTimeUtils;
 import io.github.xiaolei.transaction.R;
 import io.github.xiaolei.transaction.adapter.TransactionListPagerAdapter;
+import io.github.xiaolei.transaction.event.FinishActionMode;
 import io.github.xiaolei.transaction.util.ActivityHelper;
 import io.github.xiaolei.transaction.viewmodel.DateRange;
 import io.github.xiaolei.transaction.viewmodel.TransactionFilterType;
@@ -105,6 +107,22 @@ public class TransactionNavigationFragment extends BaseFragment {
         }
 
         mViewHolder = new ViewHolder(view);
+        mViewHolder.viewPagerFragmentList.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                EventBus.getDefault().post(new FinishActionMode());
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
     }
 
     @Override
