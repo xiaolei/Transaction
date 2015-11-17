@@ -13,6 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
+        android:lineSpacingExtra="3dp"
         android:text="Label" />
 
     <TextView
