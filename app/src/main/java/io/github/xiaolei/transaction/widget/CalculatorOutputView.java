@@ -1,11 +1,11 @@
 package io.github.xiaolei.transaction.widget;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.v4.animation.ValueAnimatorCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.PopupMenu;
@@ -18,6 +18,10 @@ import android.widget.TextSwitcher;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
+import com.nineoldandroids.animation.ArgbEvaluator;
+import com.nineoldandroids.animation.ObjectAnimator;
+import com.nineoldandroids.animation.TypeEvaluator;
+import com.nineoldandroids.animation.ValueAnimator;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
@@ -26,7 +30,6 @@ import java.sql.SQLException;
 import java.util.Date;
 
 import de.greenrobot.event.EventBus;
-import io.github.xiaolei.enterpriselibrary.utility.AlertDialogButton;
 import io.github.xiaolei.enterpriselibrary.utility.DateTimeUtils;
 import io.github.xiaolei.enterpriselibrary.utility.DialogHelper;
 import io.github.xiaolei.transaction.R;
@@ -321,6 +324,9 @@ public class CalculatorOutputView extends RelativeLayout {
         } else {
             mViewHolder.textViewCalculatorPrice.setText(inputText);
         }
+
+        //ObjectAnimator mover = ObjectAnimator.ofFloat(mViewHolder.textViewCalculatorPrice, "translationX", mViewHolder.textViewCalculatorPrice.getTextSize()/2, 0);
+        //mover.start();
     }
 
     public String validate() {

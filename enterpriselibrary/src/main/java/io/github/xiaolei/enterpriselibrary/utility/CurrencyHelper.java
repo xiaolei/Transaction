@@ -43,4 +43,8 @@ public class CurrencyHelper {
     public static BigDecimal castToBigDecimal(int money) {
         return new BigDecimal(money).movePointLeft(MAXIMUM_FRACTION_DIGITS);
     }
+
+    public static int castToInteger(BigDecimal money){
+        return money.movePointRight(MAXIMUM_FRACTION_DIGITS).intValue();
+    }
 }

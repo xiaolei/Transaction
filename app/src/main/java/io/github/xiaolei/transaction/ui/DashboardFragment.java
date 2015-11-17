@@ -168,16 +168,20 @@ public class DashboardFragment extends BaseFragment implements GenericRecyclerVi
 
             @Override
             protected void onPostExecute(List<DashboardListItem> result) {
-                if (mViewHolder.listViewDashboard.getAdapter() == null) {
-                    mAdapter = new DashboardListAdapter(getContext(), result);
-                    mAdapter.setOnItemClickListener(DashboardFragment.this);
-                    mViewHolder.listViewDashboard.setAdapter(mAdapter);
-                } else {
-                    ((DashboardListAdapter) (mViewHolder.listViewDashboard.getAdapter())).swap(result);
-                }
+                bindData(result);
             }
         };
         task.execute();
+    }
+
+    private void bindData(List<DashboardListItem> result) {
+        if (mViewHolder.listViewDashboard.getAdapter() == null) {
+            mAdapter = new DashboardListAdapter(getContext(), result);
+            mAdapter.setOnItemClickListener(DashboardFragment.this);
+            mViewHolder.listViewDashboard.setAdapter(mAdapter);
+        } else {
+            ((DashboardListAdapter) (mViewHolder.listViewDashboard.getAdapter())).swap(result);
+        }
     }
 
     @Override

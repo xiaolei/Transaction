@@ -12,6 +12,7 @@ import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.github.xiaolei.enterpriselibrary.logging.Logger;
 import io.github.xiaolei.transaction.R;
 import io.github.xiaolei.transaction.adapter.ButtonAdapter;
 import io.github.xiaolei.transaction.adapter.ButtonInfo;
@@ -125,11 +126,11 @@ public class PriceFragment extends BaseFragment implements AdapterView.OnItemCli
         return false;
     }
 
-    public void setActionClickListener(OnCalculatorActionClickListener listener) {
+    public void setOnActionClickListener(OnCalculatorActionClickListener listener) {
         mActionClickListener = listener;
     }
 
-    public void setActionLongClickListener(OnCalculatorActionLongClickListener listener) {
+    public void setOnActionLongClickListener(OnCalculatorActionLongClickListener listener) {
         mActionLongClickListener = listener;
     }
 

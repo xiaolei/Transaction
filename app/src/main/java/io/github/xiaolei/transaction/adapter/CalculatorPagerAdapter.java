@@ -43,8 +43,8 @@ public class CalculatorPagerAdapter extends FragmentPagerAdapter {
             case 1:
                 PriceFragment fragment = new PriceFragment();
                 fragment.setOutputView(mOutputView);
-                fragment.setActionClickListener(mOnCalculatorActionClickListener);
-                fragment.setActionLongClickListener(mOnCalculatorActionLongClickListener);
+                fragment.setOnActionClickListener(mOnCalculatorActionClickListener);
+                fragment.setOnActionLongClickListener(mOnCalculatorActionLongClickListener);
                 result = fragment;
                 break;
         }
