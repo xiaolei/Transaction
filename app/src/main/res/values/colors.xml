@@ -11,7 +11,6 @@
     <color name="drawer_header_bg">#e0e0e0</color>
     <color name="incoming_text_color">#009688</color>
     <color name="expense_text_color">#dd2c00</color>
-    <color name="currency_code_pressed_bg_color">#8A000000</color>
 
     <color name="calculator_action_button_text_color">#ffffff</color>
     <color name="calculator_number_button_normal_color">#bdc3c7</color>
@@ -92,6 +91,7 @@
     <color name="app_secondary_text">#8A000000</color>
 
     <color name="white">#ffffff</color>
-    <color name="chart_grid_color">#e0e0e0</color>
+    <color name="light_gray">#e0e0e0</color>
+    <color name="dark_gray">#8A000000</color>
     <color name="black_semi_transparent">#4d000000</color>
 </resources>

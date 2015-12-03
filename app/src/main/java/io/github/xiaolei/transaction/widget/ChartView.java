@@ -1,29 +1,20 @@
 package io.github.xiaolei.transaction.widget;
 
 import android.content.Context;
-import android.content.res.TypedArray;
-import android.os.DropBoxManager;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.RelativeLayout;
 
 import com.github.mikephil.charting.charts.BarChart;
-import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
-import com.github.mikephil.charting.data.ChartData;
 import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.LineData;
-import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import io.github.xiaolei.transaction.R;
 import io.github.xiaolei.transaction.viewmodel.ChartDataSet;
@@ -89,7 +80,7 @@ public class ChartView extends RelativeLayout {
 
     protected void initialize(Context context, AttributeSet attrs) {
         View view = View.inflate(context, R.layout.view_chart, this);
-        int lineColor = getResources().getColor(R.color.chart_grid_color);
+        int lineColor = getResources().getColor(R.color.light_gray);
 
         mViewHolder = new ViewHolder(view);
         mViewHolder.chart.setDescription("");
