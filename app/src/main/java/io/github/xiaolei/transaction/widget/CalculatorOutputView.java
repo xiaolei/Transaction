@@ -85,6 +85,7 @@ public class CalculatorOutputView extends RelativeLayout {
         View view = View.inflate(context, R.layout.view_calculator_output, this);
         mViewHolder = new ViewHolder(view);
 
+        mViewHolder.textViewTransactionDate.setVisibility(View.GONE);
         mViewHolder.textViewCalculatorPrice.setText("");
         mViewHolder.textViewCalculatorProductName.setText("");
         mViewHolder.textViewCurrencyCode.setText(PreferenceHelper.DEFAULT_CURRENCY_CODE);
@@ -180,7 +181,7 @@ public class CalculatorOutputView extends RelativeLayout {
             public void onPostExecute(String errorMessage) {
                 if (!TextUtils.isEmpty(errorMessage)) {
                     DialogHelper.showAlertDialog(getContext(), errorMessage);
-                }else{
+                } else {
                     EventBus.getDefault().post(new ProductSelectedEvent(null));
                     EventBus.getDefault().post(new RefreshProductListEvent());
                 }
@@ -461,7 +462,7 @@ public class CalculatorOutputView extends RelativeLayout {
 
     public void setTransactionDate(Date date) {
         mCalculatorOutputInfo.date = date;
-        mViewHolder.textViewTransactionDate.setText(date != null ? String.format(getResources().getString(R.string.transaction_date), DateTimeUtils.formatDateTime(date)) : "");
+        mViewHolder.textViewTransactionDate.setText(date != null ? DateTimeUtils.formatDateTime(date) : "");
         mViewHolder.textViewTransactionDate.setVisibility(date != null ? View.VISIBLE : View.GONE);
     }
 

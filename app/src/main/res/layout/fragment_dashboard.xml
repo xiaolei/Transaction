@@ -20,7 +20,7 @@
         android:id="@+id/chartView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/margin_tiny"
+        android:padding="@dimen/spacing_tiny"
         android:visibility="gone" />
 
 </LinearLayout>

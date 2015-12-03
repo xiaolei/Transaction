@@ -15,7 +15,7 @@
             android:id="@+id/textViewText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/margin_small"
+            android:layout_marginLeft="@dimen/spacing_small"
             android:text="Medium Text"
             android:textSize="16sp" />
 
@@ -23,7 +23,7 @@
             android:id="@+id/textViewDateRange"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/margin_small"
+            android:layout_marginLeft="@dimen/spacing_small"
             android:text="Medium Text"
             android:textSize="12sp" />
     </LinearLayout>

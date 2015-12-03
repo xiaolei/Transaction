@@ -10,7 +10,7 @@
         android:layout_width="64dp"
         android:layout_height="64dp"
         android:layout_centerVertical="true"
-        android:layout_margin="@dimen/margin_medium"
+        android:layout_margin="@dimen/spacing_medium"
         android:scaleType="centerCrop"
         android:src="@drawable/ic_person_white_48dp"
         app:border_color="#E0F2F1"

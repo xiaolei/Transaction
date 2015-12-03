@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="@dimen/navigation_drawer_header_height"
     android:background="@color/app_primary"
-    android:padding="@dimen/margin_medium">
+    android:padding="@dimen/spacing_medium">
 
     <io.github.xiaolei.transaction.widget.AccountView
         android:id="@+id/accountView"
