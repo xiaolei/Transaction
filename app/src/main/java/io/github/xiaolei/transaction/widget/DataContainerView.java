@@ -5,7 +5,6 @@ import android.content.res.TypedArray;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 
@@ -16,7 +15,7 @@ import io.github.xiaolei.transaction.R;
 /**
  * TODO: add comment
  */
-public class DataContainerView extends RelativeLayout {
+public class DataContainerView extends ViewFlipper {
     public static final String TAG = DataContainerView.class.getSimpleName();
     public static final int VIEW_INDEX_DATA_LAYOUT = 0;
     public static final int VIEW_INDEX_BUSY_LAYOUT = 1;
@@ -43,11 +42,6 @@ public class DataContainerView extends RelativeLayout {
         this.initialize(context, attrs);
     }
 
-    public DataContainerView(Context context, AttributeSet attrs, int defStyle) {
-        super(context, attrs, defStyle);
-        this.initialize(context, attrs);
-    }
-
     protected void initialize(Context context, AttributeSet attrs) {
         if (attrs != null) {
             TypedArray typedArray = context.obtainStyledAttributes(attrs,
@@ -71,14 +65,12 @@ public class DataContainerView extends RelativeLayout {
         }
 
         mLayoutViewIndexMapping = new HashMap<Integer, Integer>();
-        mViewHolder = new ViewHolder();
-        View container = View.inflate(context, R.layout.view_data_container, this);
-        ViewFlipper viewFlipper = (ViewFlipper) container.findViewById(R.id.viewFlipperInDataContainer);
 
-        mViewHolder.dataView = View.inflate(context, mDataLayoutResourceId, viewFlipper);
-        mViewHolder.loadingView = View.inflate(context, mBusyLayoutResourceId, viewFlipper);
-        mViewHolder.retryView = View.inflate(context, mRetryLayoutResourceId, viewFlipper);
-        mViewHolder.emptyView = View.inflate(context, mEmptyLayoutResourceId, viewFlipper);
+        mViewHolder = new ViewHolder();
+        mViewHolder.dataView = View.inflate(context, mDataLayoutResourceId, this);
+        mViewHolder.loadingView = View.inflate(context, mBusyLayoutResourceId, this);
+        mViewHolder.retryView = View.inflate(context, mRetryLayoutResourceId, this);
+        mViewHolder.emptyView = View.inflate(context, mEmptyLayoutResourceId, this);
         mViewHolder.retryView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -151,8 +143,8 @@ public class DataContainerView extends RelativeLayout {
         if (mLayoutViewIndexMapping.containsKey(layoutResourceId)) {
             viewIndex = mLayoutViewIndexMapping.get(layoutResourceId);
         } else {
-            View.inflate(getContext(), layoutResourceId, mViewHolder.viewFlipper);
-            viewIndex = mViewHolder.viewFlipper.getChildCount() - 1;
+            View.inflate(getContext(), layoutResourceId, this);
+            viewIndex = getChildCount() - 1;
         }
 
         return viewIndex;
@@ -176,11 +168,10 @@ public class DataContainerView extends RelativeLayout {
     }
 
     protected void switchView(int viewIndex) {
-        mViewHolder.viewFlipper.setDisplayedChild(viewIndex);
+        setDisplayedChild(viewIndex);
     }
 
     private class ViewHolder {
-        public ViewFlipper viewFlipper;
         public View loadingView;
         public View retryView;
         public View dataView;
@@ -192,7 +183,6 @@ public class DataContainerView extends RelativeLayout {
         }
 
         public void findViews(View view) {
-            viewFlipper = (ViewFlipper) view.findViewById(R.id.viewFlipperInDataContainer);
             textViewNoResult = (TextView) view.findViewById(R.id.textViewNoResult);
         }
     }
