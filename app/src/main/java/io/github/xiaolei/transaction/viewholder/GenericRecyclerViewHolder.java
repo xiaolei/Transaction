@@ -8,12 +8,16 @@ import io.github.xiaolei.transaction.adapter.GenericRecyclerViewAdapter;
 /**
  * TODO: add comment
  */
-public abstract class BaseViewHolder extends RecyclerView.ViewHolder {
-    public BaseViewHolder(View itemView) {
+public abstract class GenericRecyclerViewHolder extends RecyclerView.ViewHolder {
+    public GenericRecyclerViewHolder(View itemView) {
         super(itemView);
     }
 
-    public BaseViewHolder(View itemView, final GenericRecyclerViewAdapter.OnRecyclerViewItemClickListener listener) {
+    public abstract void switchToLoadingView();
+
+    public abstract void switchToDataView();
+
+    public GenericRecyclerViewHolder(View itemView, final GenericRecyclerViewAdapter.OnRecyclerViewItemClickListener listener) {
         super(itemView);
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override

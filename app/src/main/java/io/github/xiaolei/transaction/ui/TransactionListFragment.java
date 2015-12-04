@@ -3,6 +3,8 @@ package io.github.xiaolei.transaction.ui;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.format.DateUtils;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,33 +17,32 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import bolts.Task;
 import de.greenrobot.event.EventBus;
+import io.github.xiaolei.enterpriselibrary.logging.Logger;
 import io.github.xiaolei.enterpriselibrary.utility.DateTimeUtils;
 import io.github.xiaolei.enterpriselibrary.utility.DialogHelper;
 import io.github.xiaolei.transaction.GlobalApplication;
 import io.github.xiaolei.transaction.R;
-import io.github.xiaolei.transaction.adapter.GenericEndlessAdapter;
-import io.github.xiaolei.transaction.adapter.IPaginationDataLoader;
-import io.github.xiaolei.transaction.adapter.TransactionListAdapter;
+import io.github.xiaolei.transaction.adapter.TransactionListNewAdapter;
 import io.github.xiaolei.transaction.entity.Transaction;
 import io.github.xiaolei.transaction.event.FinishActionMode;
 import io.github.xiaolei.transaction.event.RefreshTransactionListEvent;
+import io.github.xiaolei.transaction.listener.OnLoadMoreListener;
 import io.github.xiaolei.transaction.repository.RepositoryProvider;
 import io.github.xiaolei.transaction.repository.TransactionRepository;
 import io.github.xiaolei.transaction.util.ConfigurationManager;
+import io.github.xiaolei.transaction.viewmodel.LoadMoreReturnInfo;
 import io.github.xiaolei.transaction.widget.DataContainerView;
 
 /**
  * Transaction list fragment
  */
-public class TransactionListFragment extends BaseFragment {
+public class TransactionListFragment extends BaseFragment implements OnLoadMoreListener<Transaction> {
     public static final String TAG = TransactionListFragment.class.getSimpleName();
     public static final String ARG_TRANSACTION_START_DATE = "arg_transaction_start_date";
     public static final String ARG_TRANSACTION_END_DATE = "arg_transaction_end_date";
 
-    private GenericEndlessAdapter<Transaction> mAdapter;
-    private TransactionListAdapter mTransactionListAdapter;
+    private TransactionListNewAdapter mAdapter;
     private ViewHolder mViewHolder;
     private Date mStartDate;
     private Date mEndDate;
@@ -66,8 +67,11 @@ public class TransactionListFragment extends BaseFragment {
     @Override
     public void initialize(View view) {
         mViewHolder = new ViewHolder(view);
-        mViewHolder.listViewTransactions.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
-        mViewHolder.listViewTransactions.setMultiChoiceModeListener(new MultiChoiceModeListener());
+        //mViewHolder.recyclerViewTransactions.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+        //mViewHolder.recyclerViewTransactions.setMultiChoiceModeListener(new MultiChoiceModeListener());
+
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        mViewHolder.recyclerViewTransactions.setLayoutManager(layoutManager);
     }
 
     @Override
@@ -173,19 +177,11 @@ public class TransactionListFragment extends BaseFragment {
                 if (result != null && result.size() > 0) {
                     mViewHolder.dataContainerViewTransactions.switchToDataView();
 
-                    if (mTransactionListAdapter == null) {
-                        mTransactionListAdapter = new TransactionListAdapter(getActivity(), result);
-
-                        mAdapter = new GenericEndlessAdapter<Transaction>(getActivity(), mTransactionListAdapter, new IPaginationDataLoader<Transaction>() {
-                            @Override
-                            public List<Transaction> load(int offset, int limit) throws SQLException {
-                                return query(mStartDate, mEndDate, offset, limit);
-                            }
-                        });
-
-                        mViewHolder.listViewTransactions.setAdapter(mAdapter);
+                    if (mAdapter == null) {
+                        mAdapter = new TransactionListNewAdapter(mViewHolder.recyclerViewTransactions, result, TransactionListFragment.this);
+                        mViewHolder.recyclerViewTransactions.setAdapter(mAdapter);
                     } else {
-                        mTransactionListAdapter.swap(result);
+                        mAdapter.swap(result);
                     }
                 } else {
                     mViewHolder.dataContainerViewTransactions.switchToEmptyView(getString(R.string.no_transaction));
@@ -251,14 +247,22 @@ public class TransactionListFragment extends BaseFragment {
         task.execute(transactionIds);
     }
 
+    @Override
+    public LoadMoreReturnInfo<Transaction> loadMore(int pageIndex, int offset, int pageSize) {
+        List<Transaction> transactions = query(mStartDate, mEndDate, offset, pageSize);
+        boolean hasMore = transactions.size() > 0;
+        Logger.d(TAG, String.format("hasMore: %s", String.valueOf(hasMore)));
+
+        return new LoadMoreReturnInfo<>(transactions, hasMore);
+    }
+
     private class MultiChoiceModeListener implements ListView.MultiChoiceModeListener {
         @Override
         public void onItemCheckedStateChanged(android.view.ActionMode actionMode, int position, long id, boolean checked) {
-            int selectCount = mViewHolder.listViewTransactions.getCheckedItemCount();
-            TransactionListAdapter adapter = mAdapter.getInnerAdapter(TransactionListAdapter.class);
-            Transaction transaction = (Transaction) adapter.getItem(position);
+            int selectCount = 0; //mViewHolder.recyclerViewTransactions.getCheckedItemCount();
+            Transaction transaction = (Transaction) mAdapter.getItem(position);
             transaction.checked = checked;
-            adapter.notifyDataSetChanged();
+            mAdapter.notifyDataSetChanged();
 
             switch (selectCount) {
                 case 1:
@@ -292,7 +296,7 @@ public class TransactionListFragment extends BaseFragment {
                     DialogHelper.showConfirmDialog(getActivity(), getString(R.string.msg_confirm_remove_transactions), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            removeTransactions(mAdapter.getInnerAdapter(TransactionListAdapter.class).getCheckedItems());
+                            removeTransactions(mAdapter.getCheckedItems());
                         }
                     });
 
@@ -306,17 +310,19 @@ public class TransactionListFragment extends BaseFragment {
         @Override
         public void onDestroyActionMode(android.view.ActionMode actionMode) {
             mActionMode = null;
-            mTransactionListAdapter.uncheckAll();
+            mAdapter.uncheckAll();
         }
     }
 
     private class ViewHolder {
-        public ListView listViewTransactions;
+        //public ListView listViewTransactions;
+        public RecyclerView recyclerViewTransactions;
         public DataContainerView dataContainerViewTransactions;
         public TextView textViewTransactionDateRange;
 
         public ViewHolder(View view) {
-            listViewTransactions = (ListView) view.findViewById(R.id.listViewTransactions);
+            //listViewTransactions = (ListView) view.findViewById(R.id.listViewTransactions);
+            recyclerViewTransactions = (RecyclerView) view.findViewById(R.id.recyclerViewTransactions);
             dataContainerViewTransactions = (DataContainerView) view.findViewById(R.id.dataContainerViewTransactions);
             textViewTransactionDateRange = (TextView) view.findViewById(R.id.textViewTransactionDateRange);
         }

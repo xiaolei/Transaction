@@ -5,7 +5,7 @@ import io.github.xiaolei.transaction.viewholder.BaseViewHolder;
 /**
  * TODO: add comment
  */
-public class DashboardListItem extends BaseViewModel {
+public class DashboardListItem implements BaseViewModel {
     public String label;
     public String value;
 
