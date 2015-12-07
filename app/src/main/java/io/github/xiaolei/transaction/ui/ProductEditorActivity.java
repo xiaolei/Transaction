@@ -2,7 +2,6 @@ package io.github.xiaolei.transaction.ui;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.os.Bundle;
 import android.view.View;
 
@@ -23,13 +22,13 @@ public class ProductEditorActivity extends BaseActivity {
         handleIntent(getIntent());
     }
 
-    private void initialize() {
+    protected void initialize() {
         mViewHolder = new ViewHolder(this);
         mFragment = (ProductEditorFragment) getSupportFragmentManager().findFragmentById(R.id.fragmentProductEditor);
         setupToolbar(R.drawable.ic_arrow_back_white_24dp, new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                finish();
+                onBackPressed();
             }
         });
     }

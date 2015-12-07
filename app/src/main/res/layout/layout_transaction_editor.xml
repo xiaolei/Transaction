@@ -1,0 +1,58 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:padding="@dimen/spacing_medium">
+
+
+    <TextView
+        android:id="@+id/textViewProductName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:lineSpacingExtra="3dp"
+        android:text="Product Name"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textStyle="bold" />
+
+    <EditText
+        android:id="@+id/editTextTransactionDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_medium"
+        android:background="@color/white"
+        android:gravity="left"
+        android:hint="@string/hint_transaction_description"
+        android:lineSpacingExtra="3dp"
+        android:minHeight="100dp"
+        android:textColorHint="@color/disabled_text_color" />
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/spacing_tiny"
+        android:layout_marginLeft="@dimen/spacing_small"
+        android:layout_marginRight="@dimen/spacing_small"
+        android:layout_marginTop="@dimen/spacing_tiny">
+
+        <ImageView
+            android:id="@+id/imageViewCreationTimeIcon"
+            android:layout_width="12sp"
+            android:layout_height="12sp"
+            android:layout_centerVertical="true"
+            android:layout_marginTop="2dp"
+            android:background="@drawable/bitmap_clock_icon" />
+
+        <TextView
+            android:id="@+id/textViewCreationTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/spacing_tiny"
+            android:layout_toRightOf="@+id/imageViewCreationTimeIcon"
+            android:gravity="center_vertical"
+            android:text="2100-1-1 01:01:01"
+            android:textColor="@color/disabled_text_color"
+            android:textSize="12sp" />
+    </RelativeLayout>
+</LinearLayout>

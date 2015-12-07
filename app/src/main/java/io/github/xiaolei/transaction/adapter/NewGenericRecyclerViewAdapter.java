@@ -31,7 +31,6 @@ public abstract class NewGenericRecyclerViewAdapter<T, V extends GenericRecycler
     protected List<T> mItems = new ArrayList<T>();
     protected V mViewHolder;
     protected LayoutInflater mLayoutInflater;
-    protected OnRecyclerViewItemClickListener mOnItemClickListener;
     protected OnLoadMoreListener<T> mOnLoadMoreListener;
     protected EndlessRecyclerOnScrollListener mEndlessRecyclerOnScrollListener;
     private int mOffset = 0;
@@ -145,10 +144,6 @@ public abstract class NewGenericRecyclerViewAdapter<T, V extends GenericRecycler
         }
     }
 
-    public void setOnItemClickListener(OnRecyclerViewItemClickListener listener) {
-        mOnItemClickListener = listener;
-    }
-
     public void setOnLoadMoreListener(OnLoadMoreListener listener) {
         mOnLoadMoreListener = listener;
     }
@@ -157,16 +152,6 @@ public abstract class NewGenericRecyclerViewAdapter<T, V extends GenericRecycler
         if (mOnLoadMoreListener != null) {
             mOnLoadMoreListener.loadMore(pageIndex, mPageSize * pageIndex, mPageSize);
         }
-    }
-
-    protected void onItemClickListener(int position) {
-        if (mOnItemClickListener != null) {
-            mOnItemClickListener.onRecyclerViewItemClick(position);
-        }
-    }
-
-    protected OnRecyclerViewItemClickListener getOnItemClickListener() {
-        return mOnItemClickListener;
     }
 
     @Override

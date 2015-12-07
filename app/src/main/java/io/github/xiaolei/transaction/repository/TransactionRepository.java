@@ -57,6 +57,10 @@ public class TransactionRepository extends BaseRepository {
         return result;
     }
 
+    public Transaction getTransactionById(long transactionId) throws SQLException {
+        return transactionDao.queryForId(transactionId);
+    }
+
     public List<Transaction> query(long accountId, Date fromDate, Date toDate, long offset, long limit) throws SQLException {
         Dao<Transaction, Long> dao = getDataAccessObject(Transaction.class);
 
@@ -90,6 +94,13 @@ public class TransactionRepository extends BaseRepository {
         UpdateBuilder<Transaction, Long> updateBuilder = transactionDao.updateBuilder();
         updateBuilder.updateColumnValue(Transaction.ACTIVE, false)
                 .where().in(Transaction.ID, transactionIds);
+        transactionDao.update(updateBuilder.prepare());
+    }
+
+    public void updateTransactionDescription(long transactionId, String description) throws SQLException {
+        UpdateBuilder<Transaction, Long> updateBuilder = transactionDao.updateBuilder();
+        updateBuilder.updateColumnValue(Transaction.DESCRIPTION, description)
+                .where().eq(Transaction.ID, transactionId);
         transactionDao.update(updateBuilder.prepare());
     }
 

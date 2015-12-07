@@ -17,8 +17,10 @@
     <color name="calculator_number_button_pressed_color">#a1a6a9</color>
 
     <color name="button_light_color">#ffffff</color>
-    <color name="button_shadow_color">#8f8f8f</color><!-- #8f8f8f-->
-    <color name="button_color">#ffffff</color><!-- #f4f4f4-->
+    <color name="button_shadow_color">#8f8f8f</color>
+    <!-- #8f8f8f-->
+    <color name="button_color">#ffffff</color>
+    <!-- #f4f4f4-->
     <color name="button_pressed_border_color">#00BFA5</color>
     <color name="button_pressed_color">#EEEEEE</color>
     <color name="button_border_color">#e0e0e0</color>
@@ -94,4 +96,5 @@
     <color name="light_gray">#e0e0e0</color>
     <color name="dark_gray">#8A000000</color>
     <color name="black_semi_transparent">#4d000000</color>
+    <color name="dash_line">#e0e0e0</color>
 </resources>

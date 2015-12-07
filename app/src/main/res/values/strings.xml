@@ -92,4 +92,6 @@
     <string name="fail_rename_product">Rename failed, please try again.</string>
     <string name="confirm_remove_product">Are you sure you want to remove this product?</string>
     <string name="msg_confirm_remove_transactions">Are you sure you want to remove the selected transactions?</string>
+    <string name="hint_transaction_description">Input notes here</string>
+    <string name="msg_update_transaction_failed">Failed to update transaction information, please try again later.</string>
 </resources>

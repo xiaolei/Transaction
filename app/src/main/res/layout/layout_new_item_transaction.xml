@@ -1,54 +1,93 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:cardview="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cardViewTransaction"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:clickable="true"
+    android:foreground="?android:attr/selectableItemBackground"
+    cardview:cardCornerRadius="2dp"
+    cardview:cardElevation="2dp"
+    cardview:cardUseCompatPadding="true">
 
-    <android.support.v7.widget.CardView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        cardview:cardCornerRadius="3dp"
-        cardview:cardElevation="3dp"
-        cardview:cardUseCompatPadding="true">
+        android:background="@color/white"
+        android:orientation="vertical">
 
-        <LinearLayout
+        <ImageView
+            android:id="@+id/imageViewTransactionPhoto"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:background="@color/light_gray" />
+
+        <TextView
+            android:id="@+id/textViewProductName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/spacing_small"
+            android:layout_marginRight="@dimen/spacing_small"
+            android:layout_marginTop="@dimen/spacing_tiny"
+            android:text="Product Name"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textStyle="bold" />
+
+        <io.github.xiaolei.transaction.widget.CurrencyTextView
+            android:id="@+id/textViewPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/spacing_small"
+            android:layout_marginRight="@dimen/spacing_small"
+            android:layout_marginTop="@dimen/spacing_small" />
+
+        <TextView
+            android:id="@+id/textViewDescription"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/spacing_small"
+            android:layout_marginRight="@dimen/spacing_small"
+            android:layout_marginTop="@dimen/spacing_small"
+            android:lineSpacingExtra="3dp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginLeft="@dimen/spacing_small"
+            android:layout_marginRight="@dimen/spacing_small"
+            android:layout_marginTop="@dimen/spacing_small"
+            android:background="@drawable/dash_line"
+            android:layerType="software" />
+
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_marginBottom="@dimen/spacing_tiny"
+            android:layout_marginLeft="@dimen/spacing_small"
+            android:layout_marginRight="@dimen/spacing_small"
+            android:layout_marginTop="@dimen/spacing_tiny">
 
-            <TextView
-                android:id="@+id/textViewProductName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/spacing_small"
-                android:layout_marginRight="@dimen/spacing_small"
-                android:text="Product Name"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
-
-            <io.github.xiaolei.transaction.widget.CurrencyTextView
-                android:id="@+id/textViewPrice"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/spacing_small"
-                android:layout_marginRight="@dimen/spacing_small"
-                android:layout_marginTop="@dimen/spacing_small" />
-
-            <View
-                android:layout_marginTop="@dimen/spacing_small"
-                android:layout_width="match_parent"
-                android:layout_height="0.5dp"
-                android:background="@color/dark_gray" />
+            <ImageView
+                android:id="@+id/imageViewCreationTimeIcon"
+                android:layout_width="12sp"
+                android:layout_height="12sp"
+                android:layout_centerVertical="true"
+                android:layout_marginTop="2dp"
+                android:background="@drawable/bitmap_clock_icon" />
 
             <TextView
                 android:id="@+id/textViewCreationTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/spacing_small"
+                android:layout_marginLeft="@dimen/spacing_tiny"
+                android:layout_toRightOf="@+id/imageViewCreationTimeIcon"
+                android:gravity="center_vertical"
                 android:text="2100-1-1 01:01:01"
-                android:textColor="@color/secondary_text_color"
+                android:textColor="@color/disabled_text_color"
                 android:textSize="12sp" />
-        </LinearLayout>
+        </RelativeLayout>
 
-    </android.support.v7.widget.CardView>
-</LinearLayout>
+    </LinearLayout>
+
+</android.support.v7.widget.CardView>
 

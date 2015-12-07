@@ -61,6 +61,7 @@ public abstract class BaseFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+
         setActionBarTitle(getString(getActionBarTitle()));
     }
 
@@ -122,6 +123,10 @@ public abstract class BaseFragment extends Fragment {
     }
 
     public void refreshActivityTitle() {
+        if(!isAdded()){
+            return;
+        }
+
         Activity activity = getActivity();
         if (activity != null && activity instanceof ITitleChangeable) {
             ((ITitleChangeable) activity).setActionBarTitle(getActionBarTitle());
@@ -129,6 +134,10 @@ public abstract class BaseFragment extends Fragment {
     }
 
     public void setActionBarTitle(String title) {
+        if(!isAdded()){
+            return;
+        }
+
         Activity activity = getActivity();
         if (activity != null && activity instanceof ITitleChangeable) {
             ((ITitleChangeable) activity).setActionBarTitle(getActionBarTitle());

@@ -8,6 +8,8 @@ import com.j256.ormlite.table.DatabaseTable;
  */
 @DatabaseTable(tableName = "transaction")
 public class Transaction extends BaseEntity {
+    public static final String DESCRIPTION = "description";
+
     @DatabaseField(foreign = true, foreignAutoRefresh = true, canBeNull = false, columnName = "product_id")
     private Product product;
 
@@ -20,7 +22,7 @@ public class Transaction extends BaseEntity {
     @DatabaseField(canBeNull = false, columnName = "product_count")
     private int productCount;
 
-    @DatabaseField(columnName = "description")
+    @DatabaseField(columnName = DESCRIPTION)
     private String description;
 
     @DatabaseField(canBeNull = false, columnName = "currency_code")

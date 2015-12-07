@@ -1,8 +1,10 @@
 package io.github.xiaolei.transaction.ui;
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -24,6 +26,7 @@ import io.github.xiaolei.enterpriselibrary.utility.DateTimeUtils;
 import io.github.xiaolei.enterpriselibrary.utility.DialogHelper;
 import io.github.xiaolei.transaction.GlobalApplication;
 import io.github.xiaolei.transaction.R;
+import io.github.xiaolei.transaction.adapter.NewGenericRecyclerViewAdapter;
 import io.github.xiaolei.transaction.adapter.TransactionListNewAdapter;
 import io.github.xiaolei.transaction.entity.Transaction;
 import io.github.xiaolei.transaction.event.FinishActionMode;
@@ -31,6 +34,7 @@ import io.github.xiaolei.transaction.event.RefreshTransactionListEvent;
 import io.github.xiaolei.transaction.listener.OnLoadMoreListener;
 import io.github.xiaolei.transaction.repository.RepositoryProvider;
 import io.github.xiaolei.transaction.repository.TransactionRepository;
+import io.github.xiaolei.transaction.util.ActivityHelper;
 import io.github.xiaolei.transaction.util.ConfigurationManager;
 import io.github.xiaolei.transaction.viewmodel.LoadMoreReturnInfo;
 import io.github.xiaolei.transaction.widget.DataContainerView;
@@ -73,6 +77,7 @@ public class TransactionListFragment extends BaseFragment implements OnLoadMoreL
 
         RecyclerView.LayoutManager layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         mViewHolder.recyclerViewTransactions.setLayoutManager(layoutManager);
+        mViewHolder.recyclerViewTransactions.setItemAnimator(new DefaultItemAnimator());
     }
 
     @Override

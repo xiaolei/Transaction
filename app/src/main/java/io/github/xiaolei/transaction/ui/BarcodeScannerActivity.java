@@ -34,7 +34,7 @@ public class BarcodeScannerActivity extends BaseActivity implements BarcodeCallb
         initialize();
     }
 
-    private void initialize() {
+    public void initialize() {
         mViewHolder = new ViewHolder(this);
         mViewHolder.barcodeView.decodeContinuous(this);
     }

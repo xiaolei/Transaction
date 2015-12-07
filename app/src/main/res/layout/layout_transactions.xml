@@ -5,19 +5,14 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-
-    <!--
-        <ListView
-            android:id="@+id/listViewTransactions"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:drawSelectorOnTop="true" />
-        -->
-
-
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerViewTransactions"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:paddingBottom="@dimen/spacing_tiny"
+        android:paddingLeft="@dimen/spacing_tiny"
+        android:paddingRight="@dimen/spacing_tiny"
+        android:scrollbarStyle="insideOverlay" />
 
 </LinearLayout>

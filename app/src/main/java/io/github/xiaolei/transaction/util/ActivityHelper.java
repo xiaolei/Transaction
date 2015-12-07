@@ -7,6 +7,7 @@ import java.util.Date;
 
 import io.github.xiaolei.transaction.ui.NewTransactionActivity;
 import io.github.xiaolei.transaction.ui.ProductEditorActivity;
+import io.github.xiaolei.transaction.ui.TransactionEditorActivity;
 
 /**
  * TODO: add comment
@@ -29,6 +30,16 @@ public class ActivityHelper {
             intent.putExtra(NewTransactionActivity.ARG_TRANSACTION_DATE, transactionDate.getTime());
         }
 
+        context.startActivity(intent);
+    }
+
+    public static void startTransactionEditorActivity(Context context, long transactionId) {
+        if (context == null) {
+            return;
+        }
+
+        Intent intent = new Intent(context, TransactionEditorActivity.class);
+        intent.putExtra(TransactionEditorActivity.ARG_TRANSACTION_ID, transactionId);
         context.startActivity(intent);
     }
 }
