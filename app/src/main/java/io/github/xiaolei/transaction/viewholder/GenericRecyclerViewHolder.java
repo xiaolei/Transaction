@@ -13,10 +13,6 @@ public abstract class GenericRecyclerViewHolder extends RecyclerView.ViewHolder 
         super(itemView);
     }
 
-    public abstract void switchToLoadingView();
-
-    public abstract void switchToDataView();
-
     public GenericRecyclerViewHolder(View itemView, final GenericRecyclerViewAdapter.OnRecyclerViewItemClickListener listener) {
         super(itemView);
         itemView.setOnClickListener(new View.OnClickListener() {

@@ -6,7 +6,8 @@ import io.github.xiaolei.transaction.viewmodel.LoadMoreReturnInfo;
 
 public abstract class EndlessRecyclerOnScrollListener<T> extends RecyclerView.OnScrollListener implements OnOperationCompletedListener<LoadMoreReturnInfo<T>> {
     private int currentPage = 0;
-    private boolean loading = true;
+    private boolean loading = false;
+    private boolean mHasMore = true;
 
     public int getCurrentPage() {
         return currentPage;
@@ -22,7 +23,7 @@ public abstract class EndlessRecyclerOnScrollListener<T> extends RecyclerView.On
     public abstract void onLoadMore(int pageIndex, OnOperationCompletedListener<LoadMoreReturnInfo<T>> listener);
 
     public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-        if (loading) {
+        if (loading || !mHasMore) {
             return;
         }
 
@@ -31,9 +32,12 @@ public abstract class EndlessRecyclerOnScrollListener<T> extends RecyclerView.On
     }
 
     public void onLoadMoreCompleted(LoadMoreReturnInfo<T> result) {
+        loading = false;
         if (result != null && result.hasMore) {
             currentPage++;
         }
+
+        mHasMore = result.hasMore;
     }
 
     public void onScrollStateChanged(RecyclerView recyclerView, int newState) {

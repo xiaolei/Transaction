@@ -4,27 +4,28 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import io.github.xiaolei.transaction.entity.Transaction;
+import io.github.xiaolei.transaction.R;
 import io.github.xiaolei.transaction.listener.EndlessRecyclerOnScrollListener;
 import io.github.xiaolei.transaction.listener.OnLoadMoreListener;
 import io.github.xiaolei.transaction.listener.OnOperationCompletedListener;
-import io.github.xiaolei.transaction.viewholder.BaseViewHolder;
+import io.github.xiaolei.transaction.util.ConfigurationManager;
 import io.github.xiaolei.transaction.viewholder.GenericRecyclerViewHolder;
 import io.github.xiaolei.transaction.viewmodel.LoadMoreReturnInfo;
 
 /**
  * TODO: add comment
  */
-public abstract class NewGenericRecyclerViewAdapter<T, V extends GenericRecyclerViewHolder> extends RecyclerView.Adapter<V> implements IDataAdapter<T> {
+public abstract class NewGenericRecyclerViewAdapter<T, V extends GenericRecyclerViewHolder> extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements IDataAdapter<T> {
     protected static final int VIEW_TYPE_LOADING = 1;
     protected static final int VIEW_TYPE_DATA = 2;
 
-    protected int mPageSize = 10;
+    protected int mPageSize = ConfigurationManager.DEFAULT_PAGE_SIZE;
     protected Context mContext;
     protected RecyclerView mRecyclerView;
     protected List<T> mItems = new ArrayList<T>();
@@ -33,6 +34,7 @@ public abstract class NewGenericRecyclerViewAdapter<T, V extends GenericRecycler
     protected OnRecyclerViewItemClickListener mOnItemClickListener;
     protected OnLoadMoreListener<T> mOnLoadMoreListener;
     protected EndlessRecyclerOnScrollListener mEndlessRecyclerOnScrollListener;
+    private int mOffset = 0;
 
     public NewGenericRecyclerViewAdapter(RecyclerView recyclerView, List<T> items, final OnLoadMoreListener<T> onLoadMoreListener) {
         mRecyclerView = recyclerView;
@@ -40,21 +42,27 @@ public abstract class NewGenericRecyclerViewAdapter<T, V extends GenericRecycler
         mLayoutInflater = LayoutInflater.from(mContext);
         mOnLoadMoreListener = onLoadMoreListener;
         mItems = items;
+        mOffset = mItems.size();
         mEndlessRecyclerOnScrollListener = new EndlessRecyclerOnScrollListener<T>() {
 
             @Override
             public void onLoadMore(final int pageIndex, final OnOperationCompletedListener<LoadMoreReturnInfo<T>> listener) {
+                // Show loading footer
+                appendItem(null);
                 AsyncTask<Void, Void, LoadMoreReturnInfo<T>> task = new AsyncTask<Void, Void, LoadMoreReturnInfo<T>>() {
                     @Override
                     protected LoadMoreReturnInfo<T> doInBackground(Void... params) {
-                        return mOnLoadMoreListener.loadMore(pageIndex, pageIndex * mPageSize, mPageSize);
+                        return mOnLoadMoreListener.loadMore(pageIndex, mOffset + pageIndex * mPageSize, mPageSize);
                     }
 
                     @Override
                     public void onPostExecute(LoadMoreReturnInfo<T> result) {
-                        if(result != null){
+                        if (result != null) {
                             append(result.items);
                         }
+
+                        // Hide loading footer
+                        removeItem(null);
                         listener.onOperationCompleted(true, result, null);
                     }
                 };
@@ -67,6 +75,16 @@ public abstract class NewGenericRecyclerViewAdapter<T, V extends GenericRecycler
 
     public int getPageSize() {
         return mPageSize;
+    }
+
+    protected void removeItem(Object item) {
+        mItems.remove(item);
+        notifyDataSetChanged();
+    }
+
+    protected void appendItem(Object item) {
+        mItems.add(null);
+        notifyDataSetChanged();
     }
 
     @Override
@@ -91,25 +109,40 @@ public abstract class NewGenericRecyclerViewAdapter<T, V extends GenericRecycler
 
     @Override
     public int getItemViewType(int position) {
-        return (position >= mItems.size()) ? VIEW_TYPE_LOADING : VIEW_TYPE_DATA;
+        return mItems.get(position) == null ? VIEW_TYPE_LOADING : VIEW_TYPE_DATA;
     }
 
     protected abstract V createDataItemViewHolder(ViewGroup parent, int viewType);
 
-    @Override
-    public V onCreateViewHolder(ViewGroup parent, int viewType) {
-        if(viewType == VIEW_TYPE_LOADING){
-            return null;
-        }
+    protected abstract void bindData(V viewHolder, T item);
 
-        V viewHolder = createDataItemViewHolder(parent, viewType);
-        if (viewType == VIEW_TYPE_LOADING) {
-            viewHolder.switchToLoadingView();
+    protected void bindLoadingView(RecyclerView.ViewHolder viewHolder) {
+    }
+
+    protected RecyclerView.ViewHolder createLoadingViewHolder(ViewGroup parent, int viewType) {
+        View view = getLayoutInflater().inflate(R.layout.layout_footer_loading, parent, false);
+        return new FooterLoadingViewHolder(view);
+    }
+
+    @Override
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        RecyclerView.ViewHolder viewHolder = null;
+        if (viewType == VIEW_TYPE_DATA) {
+            viewHolder = createDataItemViewHolder(parent, viewType);
         } else {
-            viewHolder.switchToDataView();
+            viewHolder = createLoadingViewHolder(parent, viewType);
         }
 
         return viewHolder;
+    }
+
+    @Override
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        if (getItemViewType(position) == VIEW_TYPE_DATA) {
+            bindData((V) holder, mItems.get(position));
+        } else {
+            bindLoadingView(holder);
+        }
     }
 
     public void setOnItemClickListener(OnRecyclerViewItemClickListener listener) {
@@ -159,5 +192,12 @@ public abstract class NewGenericRecyclerViewAdapter<T, V extends GenericRecycler
 
     public interface OnRecyclerViewItemClickListener<T> {
         void onRecyclerViewItemClick(int position);
+    }
+
+    public class FooterLoadingViewHolder extends RecyclerView.ViewHolder {
+
+        public FooterLoadingViewHolder(View itemView) {
+            super(itemView);
+        }
     }
 }

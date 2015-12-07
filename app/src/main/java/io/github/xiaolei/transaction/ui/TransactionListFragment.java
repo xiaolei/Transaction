@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.text.format.DateUtils;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -70,7 +71,7 @@ public class TransactionListFragment extends BaseFragment implements OnLoadMoreL
         //mViewHolder.recyclerViewTransactions.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
         //mViewHolder.recyclerViewTransactions.setMultiChoiceModeListener(new MultiChoiceModeListener());
 
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        RecyclerView.LayoutManager layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         mViewHolder.recyclerViewTransactions.setLayoutManager(layoutManager);
     }
 

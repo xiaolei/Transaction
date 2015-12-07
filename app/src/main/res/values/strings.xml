@@ -57,7 +57,7 @@
     <string name="transactions">Transactions</string>
     <string name="analysis_fragment_title">Analysis</string>
     <string name="analysis">Analysis</string>
-    <string name="no_transaction">No matching transaction found</string>
+    <string name="no_transaction">No transaction</string>
     <string name="action_button_take_photo">Take Photo</string>
     <string name="action_button_choose_date">Choose Date</string>
     <string name="action_button_scan_barcode">Scan Barcode</string>

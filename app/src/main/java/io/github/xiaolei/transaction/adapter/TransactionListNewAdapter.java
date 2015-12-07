@@ -35,16 +35,12 @@ public class TransactionListNewAdapter extends NewGenericRecyclerViewAdapter<Tra
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
-        bindData(holder, mItems.get(position));
-    }
-
-    @Override
     public long getItemId(int i) {
         return mItems.get(i).getId();
     }
 
-    private void bindData(ViewHolder holder, Transaction transaction) {
+    @Override
+    public void bindData(ViewHolder holder, Transaction transaction) {
         if (holder == null || transaction == null) {
             return;
         }
@@ -88,7 +84,6 @@ public class TransactionListNewAdapter extends NewGenericRecyclerViewAdapter<Tra
     }
 
     public class ViewHolder extends GenericRecyclerViewHolder {
-        public ViewFlipper viewFlipperTransactionItem;
         public TextView textViewProductName;
         public TextView textViewCreationTime;
         public CurrencyTextView textViewPrice;
@@ -97,21 +92,10 @@ public class TransactionListNewAdapter extends NewGenericRecyclerViewAdapter<Tra
         public ViewHolder(View view) {
             super(view);
 
-            viewFlipperTransactionItem = (ViewFlipper) view.findViewById(R.id.viewFlipperTransactionItem);
             textViewProductName = (TextView) view.findViewById(R.id.textViewProductName);
             textViewCreationTime = (TextView) view.findViewById(R.id.textViewCreationTime);
             textViewPrice = (CurrencyTextView) view.findViewById(R.id.textViewPrice);
             checkedTextViewTransactionIcon = (CheckedTextView) view.findViewById(R.id.checkedTextViewTransactionIcon);
-        }
-
-        @Override
-        public void switchToLoadingView() {
-            viewFlipperTransactionItem.setDisplayedChild(1);
-        }
-
-        @Override
-        public void switchToDataView() {
-            viewFlipperTransactionItem.setDisplayedChild(0);
         }
     }
 }
