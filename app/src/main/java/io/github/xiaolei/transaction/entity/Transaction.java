@@ -1,6 +1,8 @@
 package io.github.xiaolei.transaction.entity;
 
+import com.j256.ormlite.dao.ForeignCollection;
 import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
 
 /**
@@ -27,6 +29,9 @@ public class Transaction extends BaseEntity {
 
     @DatabaseField(canBeNull = false, columnName = "currency_code")
     private String currencyCode;
+
+    @ForeignCollectionField(eager = true)
+    private ForeignCollection<TransactionPhoto> photos;
 
     public boolean checked;
 
@@ -80,5 +85,13 @@ public class Transaction extends BaseEntity {
 
     public void setProduct(Product product) {
         this.product = product;
+    }
+
+    public ForeignCollection<TransactionPhoto> getPhotos() {
+        return photos;
+    }
+
+    public void setPhotos(ForeignCollection<TransactionPhoto> photos) {
+        this.photos = photos;
     }
 }

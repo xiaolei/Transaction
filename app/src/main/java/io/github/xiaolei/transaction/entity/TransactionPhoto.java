@@ -17,6 +17,9 @@ public class TransactionPhoto extends BaseEntity {
     @DatabaseField(canBeNull = false, columnName = PHOTO_URL)
     private String photoUrl;
 
+    @DatabaseField(foreign = true, foreignColumnName = Transaction.ID)
+    private Transaction transaction;
+
     public TransactionPhoto() {
 
     }
@@ -35,5 +38,13 @@ public class TransactionPhoto extends BaseEntity {
 
     public void setPhotoUrl(String photoUrl) {
         this.photoUrl = photoUrl;
+    }
+
+    public Transaction getTransaction() {
+        return transaction;
+    }
+
+    public void setTransaction(Transaction transaction) {
+        this.transaction = transaction;
     }
 }
