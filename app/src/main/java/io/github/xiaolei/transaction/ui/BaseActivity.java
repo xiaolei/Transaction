@@ -12,7 +12,9 @@ import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
 
+import de.greenrobot.event.EventBus;
 import io.github.xiaolei.transaction.R;
+import io.github.xiaolei.transaction.event.SwitchToFragmentEvent;
 
 /**
  * TODO: add comment
@@ -41,6 +43,13 @@ public abstract class BaseActivity extends AppCompatActivity {
                 }
             }
         });
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onDestroy() {
+        EventBus.getDefault().unregister(this);
+        super.onDestroy();
     }
 
     protected void onFragmentPoppedFromBackStack(BaseFragment fragment) {
@@ -181,5 +190,9 @@ public abstract class BaseActivity extends AppCompatActivity {
     public boolean onSupportNavigateUp() {
         onBackPressed();
         return true;
+    }
+
+    public void onEvent(SwitchToFragmentEvent event) {
+        switchToFragment(event.fragmentTagName, event.arguments);
     }
 }

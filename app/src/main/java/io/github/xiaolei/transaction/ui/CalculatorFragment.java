@@ -38,6 +38,7 @@ import io.github.xiaolei.transaction.listener.OnCalculatorActionLongClickListene
 import io.github.xiaolei.transaction.listener.OnProductSelectedListener;
 import io.github.xiaolei.transaction.repository.RepositoryProvider;
 import io.github.xiaolei.transaction.repository.TransactionRepository;
+import io.github.xiaolei.transaction.util.ActivityHelper;
 import io.github.xiaolei.transaction.viewmodel.CalculatorOutputInfo;
 import io.github.xiaolei.transaction.viewmodel.DailyTransactionSummaryInfo;
 import io.github.xiaolei.transaction.viewmodel.TransactionType;
@@ -57,6 +58,7 @@ public class CalculatorFragment extends BaseFragment implements OnProductSelecte
     private Product mProduct;
     private CalculatorPagerAdapter mAdapter;
     private Date mTransactionDate;
+    private View.OnClickListener mOnSnackBarClickListener;
 
     public CalculatorFragment() {
 
@@ -104,6 +106,12 @@ public class CalculatorFragment extends BaseFragment implements OnProductSelecte
         }
 
         mViewHolder = new ViewHolder(view);
+        mOnSnackBarClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ActivityHelper.goToTransactionList(getActivity());
+            }
+        };
     }
 
     @Override
@@ -165,13 +173,13 @@ public class CalculatorFragment extends BaseFragment implements OnProductSelecte
 
     @Override
     public void onProductSelected(Product product) {
-        if(mProduct != null && product != null && TextUtils.equals(product.getName(), mProduct.getName())){
+        if (mProduct != null && product != null && TextUtils.equals(product.getName(), mProduct.getName())) {
             return;
         }
 
         mProduct = product;
 
-        if(product != null) {
+        if (product != null) {
             mViewHolder.calculatorOutputView.setProduct(product);
 
             if (mViewHolder.calculatorOutputView.getTransactionType() == TransactionType.Unknown) {
@@ -180,7 +188,7 @@ public class CalculatorFragment extends BaseFragment implements OnProductSelecte
 
             switchToPriceView();
             showLastTransactionPriceAsync(product.getName());
-        }else{
+        } else {
             reset();
         }
     }
@@ -384,7 +392,7 @@ public class CalculatorFragment extends BaseFragment implements OnProductSelecte
                     showDailyTransactionSummary();
                 }
 
-                showSnackbarMessage(mViewHolder.view, message);
+                showSnackbarMessage(mViewHolder.view, message, mOnSnackBarClickListener);
                 reset();
 
                 EventBus.getDefault().post(new RefreshTransactionListEvent());

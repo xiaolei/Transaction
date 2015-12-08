@@ -46,7 +46,6 @@ public class MainActivity extends BaseActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        EventBus.getDefault().register(this);
         mViewHolder = new ViewHolder(this);
 
         mMenuItemAndFragmentMapping.put(R.id.navigation_item_calculator, CalculatorFragment.class.getName());
@@ -137,12 +136,6 @@ public class MainActivity extends BaseActivity
     public void switchToHomeFragment() {
         switchToFragment(CalculatorFragment.class, null);
         mViewHolder.navigationView.setCheckedItem(R.id.navigation_item_calculator);
-    }
-
-    @Override
-    public void onDestroy() {
-        EventBus.getDefault().unregister(this);
-        super.onDestroy();
     }
 
     @Override

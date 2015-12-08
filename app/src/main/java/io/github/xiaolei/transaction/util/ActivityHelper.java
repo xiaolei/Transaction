@@ -5,9 +5,12 @@ import android.content.Intent;
 
 import java.util.Date;
 
+import de.greenrobot.event.EventBus;
+import io.github.xiaolei.transaction.event.SwitchToFragmentEvent;
 import io.github.xiaolei.transaction.ui.NewTransactionActivity;
 import io.github.xiaolei.transaction.ui.ProductEditorActivity;
 import io.github.xiaolei.transaction.ui.TransactionEditorActivity;
+import io.github.xiaolei.transaction.ui.TransactionNavigationFragment;
 
 /**
  * TODO: add comment
@@ -41,5 +44,9 @@ public class ActivityHelper {
         Intent intent = new Intent(context, TransactionEditorActivity.class);
         intent.putExtra(TransactionEditorActivity.ARG_TRANSACTION_ID, transactionId);
         context.startActivity(intent);
+    }
+
+    public static void goToTransactionList(Context context) {
+        EventBus.getDefault().post(new SwitchToFragmentEvent(TransactionNavigationFragment.class.getName(), null));
     }
 }

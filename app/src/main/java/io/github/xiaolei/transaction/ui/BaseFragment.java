@@ -2,6 +2,7 @@ package io.github.xiaolei.transaction.ui;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -123,7 +124,7 @@ public abstract class BaseFragment extends Fragment {
     }
 
     public void refreshActivityTitle() {
-        if(!isAdded()){
+        if (!isAdded()) {
             return;
         }
 
@@ -134,7 +135,7 @@ public abstract class BaseFragment extends Fragment {
     }
 
     public void setActionBarTitle(String title) {
-        if(!isAdded()){
+        if (!isAdded()) {
             return;
         }
 
@@ -150,6 +151,20 @@ public abstract class BaseFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 snackbar.dismiss();
+            }
+        });
+        snackbar.show();
+    }
+
+    public void showSnackbarMessage(View view, String message, final View.OnClickListener onClickListener) {
+        final Snackbar snackbar = Snackbar.make(view, message, Snackbar.LENGTH_LONG);
+        snackbar.getView().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                snackbar.dismiss();
+                if (onClickListener != null) {
+                    onClickListener.onClick(view);
+                }
             }
         });
         snackbar.show();
