@@ -15,6 +15,8 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.Toast;
 
+import java.io.File;
+
 import de.greenrobot.event.EventBus;
 import io.github.xiaolei.enterpriselibrary.utility.PhotoPicker;
 import io.github.xiaolei.transaction.R;
@@ -221,6 +223,8 @@ public abstract class BaseActivity extends AppCompatActivity {
             }
 
             if (!TextUtils.isEmpty(photoFileName)) {
+                boolean isFilePath = photoFileName.startsWith(File.separator);
+                photoFileName = "file:///" + photoFileName;
                 EventBus.getDefault().post(new PickPhotoEvent(photoFileName));
             }
         }
