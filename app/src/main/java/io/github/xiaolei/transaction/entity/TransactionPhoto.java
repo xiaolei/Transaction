@@ -9,35 +9,30 @@ import com.j256.ormlite.table.DatabaseTable;
 @DatabaseTable(tableName = "transaction_photo")
 public class TransactionPhoto extends BaseEntity {
     public static final String TRANSACTION_ID = "transaction_id";
-    public static final String PHOTO_URL = "photo_url";
+    public static final String PHOTO_ID = "photo_id";
 
     @DatabaseField(canBeNull = false, columnName = TRANSACTION_ID)
-    private int transactionId;
+    private long transactionId;
 
-    @DatabaseField(canBeNull = false, columnName = PHOTO_URL)
-    private String photoUrl;
+    @DatabaseField(canBeNull = false, columnName = PHOTO_ID)
+    private long photoId;
 
     @DatabaseField(foreign = true, foreignColumnName = Transaction.ID)
     private Transaction transaction;
+
+    @DatabaseField(foreign = true, foreignColumnName = Photo.ID)
+    private Photo photo;
 
     public TransactionPhoto() {
 
     }
 
-    public int getTransactionId() {
+    public long getTransactionId() {
         return transactionId;
     }
 
-    public void setTransactionId(int transactionId) {
+    public void setTransactionId(long transactionId) {
         this.transactionId = transactionId;
-    }
-
-    public String getPhotoUrl() {
-        return photoUrl;
-    }
-
-    public void setPhotoUrl(String photoUrl) {
-        this.photoUrl = photoUrl;
     }
 
     public Transaction getTransaction() {
@@ -46,5 +41,21 @@ public class TransactionPhoto extends BaseEntity {
 
     public void setTransaction(Transaction transaction) {
         this.transaction = transaction;
+    }
+
+    public long getPhotoId() {
+        return photoId;
+    }
+
+    public void setPhotoId(long photoId) {
+        this.photoId = photoId;
+    }
+
+    public Photo getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(Photo photo) {
+        this.photo = photo;
     }
 }

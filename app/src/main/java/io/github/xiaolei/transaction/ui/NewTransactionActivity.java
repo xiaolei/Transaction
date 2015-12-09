@@ -21,7 +21,6 @@ public class NewTransactionActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_transaction);
-        EventBus.getDefault().register(this);
 
         initialize();
     }
@@ -52,7 +51,6 @@ public class NewTransactionActivity extends BaseActivity {
 
     @Override
     public void onDestroy() {
-        EventBus.getDefault().unregister(this);
         super.onDestroy();
     }
 }

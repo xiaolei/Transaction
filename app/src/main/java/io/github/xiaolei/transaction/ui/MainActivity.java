@@ -214,29 +214,4 @@ public class MainActivity extends BaseActivity
             toolbar = (Toolbar) activity.findViewById(R.id.toolbar);
         }
     }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == Activity.RESULT_OK && (requestCode == PhotoPicker.IMAGE_PICK
-                || requestCode == PhotoPicker.IMAGE_CAPTURE)) {
-            String photoFileName = "";
-            switch (requestCode) {
-                case PhotoPicker.IMAGE_PICK:
-                    photoFileName = PhotoPicker.getInstance().extractImageUrlFromGallery(this, data);
-                    Toast.makeText(this, photoFileName, Toast.LENGTH_SHORT).show();
-                    break;
-
-                case PhotoPicker.IMAGE_CAPTURE:
-                    photoFileName = PhotoPicker.getInstance().getCameraPhotoFileName();
-                    Toast.makeText(this, photoFileName, Toast.LENGTH_SHORT).show();
-                    break;
-                default:
-                    break;
-            }
-
-            if (!TextUtils.isEmpty(photoFileName)) {
-                EventBus.getDefault().post(new PickPhotoEvent(photoFileName));
-            }
-        }
-    }
 }

@@ -161,12 +161,14 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
         }
     }
 
-    public void executeSql(String sql) {
-        if(TextUtils.isEmpty(sql)){
+    public void executeSql(String... sqlLines) {
+        if(sqlLines == null || sqlLines.length == 0){
             return;
         }
 
-        getWritableDatabase().execSQL(sql);
+        for(String sql: sqlLines) {
+            getWritableDatabase().execSQL(sql);
+        }
     }
 
     public void executeSql(String sql, Objects[] bindArgs) {

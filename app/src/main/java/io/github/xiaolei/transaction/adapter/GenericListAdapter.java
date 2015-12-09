@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -25,6 +26,10 @@ public abstract class GenericListAdapter<M, V> extends BaseAdapter {
     public GenericListAdapter(Context context, M[] items) {
         initialize(context);
         setItems(items);
+    }
+
+    public Context getContext(){
+        return mContext;
     }
 
     protected void initialize(Context context) {
@@ -54,7 +59,7 @@ public abstract class GenericListAdapter<M, V> extends BaseAdapter {
         this.setItems(list);
     }
 
-    public void swap(List<M> items) {
+    public void swap(Collection<M> items) {
         mItems.clear();
         if (items != null) {
             mItems.addAll(items);

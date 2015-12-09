@@ -1,5 +1,7 @@
 package io.github.xiaolei.transaction.ui;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -11,9 +13,12 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.Toast;
 
 import de.greenrobot.event.EventBus;
+import io.github.xiaolei.enterpriselibrary.utility.PhotoPicker;
 import io.github.xiaolei.transaction.R;
+import io.github.xiaolei.transaction.event.PickPhotoEvent;
 import io.github.xiaolei.transaction.event.SwitchToFragmentEvent;
 
 /**
@@ -194,5 +199,30 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     public void onEvent(SwitchToFragmentEvent event) {
         switchToFragment(event.fragmentTagName, event.arguments);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == Activity.RESULT_OK && (requestCode == PhotoPicker.IMAGE_PICK
+                || requestCode == PhotoPicker.IMAGE_CAPTURE)) {
+            String photoFileName = "";
+            switch (requestCode) {
+                case PhotoPicker.IMAGE_PICK:
+                    photoFileName = PhotoPicker.getInstance().extractImageUrlFromGallery(this, data);
+                    Toast.makeText(this, photoFileName, Toast.LENGTH_SHORT).show();
+                    break;
+
+                case PhotoPicker.IMAGE_CAPTURE:
+                    photoFileName = PhotoPicker.getInstance().getCameraPhotoFileName();
+                    Toast.makeText(this, photoFileName, Toast.LENGTH_SHORT).show();
+                    break;
+                default:
+                    break;
+            }
+
+            if (!TextUtils.isEmpty(photoFileName)) {
+                EventBus.getDefault().post(new PickPhotoEvent(photoFileName));
+            }
+        }
     }
 }

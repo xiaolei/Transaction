@@ -55,4 +55,22 @@
             android:textColor="@color/disabled_text_color"
             android:textSize="12sp" />
     </RelativeLayout>
+
+    <GridView
+        android:id="@+id/gridViewTransactionEditorActions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_medium"
+        android:choiceMode="singleChoice"
+        android:columnWidth="@dimen/action_button_size"
+        android:horizontalSpacing="5dp"
+        android:numColumns="auto_fit"
+        android:stretchMode="columnWidth"
+        android:verticalSpacing="5dp" />
+
+    <io.github.xiaolei.transaction.widget.PhotoGalleryView
+        android:id="@+id/photoGalleryViewTransactions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_medium" />
 </LinearLayout>
