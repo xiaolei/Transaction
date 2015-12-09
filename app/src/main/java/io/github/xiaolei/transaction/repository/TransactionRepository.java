@@ -8,6 +8,7 @@ import com.j256.ormlite.dao.GenericRawResults;
 import com.j256.ormlite.dao.RawRowMapper;
 import com.j256.ormlite.misc.TransactionManager;
 import com.j256.ormlite.stmt.QueryBuilder;
+import com.j256.ormlite.stmt.SelectArg;
 import com.j256.ormlite.stmt.UpdateBuilder;
 
 import java.math.BigDecimal;
@@ -99,7 +100,7 @@ public class TransactionRepository extends BaseRepository {
 
     public void updateTransactionDescription(long transactionId, String description) throws SQLException {
         UpdateBuilder<Transaction, Long> updateBuilder = transactionDao.updateBuilder();
-        updateBuilder.updateColumnValue(Transaction.DESCRIPTION, description)
+        updateBuilder.updateColumnValue(Transaction.DESCRIPTION, new SelectArg(description))
                 .where().eq(Transaction.ID, transactionId);
         transactionDao.update(updateBuilder.prepare());
     }

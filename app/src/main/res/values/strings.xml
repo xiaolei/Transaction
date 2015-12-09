@@ -96,4 +96,5 @@
     <string name="msg_update_transaction_failed">Failed to update transaction information, please try again later.</string>
     <string name="sql">CREATE TABLE "photo" ("id" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL , "url" TEXT NOT NULL, "description" TEXT, "last_modified" DATETIME DEFAULT current_timestamp, "creation_time" DATETIME NOT NULL  DEFAULT current_timestamp, "account_id" INTEGER NOT NULL , "active" BOOL NOT NULL  DEFAULT true, "sync_state" INTEGER NOT NULL  DEFAULT 0, "sync_batch_id" TEXT NOT NULL  DEFAULT "")</string>
     <string name="error_add_photo">Failed to add photo, please try again later.</string>
+    <string name="creation_time">Creation time: </string>
 </resources>

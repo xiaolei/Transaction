@@ -4,6 +4,7 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.stmt.UpdateBuilder;
 
 import java.sql.SQLException;
@@ -41,5 +42,12 @@ public class PhotoRepository extends BaseRepository {
         updateBuilder.updateColumnValue(Photo.ACTIVE, false).where().eq(Photo.ID, photoId);
 
         photoDao.update(updateBuilder.prepare());
+    }
+
+    public Photo queryByUrl(String photoUrl) throws SQLException {
+        QueryBuilder<Photo, Long> queryBuilder = photoDao.queryBuilder();
+        queryBuilder.where().eq(Photo.URL, photoUrl);
+
+        return photoDao.queryForFirst(queryBuilder.prepare());
     }
 }

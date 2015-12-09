@@ -147,7 +147,7 @@ public class ProductRepository extends BaseRepository {
         }
 
         Product product = new Product();
-        product.setAccount(GlobalApplication.getCurrentAccount());
+        product.setAccountId(GlobalApplication.getCurrentAccount().getId());
         product.setName(productName.trim());
         productDao.create(product);
 
@@ -246,7 +246,7 @@ public class ProductRepository extends BaseRepository {
                 ProductTag productTag = new ProductTag();
                 productTag.setProduct(product);
                 productTag.setTag(persistedTag);
-                productTag.setAccount(product.getAccount());
+                productTag.setAccountId(product.getAccountId());
 
                 productTagDao.create(productTag);
             }

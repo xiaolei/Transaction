@@ -36,7 +36,13 @@ public class PhotoListAdapter extends GenericListAdapter<Photo, PhotoListAdapter
 
     @Override
     public void bindData(ViewHolder viewHolder, Photo viewModel) {
-        Picasso.with(getContext()).load(new File(viewModel.getUrl())).fit().into(mViewHolder.imageViewPhoto);
+        boolean isFilePath = viewModel.getUrl().startsWith(File.separator);
+        Picasso.with(getContext())
+                .load(!isFilePath ? viewModel.getUrl() : "file:///" + viewModel.getUrl())
+                .fit()
+                .centerCrop()
+                .into(mViewHolder.imageViewPhoto);
+
         if (TextUtils.isEmpty(viewModel.getDescription())) {
             viewHolder.textViewPhotoName.setVisibility(View.GONE);
         } else {

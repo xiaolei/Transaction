@@ -15,7 +15,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/toolbar"
-        android:layout_margin="@dimen/spacing_medium"
         app:dataLayout="@layout/layout_transaction_editor" />
 </RelativeLayout>
 

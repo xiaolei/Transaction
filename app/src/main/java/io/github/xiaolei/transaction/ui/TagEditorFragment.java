@@ -62,7 +62,7 @@ public class TagEditorFragment extends BaseEditorFragment {
         if (mTagId > 0) {
             mTag = RepositoryProvider.getInstance(getActivity()).resolve(TagRepository.class).getDataAccessObject(Tag.class).queryForId(mTagId);
         } else {
-            mTag = new Tag("", GlobalApplication.getCurrentAccount());
+            mTag = new Tag("", GlobalApplication.getCurrentAccountId());
         }
     }
 

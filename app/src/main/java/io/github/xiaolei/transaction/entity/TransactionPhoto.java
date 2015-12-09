@@ -11,28 +11,14 @@ public class TransactionPhoto extends BaseEntity {
     public static final String TRANSACTION_ID = "transaction_id";
     public static final String PHOTO_ID = "photo_id";
 
-    @DatabaseField(canBeNull = false, columnName = TRANSACTION_ID)
-    private long transactionId;
-
-    @DatabaseField(canBeNull = false, columnName = PHOTO_ID)
-    private long photoId;
-
-    @DatabaseField(foreign = true, foreignColumnName = Transaction.ID)
+    @DatabaseField(foreign = true, columnName = TRANSACTION_ID, foreignColumnName = Transaction.ID)
     private Transaction transaction;
 
-    @DatabaseField(foreign = true, foreignColumnName = Photo.ID)
+    @DatabaseField(foreign = true, columnName = PHOTO_ID, foreignColumnName = Photo.ID)
     private Photo photo;
 
     public TransactionPhoto() {
 
-    }
-
-    public long getTransactionId() {
-        return transactionId;
-    }
-
-    public void setTransactionId(long transactionId) {
-        this.transactionId = transactionId;
     }
 
     public Transaction getTransaction() {
@@ -41,14 +27,6 @@ public class TransactionPhoto extends BaseEntity {
 
     public void setTransaction(Transaction transaction) {
         this.transaction = transaction;
-    }
-
-    public long getPhotoId() {
-        return photoId;
-    }
-
-    public void setPhotoId(long photoId) {
-        this.photoId = photoId;
     }
 
     public Photo getPhoto() {

@@ -36,6 +36,10 @@ public class GlobalApplication extends Application {
         return currentAccount;
     }
 
+    public static long getCurrentAccountId(){
+        return currentAccount != null ? currentAccount.getId() : -1;
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();

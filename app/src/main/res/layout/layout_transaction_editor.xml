@@ -1,76 +1,81 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/nestedScrollViewTransactionEditor"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    android:orientation="vertical"
-    android:padding="@dimen/spacing_medium">
+    android:clipToPadding="false"
+    android:padding="@dimen/spacing_medium"
+    android:scrollbarStyle="insideOverlay">
 
-
-    <TextView
-        android:id="@+id/textViewProductName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:lineSpacingExtra="3dp"
-        android:text="Product Name"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textStyle="bold" />
-
-    <EditText
-        android:id="@+id/editTextTransactionDescription"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_medium"
-        android:background="@color/white"
-        android:gravity="left"
-        android:hint="@string/hint_transaction_description"
-        android:lineSpacingExtra="3dp"
-        android:minHeight="100dp"
-        android:textColorHint="@color/disabled_text_color" />
-
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/spacing_tiny"
-        android:layout_marginLeft="@dimen/spacing_small"
-        android:layout_marginRight="@dimen/spacing_small"
-        android:layout_marginTop="@dimen/spacing_tiny">
-
-        <ImageView
-            android:id="@+id/imageViewCreationTimeIcon"
-            android:layout_width="12sp"
-            android:layout_height="12sp"
-            android:layout_centerVertical="true"
-            android:layout_marginTop="2dp"
-            android:background="@drawable/bitmap_clock_icon" />
+        android:orientation="vertical">
 
         <TextView
-            android:id="@+id/textViewCreationTime"
+            android:id="@+id/textViewProductName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/spacing_tiny"
-            android:layout_toRightOf="@+id/imageViewCreationTimeIcon"
+            android:lineSpacingExtra="3dp"
+            android:text="Product Name"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/editTextTransactionDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_medium"
+            android:background="@color/white"
+            android:gravity="left"
+            android:hint="@string/hint_transaction_description"
+            android:lineSpacingExtra="3dp"
+            android:minHeight="100dp"
+            android:textColorHint="@color/disabled_text_color" />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/spacing_medium"
+            android:layout_marginTop="@dimen/spacing_medium"
             android:gravity="center_vertical"
-            android:text="2100-1-1 01:01:01"
-            android:textColor="@color/disabled_text_color"
-            android:textSize="12sp" />
-    </RelativeLayout>
+            android:orientation="horizontal">
 
-    <GridView
-        android:id="@+id/gridViewTransactionEditorActions"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_medium"
-        android:choiceMode="singleChoice"
-        android:columnWidth="@dimen/action_button_size"
-        android:horizontalSpacing="5dp"
-        android:numColumns="auto_fit"
-        android:stretchMode="columnWidth"
-        android:verticalSpacing="5dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:text="@string/creation_time"
+                android:textColor="@color/disabled_text_color"
+                android:textSize="12sp" />
 
-    <io.github.xiaolei.transaction.widget.PhotoGalleryView
-        android:id="@+id/photoGalleryViewTransactions"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_medium" />
-</LinearLayout>
+            <TextView
+                android:id="@+id/textViewCreationTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:text="2100-1-1 01:01:01"
+                android:textColor="@color/disabled_text_color"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <io.github.xiaolei.transaction.widget.ExpandableGridView
+            android:id="@+id/gridViewTransactionEditorActions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:choiceMode="singleChoice"
+            android:columnWidth="@dimen/action_button_size"
+            android:horizontalSpacing="5dp"
+            android:numColumns="auto_fit"
+            android:stretchMode="columnWidth"
+            android:verticalSpacing="5dp" />
+
+        <io.github.xiaolei.transaction.widget.PhotoGalleryView
+            android:id="@+id/photoGalleryViewTransactions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_medium" />
+    </LinearLayout>
+</android.support.v4.widget.NestedScrollView>
+

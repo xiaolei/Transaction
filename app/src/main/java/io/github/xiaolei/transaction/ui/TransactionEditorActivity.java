@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.widget.NestedScrollView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -12,6 +13,8 @@ import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.squareup.picasso.Picasso;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -27,6 +30,7 @@ import io.github.xiaolei.transaction.entity.Transaction;
 import io.github.xiaolei.transaction.entity.TransactionPhoto;
 import io.github.xiaolei.transaction.event.PickPhotoEvent;
 import io.github.xiaolei.transaction.event.RefreshTransactionListEvent;
+import io.github.xiaolei.transaction.listener.PicassoScrollListener;
 import io.github.xiaolei.transaction.repository.RepositoryProvider;
 import io.github.xiaolei.transaction.repository.TransactionPhotoRepository;
 import io.github.xiaolei.transaction.repository.TransactionRepository;
@@ -78,6 +82,8 @@ public class TransactionEditorActivity extends BaseActivity {
 
             }
         });
+
+        mViewHolder.gridViewTransactionEditorActions.setOnScrollListener(new PicassoScrollListener(this));
     }
 
     protected void loadData() {
@@ -110,6 +116,7 @@ public class TransactionEditorActivity extends BaseActivity {
     }
 
     protected void bindData(Transaction transaction) {
+        setTitle(transaction.getProduct().getName());
         mViewHolder.textViewProductName.setText(transaction.getProduct().getName());
         mViewHolder.editTextTransactionDescription.setText(transaction.getDescription());
         mViewHolder.textViewCreationTime.setText(DateTimeUtils.formatDateTime(transaction.getCreationTime()));
@@ -232,6 +239,7 @@ public class TransactionEditorActivity extends BaseActivity {
     }
 
     private class ViewHolder {
+        public NestedScrollView nestedScrollViewTransactionEditor;
         public DataContainerView dataContainerViewTransactionEditor;
         public TextView textViewCreationTime;
         public TextView textViewProductName;
@@ -240,6 +248,7 @@ public class TransactionEditorActivity extends BaseActivity {
         public PhotoGalleryView photoGalleryViewTransactions;
 
         public ViewHolder(Activity activity) {
+            nestedScrollViewTransactionEditor = (NestedScrollView) activity.findViewById(R.id.nestedScrollViewTransactionEditor);
             dataContainerViewTransactionEditor = (DataContainerView) activity.findViewById(R.id.dataContainerViewTransactionEditor);
             editTextTransactionDescription = (EditText) activity.findViewById(R.id.editTextTransactionDescription);
             textViewCreationTime = (TextView) activity.findViewById(R.id.textViewCreationTime);

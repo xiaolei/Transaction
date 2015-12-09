@@ -363,7 +363,7 @@ public class CalculatorFragment extends BaseFragment implements OnProductSelecte
                     }
                     TransactionRepository repository = RepositoryProvider.getInstance(getActivity()).resolve(TransactionRepository.class);
                     Transaction transaction = new Transaction();
-                    transaction.setAccount(GlobalApplication.getCurrentAccount());
+                    transaction.setAccountId(GlobalApplication.getCurrentAccountId());
                     transaction.setCurrencyCode(outputInfo.currencyCode);
                     transaction.setProduct(mProduct);
                     transaction.setPrice(price * outputInfo.quantity);

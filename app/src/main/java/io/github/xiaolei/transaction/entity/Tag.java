@@ -24,9 +24,9 @@ public class Tag extends BaseEntity {
     public Tag() {
     }
 
-    public Tag(String name, Account account) {
+    public Tag(String name, long accountId) {
         setName(name);
-        setAccount(account);
+        setAccountId(accountId);
     }
 
     @Override

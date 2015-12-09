@@ -139,7 +139,7 @@ public class TagsView extends RelativeLayout {
         if (!exists) {
             Tag newTag = new Tag();
             newTag.setName(tag);
-            newTag.setAccount(GlobalApplication.getCurrentAccount());
+            newTag.setAccountId(GlobalApplication.getCurrentAccountId());
 
             mTags.add(newTag);
             View view = createView(newTag);

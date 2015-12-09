@@ -52,11 +52,11 @@ public class Product extends BaseEntity {
         this.id = id;
     }
 
-    public Product(String name, String description, Account account) {
+    public Product(String name, String description, long accountId) {
         this();
         setName(name);
         setDescription(description);
-        setAccount(account);
+        setAccountId(accountId);
     }
 
     public int getBannerColor() {

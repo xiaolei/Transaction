@@ -63,6 +63,10 @@ public abstract class BaseFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
+        if(!isAdded()){
+            return;
+        }
+
         setActionBarTitle(getString(getActionBarTitle()));
     }
 

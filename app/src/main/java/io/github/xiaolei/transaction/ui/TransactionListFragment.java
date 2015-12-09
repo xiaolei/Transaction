@@ -24,7 +24,7 @@ import io.github.xiaolei.enterpriselibrary.utility.DateTimeUtils;
 import io.github.xiaolei.enterpriselibrary.utility.DialogHelper;
 import io.github.xiaolei.transaction.GlobalApplication;
 import io.github.xiaolei.transaction.R;
-import io.github.xiaolei.transaction.adapter.TransactionListNewAdapter;
+import io.github.xiaolei.transaction.adapter.TransactionListRecyclerViewAdapter;
 import io.github.xiaolei.transaction.entity.Transaction;
 import io.github.xiaolei.transaction.event.FinishActionMode;
 import io.github.xiaolei.transaction.event.RefreshTransactionListEvent;
@@ -43,7 +43,7 @@ public class TransactionListFragment extends BaseFragment implements OnLoadMoreL
     public static final String ARG_TRANSACTION_START_DATE = "arg_transaction_start_date";
     public static final String ARG_TRANSACTION_END_DATE = "arg_transaction_end_date";
 
-    private TransactionListNewAdapter mAdapter;
+    private TransactionListRecyclerViewAdapter mAdapter;
     private ViewHolder mViewHolder;
     private Date mStartDate;
     private Date mEndDate;
@@ -180,7 +180,7 @@ public class TransactionListFragment extends BaseFragment implements OnLoadMoreL
                     mViewHolder.dataContainerViewTransactions.switchToDataView();
 
                     if (mAdapter == null) {
-                        mAdapter = new TransactionListNewAdapter(mViewHolder.recyclerViewTransactions, result, TransactionListFragment.this);
+                        mAdapter = new TransactionListRecyclerViewAdapter(mViewHolder.recyclerViewTransactions, result, TransactionListFragment.this);
                         mViewHolder.recyclerViewTransactions.setAdapter(mAdapter);
                     } else {
                         mAdapter.swap(result);

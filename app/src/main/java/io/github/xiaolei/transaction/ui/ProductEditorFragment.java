@@ -76,7 +76,7 @@ public class ProductEditorFragment extends BaseEditorFragment {
             mTags = productRepository.getProductTags(mProductId);
         } else {
             mProduct = new Product();
-            mProduct.setAccount(GlobalApplication.getCurrentAccount());
+            mProduct.setAccountId(GlobalApplication.getCurrentAccountId());
             mTags = new ArrayList<Tag>();
         }
     }
@@ -216,7 +216,7 @@ public class ProductEditorFragment extends BaseEditorFragment {
             if (tagNames.length > 0) {
                 for (String name : tagNames) {
                     Tag tag = new Tag();
-                    tag.setAccount(GlobalApplication.getCurrentAccount());
+                    tag.setAccountId(GlobalApplication.getCurrentAccountId());
                     tag.setName(name);
 
                     result.add(tag);

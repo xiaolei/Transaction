@@ -20,27 +20,35 @@ import io.github.xiaolei.transaction.entity.TransactionPhoto;
  */
 public class TransactionPhotoRepository extends BaseRepository {
     private Dao<TransactionPhoto, Long> transactionPhotoDao;
+    private Dao<Transaction, Long> transactionDao;
     private Dao<Photo, Long> photoDao;
 
     public TransactionPhotoRepository(Context context) throws SQLException {
         super(context);
 
         transactionPhotoDao = getDataAccessObject(TransactionPhoto.class);
+        transactionDao = getDataAccessObject(Transaction.class);
         photoDao = getDataAccessObject(Photo.class);
     }
 
     public Transaction addPhoto(final long transactionId, final String photoUrl, final String photoDescription, final long accountId) throws SQLException {
+        if (isTransactionPhotoDuplicate(transactionId, photoUrl)) {
+            return RepositoryProvider.getInstance(getContext()).resolve(TransactionRepository.class)
+                    .getTransactionById(transactionId);
+        }
+
         Transaction result = TransactionManager.callInTransaction(getDatabase().getConnectionSource(), new Callable<Transaction>() {
 
             @Override
             public Transaction call() throws Exception {
-                Photo photo = RepositoryProvider.getInstance(getContext()).resolve(PhotoRepository.class)
-                        .createPhoto(photoUrl, photoDescription, accountId);
+                PhotoRepository photoRepository = RepositoryProvider.getInstance(getContext()).resolve(PhotoRepository.class);
+                Photo photo = photoRepository.createPhoto(photoUrl, photoDescription, accountId);
 
                 TransactionPhoto newTransactionPhoto = new TransactionPhoto();
                 newTransactionPhoto.setAccountId(accountId);
-                newTransactionPhoto.setTransactionId(transactionId);
-                newTransactionPhoto.setPhotoId(photo.getId());
+                newTransactionPhoto.setTransaction(transactionDao.queryForId(transactionId));
+                newTransactionPhoto.setPhoto(photo);
+                transactionPhotoDao.create(newTransactionPhoto);
 
                 return RepositoryProvider.getInstance(getContext()).resolve(TransactionRepository.class)
                         .getTransactionById(transactionId);
@@ -56,5 +64,20 @@ public class TransactionPhotoRepository extends BaseRepository {
                 .eq(TransactionPhoto.ACCOUNT_ID, accountId).prepare();
 
         return transactionPhotoDao.query(preparedQuery);
+    }
+
+    public boolean isTransactionPhotoDuplicate(long transactionId, String photoUrl) throws SQLException {
+        PhotoRepository photoRepository = RepositoryProvider.getInstance(getContext()).resolve(PhotoRepository.class);
+        Photo photo = photoRepository.queryByUrl(photoUrl);
+        if (photo == null) {
+            return false;
+        }
+
+        QueryBuilder<TransactionPhoto, Long> queryBuilder = transactionPhotoDao.queryBuilder();
+        PreparedQuery<TransactionPhoto> preparedQuery = queryBuilder.where().eq(TransactionPhoto.PHOTO_ID, photo.getId())
+                .and()
+                .eq(TransactionPhoto.TRANSACTION_ID, transactionId).prepare();
+
+        return transactionPhotoDao.queryForFirst(preparedQuery) != null;
     }
 }

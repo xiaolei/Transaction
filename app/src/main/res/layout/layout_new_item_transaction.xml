@@ -48,7 +48,9 @@
             android:layout_marginLeft="@dimen/spacing_small"
             android:layout_marginRight="@dimen/spacing_small"
             android:layout_marginTop="@dimen/spacing_small"
-            android:lineSpacingExtra="3dp" />
+            android:ellipsize="end"
+            android:lineSpacingExtra="3dp"
+            android:maxLines="4" />
 
         <View
             android:layout_width="match_parent"
