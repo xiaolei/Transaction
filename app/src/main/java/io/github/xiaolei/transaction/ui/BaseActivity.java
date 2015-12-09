@@ -1,8 +1,12 @@
 package io.github.xiaolei.transaction.ui;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -22,11 +26,15 @@ import io.github.xiaolei.enterpriselibrary.utility.PhotoPicker;
 import io.github.xiaolei.transaction.R;
 import io.github.xiaolei.transaction.event.PickPhotoEvent;
 import io.github.xiaolei.transaction.event.SwitchToFragmentEvent;
+import io.github.xiaolei.transaction.listener.OnGotPermissionResultListener;
+import io.github.xiaolei.transaction.listener.PermissionResult;
 
 /**
  * TODO: add comment
  */
-public abstract class BaseActivity extends AppCompatActivity {
+public abstract class BaseActivity extends AppCompatActivity implements ActivityCompat.OnRequestPermissionsResultCallback {
+    public static final int REQUEST_CODE_CHECK_PERMISSION = 100;
+    protected OnGotPermissionResultListener mOnGotPermissionResultListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -227,6 +235,38 @@ public abstract class BaseActivity extends AppCompatActivity {
                 photoFileName = "file:///" + photoFileName;
                 EventBus.getDefault().post(new PickPhotoEvent(photoFileName));
             }
+        }
+    }
+
+    protected void onGotPermissionResult(PermissionResult permissionResult) {
+        if (permissionResult != null && mOnGotPermissionResultListener != null) {
+            mOnGotPermissionResultListener.onGotPermissionResult(permissionResult);
+        }
+    }
+
+    public void checkCameraPermission(OnGotPermissionResultListener onGotPermissionResultListener) {
+        checkPermission(Manifest.permission.CAMERA, REQUEST_CODE_CHECK_PERMISSION, onGotPermissionResultListener);
+    }
+
+    public void checkPermission(String permission, int requestCode, OnGotPermissionResultListener onGotPermissionResultListener) {
+        mOnGotPermissionResultListener = onGotPermissionResultListener;
+
+        if (ActivityCompat.checkSelfPermission(this, permission)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA},
+                    requestCode);
+        } else {
+            onGotPermissionResult(new PermissionResult(permission, true));
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                                           int[] grantResults) {
+        if (requestCode == REQUEST_CODE_CHECK_PERMISSION) {
+            boolean granted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
+            onGotPermissionResult(new PermissionResult(permissions[0], granted));
         }
     }
 }

@@ -10,6 +10,10 @@ import java.util.List;
 
 import io.github.xiaolei.enterpriselibrary.utility.PhotoPicker;
 import io.github.xiaolei.transaction.R;
+import io.github.xiaolei.transaction.listener.OnGotPermissionResultListener;
+import io.github.xiaolei.transaction.listener.PermissionResult;
+import io.github.xiaolei.transaction.ui.BaseActivity;
+import io.github.xiaolei.transaction.ui.MainActivity;
 import io.github.xiaolei.transaction.viewmodel.ActionButtonId;
 import io.github.xiaolei.transaction.viewmodel.ActionButtonInfo;
 
@@ -46,7 +50,16 @@ public class ActionButtonListAdapter extends GenericListAdapter<ActionButtonInfo
                 PhotoPicker.getInstance().pickPhotoFromGallery((Activity) getContext());
                 break;
             case ActionButtonId.TAKE_PHOTO:
-                PhotoPicker.getInstance().takePhoto((Activity) getContext());
+                BaseActivity activity = (BaseActivity) getContext();
+                activity.checkCameraPermission(new OnGotPermissionResultListener() {
+                    @Override
+                    public void onGotPermissionResult(PermissionResult permissionResult) {
+                        if(permissionResult.granted) {
+                            PhotoPicker.getInstance().takePhoto((Activity) getContext());
+                        }
+                    }
+                });
+
                 break;
             default:
                 break;
