@@ -12,6 +12,7 @@ import java.util.Collection;
 import io.github.xiaolei.transaction.R;
 import io.github.xiaolei.transaction.adapter.PhotoListAdapter;
 import io.github.xiaolei.transaction.entity.Photo;
+import io.github.xiaolei.transaction.listener.PicassoScrollListener;
 
 /**
  * TODO: add comment
@@ -40,6 +41,7 @@ public class PhotoGalleryView extends RelativeLayout {
     protected void initialize(Context context, AttributeSet attrs) {
         View view = View.inflate(context, R.layout.view_photo_gallery, this);
         mViewHolder = new ViewHolder(view);
+        mViewHolder.gridViewPhotos.setOnScrollListener(new PicassoScrollListener(getContext()));
     }
 
     public void bindData(Collection<Photo> photoCollection) {

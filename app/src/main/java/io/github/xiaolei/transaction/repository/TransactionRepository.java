@@ -443,4 +443,11 @@ public class TransactionRepository extends BaseRepository {
         Long value = result.getFirstResult();
         return value != null ? value.longValue() : 0;
     }
+
+    public void toggleStar(long transactionId, boolean starOn) throws SQLException {
+        UpdateBuilder<Transaction, Long> updateBuilder = transactionDao.updateBuilder();
+        updateBuilder.updateColumnValue(Transaction.STAR, starOn)
+                .where().eq(Transaction.ID, transactionId);
+        transactionDao.update(updateBuilder.prepare());
+    }
 }

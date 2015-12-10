@@ -9,6 +9,7 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.TextView;
@@ -19,7 +20,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.greenrobot.event.EventBus;
+import io.github.xiaolei.enterpriselibrary.logging.Logger;
 import io.github.xiaolei.enterpriselibrary.utility.DateTimeUtils;
+import io.github.xiaolei.enterpriselibrary.utility.DialogHelper;
+import io.github.xiaolei.enterpriselibrary.utility.PhotoPicker;
 import io.github.xiaolei.transaction.GlobalApplication;
 import io.github.xiaolei.transaction.R;
 import io.github.xiaolei.transaction.adapter.ActionButtonListAdapter;
@@ -28,7 +32,8 @@ import io.github.xiaolei.transaction.entity.Transaction;
 import io.github.xiaolei.transaction.entity.TransactionPhoto;
 import io.github.xiaolei.transaction.event.PickPhotoEvent;
 import io.github.xiaolei.transaction.event.RefreshTransactionListEvent;
-import io.github.xiaolei.transaction.listener.PicassoScrollListener;
+import io.github.xiaolei.transaction.listener.OnGotPermissionResultListener;
+import io.github.xiaolei.transaction.listener.PermissionResult;
 import io.github.xiaolei.transaction.repository.RepositoryProvider;
 import io.github.xiaolei.transaction.repository.TransactionPhotoRepository;
 import io.github.xiaolei.transaction.repository.TransactionRepository;
@@ -42,9 +47,11 @@ import io.github.xiaolei.transaction.widget.PhotoGalleryView;
  */
 public class TransactionEditorActivity extends BaseActivity {
     public static final String ARG_TRANSACTION_ID = "arg_transaction_id";
+    private static final String TAG = TransactionEditorActivity.class.getSimpleName();
     private ViewHolder mViewHolder;
     private long mTransactionId;
     private boolean mIsModified = false;
+    private Transaction mTransaction;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,7 +88,36 @@ public class TransactionEditorActivity extends BaseActivity {
             }
         });
 
-        mViewHolder.gridViewTransactionEditorActions.setOnScrollListener(new PicassoScrollListener(this));
+        mViewHolder.gridViewTransactionEditorActions.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                ActionButtonInfo actionButtonInfo = (ActionButtonInfo) parent.getItemAtPosition(position);
+                switch (actionButtonInfo.id) {
+                    case ActionButtonId.PICK_PHOTO_FROM_GALLERY:
+                        PhotoPicker.getInstance(TransactionEditorActivity.this).pickPhotoFromGallery(TransactionEditorActivity.this);
+                        break;
+                    case ActionButtonId.TAKE_PHOTO:
+                        checkCameraPermission(new OnGotPermissionResultListener() {
+                            @Override
+                            public void onGotPermissionResult(PermissionResult permissionResult) {
+                                if (permissionResult.granted) {
+                                    PhotoPicker.getInstance(TransactionEditorActivity.this).takePhoto(TransactionEditorActivity.this);
+                                } else {
+                                    Logger.e(TAG, String.format("Permission: %s is denied.", permissionResult.permission));
+                                }
+                            }
+                        });
+
+                        break;
+                    case ActionButtonId.TOGGLE_STAR:
+                        toggleStar(!mTransaction.getStar());
+                        break;
+                    default:
+                        break;
+                }
+            }
+        });
+
     }
 
     protected void loadData() {
@@ -107,6 +143,7 @@ public class TransactionEditorActivity extends BaseActivity {
                     return;
                 }
 
+                mTransaction = transaction;
                 bindData(transaction);
             }
         };
@@ -115,11 +152,12 @@ public class TransactionEditorActivity extends BaseActivity {
 
     protected void bindData(Transaction transaction) {
         setTitle(transaction.getProduct().getName());
+
         mViewHolder.textViewProductName.setText(transaction.getProduct().getName());
         mViewHolder.editTextTransactionDescription.setText(transaction.getDescription());
         mViewHolder.textViewCreationTime.setText(DateTimeUtils.formatDateTime(transaction.getCreationTime()));
 
-        buildActionButtons();
+        buildActionButtons(transaction);
         bindTransactionPhotos(transaction);
 
         mViewHolder.dataContainerViewTransactionEditor.switchToDataView();
@@ -139,12 +177,43 @@ public class TransactionEditorActivity extends BaseActivity {
         mViewHolder.photoGalleryViewTransactions.bindData(photos);
     }
 
-    private void buildActionButtons() {
+    private void buildActionButtons(Transaction transaction) {
+        int starDrawable = transaction.getStar() ? R.drawable.bitmap_star_on : R.drawable.ic_favorite_border_white_18dp;
+
         List<ActionButtonInfo> actionButtons = new ArrayList<>();
+        actionButtons.add(new ActionButtonInfo(ActionButtonId.TOGGLE_STAR, null, starDrawable));
         actionButtons.add(new ActionButtonInfo(ActionButtonId.PICK_PHOTO_FROM_GALLERY, null, R.drawable.ic_collections_white_18dp));
         actionButtons.add(new ActionButtonInfo(ActionButtonId.TAKE_PHOTO, null, R.drawable.ic_camera_alt_white_18dp));
         ActionButtonListAdapter actionButtonListAdapter = new ActionButtonListAdapter(this, actionButtons);
         mViewHolder.gridViewTransactionEditorActions.setAdapter(actionButtonListAdapter);
+    }
+
+    private void toggleStar(final boolean starOn) {
+        AsyncTask<Void, Void, Boolean> task = new AsyncTask<Void, Void, Boolean>() {
+
+            @Override
+            protected Boolean doInBackground(Void... params) {
+                try {
+                    RepositoryProvider.getInstance(TransactionEditorActivity.this).resolve(TransactionRepository.class)
+                            .toggleStar(mTransactionId, starOn);
+                    return true;
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    return false;
+                }
+            }
+
+            @Override
+            protected void onPostExecute(Boolean result) {
+                if (result) {
+                    mTransaction.setStar(starOn);
+                    buildActionButtons(mTransaction);
+                } else {
+                    DialogHelper.showAlertDialog(TransactionEditorActivity.this, getString(R.string.error_toggle_transaction_star));
+                }
+            }
+        };
+        task.execute();
     }
 
     private void save() {
@@ -174,6 +243,7 @@ public class TransactionEditorActivity extends BaseActivity {
                 if (!result) {
                     Toast.makeText(TransactionEditorActivity.this, getString(R.string.msg_update_transaction_failed), Toast.LENGTH_SHORT).show();
                 } else {
+                    mIsModified = true;
                     EventBus.getDefault().post(new RefreshTransactionListEvent());
                 }
             }
@@ -217,6 +287,12 @@ public class TransactionEditorActivity extends BaseActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        save();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
         save();
     }
 

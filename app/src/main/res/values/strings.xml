@@ -98,5 +98,6 @@
     <string name="error_add_photo">Failed to add photo, please try again later.</string>
     <string name="creation_time">Creation time:&#160;</string>
     <string name="photos">Photos</string>
-    <string name="total_photo_count">Total: %d</string>
+    <string name="total_photo_count">%d photos</string>
+    <string name="error_toggle_transaction_star">Sorry, toggle star failed.</string>
 </resources>

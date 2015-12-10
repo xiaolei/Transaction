@@ -142,9 +142,7 @@ public class CalculatorFragment extends BaseFragment implements OnProductSelecte
                 }
                 return true;
             case R.id.action_execute_sql:
-                DatabaseHelper.getInstance(getActivity()).executeSql("drop table transaction_photo",
-                        "CREATE TABLE \"photo\" (\"id\" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL , \"url\" TEXT NOT NULL, \"description\" TEXT, \"last_modified\" DATETIME DEFAULT current_timestamp, \"creation_time\" DATETIME NOT NULL  DEFAULT current_timestamp, \"account_id\" INTEGER NOT NULL , \"active\" BOOL NOT NULL  DEFAULT true, \"sync_state\" INTEGER NOT NULL  DEFAULT 0, \"sync_batch_id\" TEXT NOT NULL  DEFAULT \"\")"
-                , "CREATE TABLE \"transaction_photo\" (\"id\" INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL , \"transaction_id\" INTEGER NOT NULL , \"photo_id\" INTEGER NOT NULL , \"active\" BOOL NOT NULL  DEFAULT true, \"sync_state\" INTEGER NOT NULL  DEFAULT 0, \"sync_batch_id\" TEXT NOT NULL  DEFAULT \"\", \"creation_time\" DATETIME NOT NULL  DEFAULT current_timestamp, \"last_modified\" DATETIME DEFAULT current_timestamp, \"account_id\" INTEGER NOT NULL);");
+                DatabaseHelper.getInstance(getActivity()).executeSql("ALTER TABLE \"main\".\"transaction\" ADD COLUMN \"star\" BOOL DEFAULT false");
                 Toast.makeText(getActivity(), "SQL executed.", Toast.LENGTH_SHORT).show();
                 return true;
             default:

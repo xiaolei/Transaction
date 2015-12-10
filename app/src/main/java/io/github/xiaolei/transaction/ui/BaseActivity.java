@@ -95,6 +95,13 @@ public abstract class BaseActivity extends AppCompatActivity implements Activity
         return toolbar;
     }
 
+    protected void changeToolbarColor(int color) {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        if (toolbar != null) {
+            toolbar.setBackgroundColor(color);
+        }
+    }
+
     protected void setupToolbar(Toolbar toolbar, boolean showMenuIcon) {
         if (toolbar == null) {
             return;
@@ -249,11 +256,11 @@ public abstract class BaseActivity extends AppCompatActivity implements Activity
         checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, REQUEST_CODE_CHECK_PERMISSION, new OnGotPermissionResultListener() {
             @Override
             public void onGotPermissionResult(PermissionResult permissionResult) {
-                if(!permissionResult.granted){
-                    if(onGotPermissionResultListener != null) {
+                if (!permissionResult.granted) {
+                    if (onGotPermissionResultListener != null) {
                         onGotPermissionResultListener.onGotPermissionResult(permissionResult);
                     }
-                }else {
+                } else {
                     checkPermission(Manifest.permission.CAMERA,
                             REQUEST_CODE_CHECK_PERMISSION,
                             onGotPermissionResultListener);

@@ -1,6 +1,7 @@
 package io.github.xiaolei.transaction.entity;
 
 import com.j256.ormlite.dao.ForeignCollection;
+import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
@@ -11,24 +12,33 @@ import com.j256.ormlite.table.DatabaseTable;
 @DatabaseTable(tableName = "transaction")
 public class Transaction extends BaseEntity {
     public static final String DESCRIPTION = "description";
+    public static final String STAR = "star";
+    public static final String PRODUCT_PRICE = "product_price";
+    public static final String PRICE = "price";
+    public static final String PRODUCT_COUNT = "product_count";
+    public static final String CURRENCY_CODE = "currency_code";
+    public static final String PRODUCT_ID = "product_id";
 
-    @DatabaseField(foreign = true, foreignAutoRefresh = true, canBeNull = false, columnName = "product_id")
+    @DatabaseField(foreign = true, foreignAutoRefresh = true, canBeNull = false, columnName = PRODUCT_ID)
     private Product product;
 
-    @DatabaseField(canBeNull = false, columnName = "product_price")
+    @DatabaseField(canBeNull = false, columnName = PRODUCT_PRICE)
     private int productPrice;
 
-    @DatabaseField(canBeNull = false, columnName = "price")
+    @DatabaseField(canBeNull = false, columnName = PRICE)
     private int price;
 
-    @DatabaseField(canBeNull = false, columnName = "product_count")
+    @DatabaseField(canBeNull = false, columnName = PRODUCT_COUNT)
     private int productCount;
 
     @DatabaseField(columnName = DESCRIPTION)
     private String description;
 
-    @DatabaseField(canBeNull = false, columnName = "currency_code")
+    @DatabaseField(canBeNull = false, columnName = CURRENCY_CODE)
     private String currencyCode;
+
+    @DatabaseField(columnName = STAR, defaultValue = "false", dataType = DataType.BOOLEAN)
+    private boolean star;
 
     @ForeignCollectionField(eager = true, orderColumnName = CREATION_TIME, orderAscending = false)
     private ForeignCollection<TransactionPhoto> photos;
@@ -93,5 +103,13 @@ public class Transaction extends BaseEntity {
 
     public void setPhotos(ForeignCollection<TransactionPhoto> photos) {
         this.photos = photos;
+    }
+
+    public boolean getStar() {
+        return star;
+    }
+
+    public void setStar(boolean star) {
+        this.star = star;
     }
 }

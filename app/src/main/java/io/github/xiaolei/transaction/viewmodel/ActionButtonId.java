@@ -6,4 +6,5 @@ package io.github.xiaolei.transaction.viewmodel;
 public class ActionButtonId {
     public static final int PICK_PHOTO_FROM_GALLERY = 1;
     public static final int TAKE_PHOTO = 2;
+    public static final int TOGGLE_STAR = 3;
 }
