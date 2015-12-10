@@ -79,12 +79,11 @@ public class PhotoPicker {
 
     public void takePhoto(Activity context) {
         if (!isExternalStorageWritable()) {
-            Toast.makeText(context, context.getString(R.string.msg_external_storage_not_writable), Toast.LENGTH_SHORT).show();
+            DialogHelper.showAlertDialog(context, context.getString(R.string.msg_external_storage_not_writable));
             return;
         }
 
-        Intent intent = new Intent(
-                "android.media.action.IMAGE_CAPTURE");
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         String photoStorageFolderPath = Environment
                 .getExternalStorageDirectory().getAbsolutePath() + File.separator + getPhotoStorageFolderName(context);
         File folder = new File(photoStorageFolderPath);
@@ -93,7 +92,7 @@ public class PhotoPicker {
             boolean success = folder.mkdirs();
             if (!success) {
                 Logger.d(TAG, String.format("Failed to create dirs: %s", folder));
-                Toast.makeText(context, context.getString(R.string.error_failed_to_create_image_folder), Toast.LENGTH_SHORT).show();
+                DialogHelper.showAlertDialog(context, context.getString(R.string.error_failed_to_create_image_folder));
                 return;
             }
         }
@@ -103,6 +102,12 @@ public class PhotoPicker {
         File photo = new File(mOutputPhotoFromCamera);
 
         intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photo));
+
+        if (intent.resolveActivity(context.getPackageManager()) != null) {
+            DialogHelper.showAlertDialog(context, context.getString(R.string.camera_app_not_found));
+            return;
+        }
+
         context.startActivityForResult(intent, IMAGE_CAPTURE);
     }
 
