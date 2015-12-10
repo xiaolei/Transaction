@@ -246,12 +246,18 @@ public abstract class BaseActivity extends AppCompatActivity implements Activity
     }
 
     public void checkCameraPermission(final OnGotPermissionResultListener onGotPermissionResultListener) {
-        checkPermission(Manifest.permission.CAMERA, REQUEST_CODE_CHECK_PERMISSION, new OnGotPermissionResultListener() {
+        checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, REQUEST_CODE_CHECK_PERMISSION, new OnGotPermissionResultListener() {
             @Override
             public void onGotPermissionResult(PermissionResult permissionResult) {
-                checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                        REQUEST_CODE_CHECK_PERMISSION,
-                        onGotPermissionResultListener);
+                if(!permissionResult.granted){
+                    if(onGotPermissionResultListener != null) {
+                        onGotPermissionResultListener.onGotPermissionResult(permissionResult);
+                    }
+                }else {
+                    checkPermission(Manifest.permission.CAMERA,
+                            REQUEST_CODE_CHECK_PERMISSION,
+                            onGotPermissionResultListener);
+                }
             }
         });
     }
@@ -262,7 +268,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Activity
         if (ActivityCompat.checkSelfPermission(this, permission)
                 != PackageManager.PERMISSION_GRANTED) {
 
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA},
+            ActivityCompat.requestPermissions(this, new String[]{permission},
                     requestCode);
         } else {
             onGotPermissionResult(new PermissionResult(permission, true));

@@ -8,6 +8,8 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import io.github.xiaolei.enterpriselibrary.logging.Logger;
+import io.github.xiaolei.enterpriselibrary.utility.DialogHelper;
 import io.github.xiaolei.enterpriselibrary.utility.PhotoPicker;
 import io.github.xiaolei.transaction.R;
 import io.github.xiaolei.transaction.listener.OnGotPermissionResultListener;
@@ -21,6 +23,8 @@ import io.github.xiaolei.transaction.viewmodel.ActionButtonInfo;
  * TODO: add comment
  */
 public class ActionButtonListAdapter extends GenericListAdapter<ActionButtonInfo, ActionButtonListAdapter.ViewHolder> implements View.OnClickListener {
+    private static final String TAG = ActionButtonListAdapter.class.getSimpleName();
+
     public ActionButtonListAdapter(Context context, List<ActionButtonInfo> items) {
         super(context, items);
     }
@@ -56,6 +60,8 @@ public class ActionButtonListAdapter extends GenericListAdapter<ActionButtonInfo
                     public void onGotPermissionResult(PermissionResult permissionResult) {
                         if(permissionResult.granted) {
                             PhotoPicker.getInstance(getContext()).takePhoto((Activity) getContext());
+                        }else{
+                            Logger.e(TAG, String.format("Permission: %s is denied.", permissionResult.permission));
                         }
                     }
                 });

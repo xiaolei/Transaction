@@ -26,8 +26,8 @@ import io.github.xiaolei.enterpriselibrary.R;
  */
 public class PhotoPicker {
     public static final String TAG = PhotoPicker.class.getSimpleName();
-    public static final int IMAGE_PICK = 1;
-    public static final int IMAGE_CAPTURE = 2;
+    public static final int IMAGE_PICK = 301;
+    public static final int IMAGE_CAPTURE = 302;
 
     private static PhotoPicker INSTANCE = new PhotoPicker();
     private Context mContext;
@@ -108,10 +108,11 @@ public class PhotoPicker {
             return;
         }
 
+        mOutputPhotoFromCamera = Uri.fromFile(photoFile).toString();
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
 
-        if (intent.resolveActivity(context.getPackageManager()) != null) {
+        if (intent.resolveActivity(context.getPackageManager()) == null) {
             DialogHelper.showAlertDialog(context, context.getString(R.string.camera_app_not_found));
             return;
         }
@@ -133,12 +134,11 @@ public class PhotoPicker {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(new Date());
         String imageFileName = "TRANSACTION_" + timeStamp + "_";
-        String path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getAbsolutePath() + File.separator
-                + getPhotoStorageFolderName();
-        File storageDir = new File(path);
+
+        File storageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), getPhotoStorageFolderName());
         if (!storageDir.exists()) {
             if (!storageDir.mkdirs()) {
-                throw new IOException(String.format("Failed to create path: %s", path));
+                throw new IOException(String.format("Failed to create path: %s", storageDir.getAbsolutePath()));
             }
         }
 
