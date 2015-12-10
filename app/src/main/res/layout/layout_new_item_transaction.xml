@@ -19,7 +19,7 @@
         <ImageView
             android:id="@+id/imageViewTransactionPhoto"
             android:layout_width="match_parent"
-            android:layout_height="100dp"
+            android:layout_height="@dimen/card_view_image_height"
             android:background="@color/light_gray" />
 
         <TextView
@@ -87,6 +87,15 @@
                 android:text="2100-1-1 01:01:01"
                 android:textColor="@color/disabled_text_color"
                 android:textSize="12sp" />
+
+            <CheckBox
+                android:id="@+id/checkBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:visibility="gone" />
+
         </RelativeLayout>
 
     </LinearLayout>

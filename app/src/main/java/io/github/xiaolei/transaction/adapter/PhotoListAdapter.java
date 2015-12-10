@@ -15,6 +15,7 @@ import java.util.Collection;
 import io.github.xiaolei.transaction.R;
 import io.github.xiaolei.transaction.entity.Photo;
 import io.github.xiaolei.transaction.util.CollectionHelper;
+import io.github.xiaolei.transaction.util.ImageLoader;
 
 /**
  * TODO: add comment
@@ -37,22 +38,7 @@ public class PhotoListAdapter extends GenericListAdapter<Photo, PhotoListAdapter
 
     @Override
     public void bindData(final ViewHolder viewHolder, Photo viewModel) {
-        Picasso.with(getContext())
-                .load(viewModel.getUrl())
-                .fit()
-                .centerCrop()
-                .error(R.drawable.bitmap_missing)
-                .into(mViewHolder.imageViewPhoto, new Callback() {
-                    @Override
-                    public void onSuccess() {
-                        viewHolder.imageViewPhoto.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                    }
-
-                    @Override
-                    public void onError() {
-                        viewHolder.imageViewPhoto.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-                    }
-                });
+        ImageLoader.loadImage(getContext(), viewModel.getUrl(), viewHolder.imageViewPhoto);
 
         if (TextUtils.isEmpty(viewModel.getDescription())) {
             viewHolder.textViewPhotoName.setVisibility(View.GONE);

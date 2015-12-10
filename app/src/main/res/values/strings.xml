@@ -100,4 +100,5 @@
     <string name="photos">Photos</string>
     <string name="total_photo_count">%d photos</string>
     <string name="error_toggle_transaction_star">Sorry, toggle star failed.</string>
+    <string name="hint_type_product_name">Type Product Name</string>
 </resources>

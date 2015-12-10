@@ -13,7 +13,8 @@
         android:id="@+id/editTextProductName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Type Product Name"
+        android:hint="@string/hint_type_product_name"
+        android:imeOptions="actionDone"
         android:maxLength="64"
         android:singleLine="true" />
 </LinearLayout>

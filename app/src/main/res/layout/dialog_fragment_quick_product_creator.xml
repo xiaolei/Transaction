@@ -14,6 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Type Product Name"
+        android:imeOptions="actionDone"
         android:maxLength="64"
         android:singleLine="true">
 

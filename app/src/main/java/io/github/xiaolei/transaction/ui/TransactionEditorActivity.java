@@ -243,7 +243,7 @@ public class TransactionEditorActivity extends BaseActivity {
                 if (!result) {
                     Toast.makeText(TransactionEditorActivity.this, getString(R.string.msg_update_transaction_failed), Toast.LENGTH_SHORT).show();
                 } else {
-                    mIsModified = true;
+                    mIsModified = false;
                     EventBus.getDefault().post(new RefreshTransactionListEvent());
                 }
             }
@@ -278,6 +278,7 @@ public class TransactionEditorActivity extends BaseActivity {
                     Toast.makeText(TransactionEditorActivity.this, getString(R.string.error_add_photo), Toast.LENGTH_SHORT).show();
                 } else {
                     bindTransactionPhotos(result);
+                    EventBus.getDefault().post(new RefreshTransactionListEvent());
                 }
             }
         };

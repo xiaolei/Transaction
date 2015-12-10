@@ -17,6 +17,7 @@ import io.github.xiaolei.transaction.R;
 import io.github.xiaolei.transaction.entity.Transaction;
 import io.github.xiaolei.transaction.listener.OnLoadMoreListener;
 import io.github.xiaolei.transaction.util.ActivityHelper;
+import io.github.xiaolei.transaction.util.ImageLoader;
 import io.github.xiaolei.transaction.viewholder.GenericRecyclerViewHolder;
 import io.github.xiaolei.transaction.widget.CurrencyTextView;
 
@@ -55,7 +56,15 @@ public class TransactionListRecyclerViewAdapter extends NewGenericRecyclerViewAd
         String name = count == 1 ? transaction.getProduct().getName() :
                 String.format("%s × %d", transaction.getProduct().getName(), count);
 
-        holder.imageViewTransactionPhoto.setVisibility(View.GONE);
+        if (transaction.getPhotos() != null && transaction.getPhotos().size() > 0) {
+            holder.imageViewTransactionPhoto.setVisibility(View.VISIBLE);
+            ImageLoader.loadImage(getContext(),
+                    transaction.getPhotos().iterator().next().getPhoto().getUrl(),
+                    holder.imageViewTransactionPhoto);
+        } else {
+            holder.imageViewTransactionPhoto.setVisibility(View.GONE);
+        }
+
         holder.textViewProductName.setText(name);
         holder.textViewCreationTime.setText(DateTimeUtils.formatDateTime(transaction.getCreationTime()));
         holder.textViewPrice.setPrice(CurrencyHelper.castToBigDecimal(transaction.getPrice()), transaction.getCurrencyCode());

@@ -12,10 +12,13 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
+import android.widget.TextView;
 
 import java.sql.SQLException;
 
@@ -77,6 +80,17 @@ public class ProductCreatorDialog extends DialogFragment {
             @Override
             public void afterTextChanged(Editable s) {
 
+            }
+        });
+
+        mViewHolder.editTextProductName.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
+                    chooseProduct();
+                    dismiss();
+                }
+                return false;
             }
         });
 
