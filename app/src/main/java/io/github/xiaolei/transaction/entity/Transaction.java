@@ -30,12 +30,12 @@ public class Transaction extends BaseEntity {
     @DatabaseField(canBeNull = false, columnName = "currency_code")
     private String currencyCode;
 
-    @ForeignCollectionField(eager = true)
+    @ForeignCollectionField(eager = true, orderColumnName = CREATION_TIME, orderAscending = false)
     private ForeignCollection<TransactionPhoto> photos;
 
     public boolean checked;
 
-    public Transaction(){
+    public Transaction() {
         this.setActive(true);
     }
 

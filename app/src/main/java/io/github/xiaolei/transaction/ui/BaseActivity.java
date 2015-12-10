@@ -220,12 +220,12 @@ public abstract class BaseActivity extends AppCompatActivity implements Activity
             String photoFileName = "";
             switch (requestCode) {
                 case PhotoPicker.IMAGE_PICK:
-                    photoFileName = PhotoPicker.getInstance().extractImageUrlFromGallery(this, data);
+                    photoFileName = PhotoPicker.getInstance(this).extractImageUrlFromGallery(this, data);
                     Toast.makeText(this, photoFileName, Toast.LENGTH_SHORT).show();
                     break;
 
                 case PhotoPicker.IMAGE_CAPTURE:
-                    photoFileName = PhotoPicker.getInstance().getCameraPhotoFileName();
+                    photoFileName = PhotoPicker.getInstance(this).getCameraPhotoFileName();
                     Toast.makeText(this, photoFileName, Toast.LENGTH_SHORT).show();
                     break;
                 default:

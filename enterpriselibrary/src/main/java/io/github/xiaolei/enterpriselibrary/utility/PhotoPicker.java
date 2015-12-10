@@ -12,15 +12,14 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v7.app.AlertDialog;
 import android.widget.ArrayAdapter;
-import android.widget.Toast;
 
 import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
 import io.github.xiaolei.enterpriselibrary.R;
-import io.github.xiaolei.enterpriselibrary.logging.Logger;
 
 /**
  * Photo picker. Provides photo related common methods.
@@ -29,24 +28,37 @@ public class PhotoPicker {
     public static final String TAG = PhotoPicker.class.getSimpleName();
     public static final int IMAGE_PICK = 1;
     public static final int IMAGE_CAPTURE = 2;
-    public static final String PHOTO_FOLDER_NAME = "image";
+
     private static PhotoPicker INSTANCE = new PhotoPicker();
+    private Context mContext;
+    private String mPhotoStorageFolderName;
 
     private String mOutputPhotoFromCamera = "";
 
     private PhotoPicker() {
     }
 
-    public synchronized static PhotoPicker getInstance() {
+    public synchronized static PhotoPicker getInstance(Context context) {
+        INSTANCE.mContext = context;
+        INSTANCE.mPhotoStorageFolderName = context.getPackageName();
+
         return INSTANCE;
+    }
+
+    public Context getContext() {
+        return mContext;
     }
 
     public String getCameraPhotoFileName() {
         return mOutputPhotoFromCamera;
     }
 
-    public static String getPhotoStorageFolderName(Context context) {
-        return context.getPackageName() + File.separator + PHOTO_FOLDER_NAME;
+    public String getPhotoStorageFolderName() {
+        return mPhotoStorageFolderName;
+    }
+
+    public void setPhotoStorageFolderName(String name) {
+        mPhotoStorageFolderName = name;
     }
 
     public synchronized void showPhotoPickerDialog(final Activity context) {
@@ -83,25 +95,21 @@ public class PhotoPicker {
             return;
         }
 
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        String photoStorageFolderPath = Environment
-                .getExternalStorageDirectory().getAbsolutePath() + File.separator + getPhotoStorageFolderName(context);
-        File folder = new File(photoStorageFolderPath);
 
-        if (!folder.exists()) {
-            boolean success = folder.mkdirs();
-            if (!success) {
-                Logger.d(TAG, String.format("Failed to create dirs: %s", folder));
-                DialogHelper.showAlertDialog(context, context.getString(R.string.error_failed_to_create_image_folder));
-                return;
-            }
+        File photoFile = null;
+        try {
+            photoFile = createImageFile();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
-        SimpleDateFormat format = new SimpleDateFormat("yyyyMMddhhmmss", Locale.US);
-        mOutputPhotoFromCamera = String.format(photoStorageFolderPath + File.separator + "IMG_%s.png", format.format(new Date()));
-        File photo = new File(mOutputPhotoFromCamera);
+        if (photoFile == null) {
+            DialogHelper.showAlertDialog(context, context.getString(R.string.error_failed_to_create_image_file));
+            return;
+        }
 
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photo));
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
 
         if (intent.resolveActivity(context.getPackageManager()) != null) {
             DialogHelper.showAlertDialog(context, context.getString(R.string.camera_app_not_found));
@@ -119,6 +127,28 @@ public class PhotoPicker {
         context.startActivityForResult(
                 Intent.createChooser(intent, context.getString(R.string.photo_picker_choose_photo_from_gallery)),
                 IMAGE_PICK);
+    }
+
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(new Date());
+        String imageFileName = "TRANSACTION_" + timeStamp + "_";
+        String path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getAbsolutePath() + File.separator
+                + getPhotoStorageFolderName();
+        File storageDir = new File(path);
+        if (!storageDir.exists()) {
+            if (!storageDir.mkdirs()) {
+                throw new IOException(String.format("Failed to create path: %s", path));
+            }
+        }
+
+        File file = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        return file;
     }
 
     public String extractImageUrlFromGallery(Context context, Intent data) {

@@ -5,6 +5,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.GridView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import java.util.Collection;
 
@@ -44,21 +45,32 @@ public class PhotoGalleryView extends RelativeLayout {
     public void bindData(Collection<Photo> photoCollection) {
         mPhotoCollection = photoCollection;
 
-        if(mAdapter == null){
+        if (mAdapter == null) {
             mAdapter = new PhotoListAdapter(getContext(), photoCollection);
             mViewHolder.gridViewPhotos.setAdapter(mAdapter);
-        }else{
+        } else {
             mAdapter.swap(photoCollection);
+        }
+
+        if (photoCollection.size() > 0) {
+            mViewHolder.relativeLayoutPhotoGalleryHeader.setVisibility(View.VISIBLE);
+            mViewHolder.textViewTransactionPhotoCount.setText(String.format(getContext().getString(R.string.total_photo_count), photoCollection.size()));
+        } else {
+            mViewHolder.relativeLayoutPhotoGalleryHeader.setVisibility(View.GONE);
         }
     }
 
     private class ViewHolder {
         public DataContainerView dataContainerViewTransactionEditor;
         public GridView gridViewPhotos;
+        public TextView textViewTransactionPhotoCount;
+        public RelativeLayout relativeLayoutPhotoGalleryHeader;
 
         public ViewHolder(View view) {
             dataContainerViewTransactionEditor = (DataContainerView) view.findViewById(R.id.dataContainerViewTransactionEditor);
             gridViewPhotos = (GridView) view.findViewById(R.id.gridViewPhotos);
+            textViewTransactionPhotoCount = (TextView) view.findViewById(R.id.textViewPhotoCount);
+            relativeLayoutPhotoGalleryHeader = (RelativeLayout) view.findViewById(R.id.relativeLayoutPhotoGalleryHeader);
         }
     }
 }

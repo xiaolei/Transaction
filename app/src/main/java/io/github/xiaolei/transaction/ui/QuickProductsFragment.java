@@ -295,7 +295,7 @@ public class QuickProductsFragment extends BaseFragment implements View.OnClickL
                 mViewHolder.famProduct.collapse();
                 break;
             case R.id.fabTakePhoto:
-                PhotoPicker.getInstance().showPhotoPickerDialog(getActivity());
+                PhotoPicker.getInstance(getActivity()).showPhotoPickerDialog(getActivity());
                 mViewHolder.famProduct.collapse();
                 break;
             default:

@@ -47,7 +47,7 @@ public class ActionButtonListAdapter extends GenericListAdapter<ActionButtonInfo
         ActionButtonInfo actionButtonInfo = (ActionButtonInfo) v.getTag();
         switch (actionButtonInfo.id) {
             case ActionButtonId.PICK_PHOTO_FROM_GALLERY:
-                PhotoPicker.getInstance().pickPhotoFromGallery((Activity) getContext());
+                PhotoPicker.getInstance(getContext()).pickPhotoFromGallery((Activity) getContext());
                 break;
             case ActionButtonId.TAKE_PHOTO:
                 BaseActivity activity = (BaseActivity) getContext();
@@ -55,7 +55,7 @@ public class ActionButtonListAdapter extends GenericListAdapter<ActionButtonInfo
                     @Override
                     public void onGotPermissionResult(PermissionResult permissionResult) {
                         if(permissionResult.granted) {
-                            PhotoPicker.getInstance().takePhoto((Activity) getContext());
+                            PhotoPicker.getInstance(getContext()).takePhoto((Activity) getContext());
                         }
                     }
                 });

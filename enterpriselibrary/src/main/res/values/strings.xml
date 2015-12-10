@@ -8,4 +8,5 @@
     <string name="error_failed_to_create_image_folder">Sorry, create image folder failed.</string>
     <string name="msg_external_storage_not_writable">Sorry, the external storage or SD card is not mounted, please mount it then try again.</string>
     <string name="camera_app_not_found">Sorry, no available camera app found.</string>
+    <string name="error_failed_to_create_image_file">Sorry, create photo folder failed.</string>
 </resources>
