@@ -32,11 +32,6 @@ public class TransactionPhotoRepository extends BaseRepository {
     }
 
     public Transaction addPhoto(final long transactionId, final String photoUrl, final String photoDescription, final long accountId) throws SQLException {
-        if (isTransactionPhotoDuplicate(transactionId, photoUrl)) {
-            return RepositoryProvider.getInstance(getContext()).resolve(TransactionRepository.class)
-                    .getTransactionById(transactionId);
-        }
-
         Transaction result = TransactionManager.callInTransaction(getDatabase().getConnectionSource(), new Callable<Transaction>() {
 
             @Override

@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
@@ -35,12 +36,23 @@ public class PhotoListAdapter extends GenericListAdapter<Photo, PhotoListAdapter
     }
 
     @Override
-    public void bindData(ViewHolder viewHolder, Photo viewModel) {
+    public void bindData(final ViewHolder viewHolder, Photo viewModel) {
         Picasso.with(getContext())
                 .load(viewModel.getUrl())
                 .fit()
                 .centerCrop()
-                .into(mViewHolder.imageViewPhoto);
+                .error(R.drawable.bitmap_missing)
+                .into(mViewHolder.imageViewPhoto, new Callback() {
+                    @Override
+                    public void onSuccess() {
+                        viewHolder.imageViewPhoto.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                    }
+
+                    @Override
+                    public void onError() {
+                        viewHolder.imageViewPhoto.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                    }
+                });
 
         if (TextUtils.isEmpty(viewModel.getDescription())) {
             viewHolder.textViewPhotoName.setVisibility(View.GONE);

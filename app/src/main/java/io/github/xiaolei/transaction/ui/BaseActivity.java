@@ -22,6 +22,7 @@ import android.widget.Toast;
 import java.io.File;
 
 import de.greenrobot.event.EventBus;
+import io.github.xiaolei.enterpriselibrary.logging.Logger;
 import io.github.xiaolei.enterpriselibrary.utility.PhotoPicker;
 import io.github.xiaolei.transaction.R;
 import io.github.xiaolei.transaction.event.PickPhotoEvent;
@@ -34,6 +35,7 @@ import io.github.xiaolei.transaction.listener.PermissionResult;
  */
 public abstract class BaseActivity extends AppCompatActivity implements ActivityCompat.OnRequestPermissionsResultCallback {
     public static final int REQUEST_CODE_CHECK_PERMISSION = 100;
+    private static final String TAG = BaseActivity.class.getSimpleName();
     protected OnGotPermissionResultListener mOnGotPermissionResultListener;
 
     @Override
@@ -231,8 +233,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Activity
             }
 
             if (!TextUtils.isEmpty(photoFileName)) {
-                boolean isFilePath = photoFileName.startsWith(File.separator);
-                photoFileName = "file:///" + photoFileName;
+                Logger.d(TAG, String.format("photoFileName: %s", photoFileName));
                 EventBus.getDefault().post(new PickPhotoEvent(photoFileName));
             }
         }
@@ -244,8 +245,15 @@ public abstract class BaseActivity extends AppCompatActivity implements Activity
         }
     }
 
-    public void checkCameraPermission(OnGotPermissionResultListener onGotPermissionResultListener) {
-        checkPermission(Manifest.permission.CAMERA, REQUEST_CODE_CHECK_PERMISSION, onGotPermissionResultListener);
+    public void checkCameraPermission(final OnGotPermissionResultListener onGotPermissionResultListener) {
+        checkPermission(Manifest.permission.CAMERA, REQUEST_CODE_CHECK_PERMISSION, new OnGotPermissionResultListener() {
+            @Override
+            public void onGotPermissionResult(PermissionResult permissionResult) {
+                checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        REQUEST_CODE_CHECK_PERMISSION,
+                        onGotPermissionResultListener);
+            }
+        });
     }
 
     public void checkPermission(String permission, int requestCode, OnGotPermissionResultListener onGotPermissionResultListener) {

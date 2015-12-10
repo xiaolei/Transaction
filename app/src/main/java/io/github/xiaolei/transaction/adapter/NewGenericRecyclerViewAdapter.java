@@ -88,13 +88,14 @@ public abstract class NewGenericRecyclerViewAdapter<T, V extends GenericRecycler
 
     @Override
     public void swap(List<T> items) {
-        mOffset = 0;
         mItems.clear();
 
         if (items != null) {
             mItems.addAll(items);
             notifyDataSetChanged();
         }
+
+        mOffset = items.size();
     }
 
     @Override
