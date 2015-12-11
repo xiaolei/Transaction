@@ -22,10 +22,10 @@ import io.github.xiaolei.transaction.viewmodel.LoadMoreReturnInfo;
 /**
  * TODO: add comment
  */
-public abstract class NewGenericRecyclerViewAdapter<T, V extends GenericRecyclerViewHolder> extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements IDataAdapter<T> {
+public abstract class EndlessGenericRecyclerViewAdapter<T, V extends GenericRecyclerViewHolder> extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements IDataAdapter<T> {
     protected static final int VIEW_TYPE_LOADING = 1;
     protected static final int VIEW_TYPE_DATA = 2;
-    private static final String TAG = NewGenericRecyclerViewAdapter.class.getSimpleName();
+    private static final String TAG = EndlessGenericRecyclerViewAdapter.class.getSimpleName();
 
     protected int mPageSize = ConfigurationManager.DEFAULT_PAGE_SIZE;
     protected Context mContext;
@@ -37,7 +37,7 @@ public abstract class NewGenericRecyclerViewAdapter<T, V extends GenericRecycler
     protected EndlessRecyclerOnScrollListener mEndlessRecyclerOnScrollListener;
     private int mOffset = 0;
 
-    public NewGenericRecyclerViewAdapter(RecyclerView recyclerView, List<T> items, final OnLoadMoreListener<T> onLoadMoreListener) {
+    public EndlessGenericRecyclerViewAdapter(RecyclerView recyclerView, List<T> items, final OnLoadMoreListener<T> onLoadMoreListener) {
         mRecyclerView = recyclerView;
         mContext = recyclerView.getContext();
         mLayoutInflater = LayoutInflater.from(mContext);

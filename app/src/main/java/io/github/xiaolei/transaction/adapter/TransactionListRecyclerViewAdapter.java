@@ -24,7 +24,7 @@ import io.github.xiaolei.transaction.widget.CurrencyTextView;
 /**
  * Transaction list adapter.
  */
-public class TransactionListRecyclerViewAdapter extends NewGenericRecyclerViewAdapter<Transaction, TransactionListRecyclerViewAdapter.ViewHolder> implements GenericRecyclerViewAdapter.OnRecyclerViewItemClickListener {
+public class TransactionListRecyclerViewAdapter extends EndlessGenericRecyclerViewAdapter<Transaction, TransactionListRecyclerViewAdapter.ViewHolder> implements GenericRecyclerViewAdapter.OnRecyclerViewItemClickListener {
 
     public TransactionListRecyclerViewAdapter(RecyclerView recyclerView, List<Transaction> transactions,
                                               OnLoadMoreListener<Transaction> onLoadMoreListener) {
