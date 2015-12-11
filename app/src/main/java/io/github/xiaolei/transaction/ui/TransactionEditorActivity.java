@@ -39,6 +39,7 @@ import io.github.xiaolei.transaction.repository.TransactionPhotoRepository;
 import io.github.xiaolei.transaction.repository.TransactionRepository;
 import io.github.xiaolei.transaction.viewmodel.ActionButtonId;
 import io.github.xiaolei.transaction.viewmodel.ActionButtonInfo;
+import io.github.xiaolei.transaction.widget.CurrencyTextView;
 import io.github.xiaolei.transaction.widget.DataContainerView;
 import io.github.xiaolei.transaction.widget.PhotoGalleryView;
 
@@ -71,6 +72,7 @@ public class TransactionEditorActivity extends BaseActivity {
             }
         });
 
+        mViewHolder.textViewPrice.enableEditMode(true);
         mViewHolder.editTextTransactionDescription.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -154,6 +156,7 @@ public class TransactionEditorActivity extends BaseActivity {
         setTitle(transaction.getProduct().getName());
 
         mViewHolder.textViewProductName.setText(transaction.getProduct().getName());
+        mViewHolder.textViewPrice.setPrice(transaction.getPrice(), transaction.getCurrencyCode());
         mViewHolder.editTextTransactionDescription.setText(transaction.getDescription());
         mViewHolder.textViewCreationTime.setText(DateTimeUtils.formatDateTime(transaction.getCreationTime()));
 
@@ -321,6 +324,7 @@ public class TransactionEditorActivity extends BaseActivity {
         public EditText editTextTransactionDescription;
         public GridView gridViewTransactionEditorActions;
         public PhotoGalleryView photoGalleryViewTransactions;
+        public CurrencyTextView textViewPrice;
 
         public ViewHolder(Activity activity) {
             nestedScrollViewTransactionEditor = (NestedScrollView) activity.findViewById(R.id.nestedScrollViewTransactionEditor);
@@ -330,6 +334,7 @@ public class TransactionEditorActivity extends BaseActivity {
             textViewProductName = (TextView) activity.findViewById(R.id.textViewProductName);
             gridViewTransactionEditorActions = (GridView) activity.findViewById(R.id.gridViewTransactionEditorActions);
             photoGalleryViewTransactions = (PhotoGalleryView) activity.findViewById(R.id.photoGalleryViewTransactions);
+            textViewPrice = (CurrencyTextView) activity.findViewById(R.id.textViewPrice);
         }
     }
 }

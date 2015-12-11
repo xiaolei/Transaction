@@ -1,13 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ViewFlipper xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/viewFlipperPriceContainer"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:measureAllChildren="false">
 
     <TextView
         android:id="@+id/textViewCurrency"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
         android:text="$1234.05"
-        android:textSize="18sp" />
-</RelativeLayout>
+        android:textSize="@dimen/price_text_size" />
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/textViewCurrencyCode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:paddingRight="@dimen/spacing_small"
+            android:text="@string/default_currency_code"
+            android:textAllCaps="true"
+            android:textSize="@dimen/price_text_size" />
+
+        <EditText
+            android:id="@+id/editTextPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/textViewCurrencyCode"
+            android:imeOptions="actionDone"
+            android:inputType="numberDecimal"
+            android:maxLength="9"
+            android:paddingTop="0dp"
+            android:singleLine="true"
+            android:text="1234.05"
+            android:textSize="@dimen/price_text_size" />
+    </RelativeLayout>
+
+</ViewFlipper>
