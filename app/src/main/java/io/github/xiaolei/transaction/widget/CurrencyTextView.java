@@ -21,8 +21,8 @@ import io.github.xiaolei.transaction.R;
  */
 public class CurrencyTextView extends RelativeLayout implements View.OnClickListener {
     protected static final String TAG = CurrencyTextView.class.getSimpleName();
-    public static final int VIEW_INDEX_READ = 1;
-    public static final int VIEW_INDEX_WRITE = 2;
+    public static final int VIEW_INDEX_READ = 0;
+    public static final int VIEW_INDEX_WRITE = 1;
 
     private ViewHolder mViewHolder;
     private int mIncomeTextColor;
@@ -141,7 +141,7 @@ public class CurrencyTextView extends RelativeLayout implements View.OnClickList
         switch (v.getId()) {
             case R.id.textViewCurrency:
                 if (mEnableEditMode) {
-                    enableEditMode(true);
+                    toggleEditMode(true);
                 }
                 break;
             default:
