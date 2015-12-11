@@ -71,6 +71,8 @@ public class CurrencyTextView extends RelativeLayout implements View.OnClickList
     public void toggleEditMode(boolean enableEditMode) {
         if (enableEditMode) {
             mViewHolder.viewFlipperPriceContainer.setDisplayedChild(VIEW_INDEX_WRITE);
+            mViewHolder.editTextPrice.requestFocus();
+            mViewHolder.editTextPrice.selectAll();
         } else {
             mViewHolder.viewFlipperPriceContainer.setDisplayedChild(VIEW_INDEX_READ);
         }
