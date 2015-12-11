@@ -13,8 +13,18 @@ public abstract class EndlessRecyclerOnScrollListener<T> extends RecyclerView.On
         return currentPage;
     }
 
+    public void setCurrentPage(int currentPage) {
+        this.currentPage = currentPage;
+    }
+
     public boolean isLoading() {
         return loading;
+    }
+
+    public void reset(){
+        setCurrentPage(0);
+        loading = false;
+        mHasMore = true;
     }
 
     public EndlessRecyclerOnScrollListener() {

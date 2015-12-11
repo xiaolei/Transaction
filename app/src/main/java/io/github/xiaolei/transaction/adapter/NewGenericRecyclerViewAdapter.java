@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.github.xiaolei.enterpriselibrary.logging.Logger;
 import io.github.xiaolei.transaction.R;
 import io.github.xiaolei.transaction.listener.EndlessRecyclerOnScrollListener;
 import io.github.xiaolei.transaction.listener.OnLoadMoreListener;
@@ -24,6 +25,7 @@ import io.github.xiaolei.transaction.viewmodel.LoadMoreReturnInfo;
 public abstract class NewGenericRecyclerViewAdapter<T, V extends GenericRecyclerViewHolder> extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements IDataAdapter<T> {
     protected static final int VIEW_TYPE_LOADING = 1;
     protected static final int VIEW_TYPE_DATA = 2;
+    private static final String TAG = NewGenericRecyclerViewAdapter.class.getSimpleName();
 
     protected int mPageSize = ConfigurationManager.DEFAULT_PAGE_SIZE;
     protected Context mContext;
@@ -51,6 +53,7 @@ public abstract class NewGenericRecyclerViewAdapter<T, V extends GenericRecycler
                 AsyncTask<Void, Void, LoadMoreReturnInfo<T>> task = new AsyncTask<Void, Void, LoadMoreReturnInfo<T>>() {
                     @Override
                     protected LoadMoreReturnInfo<T> doInBackground(Void... params) {
+                        Logger.d(TAG, String.format("loadMore => pageIndex: %d, offset: %d, pageSize: %d", pageIndex, mOffset + pageIndex * mPageSize, mPageSize));
                         return mOnLoadMoreListener.loadMore(pageIndex, mOffset + pageIndex * mPageSize, mPageSize);
                     }
 
@@ -92,10 +95,12 @@ public abstract class NewGenericRecyclerViewAdapter<T, V extends GenericRecycler
 
         if (items != null) {
             mItems.addAll(items);
-            notifyDataSetChanged();
         }
 
-        mOffset = items.size();
+        mEndlessRecyclerOnScrollListener.reset();
+        mOffset = items != null ? items.size() : 0;
+
+        notifyDataSetChanged();
     }
 
     @Override
