@@ -1,6 +1,7 @@
 package io.github.xiaolei.transaction.ui;
 
 
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
@@ -20,6 +21,7 @@ import java.util.Date;
 
 import de.greenrobot.event.EventBus;
 import io.github.xiaolei.enterpriselibrary.logging.Logger;
+import io.github.xiaolei.enterpriselibrary.utility.DialogHelper;
 import io.github.xiaolei.transaction.GlobalApplication;
 import io.github.xiaolei.transaction.R;
 import io.github.xiaolei.transaction.adapter.ButtonInfo;
@@ -129,8 +131,16 @@ public class CalculatorFragment extends BaseFragment implements OnProductSelecte
                 EventBus.getDefault().post(new CreateProductEvent());
                 return true;
             case R.id.action_delete_database:
-                DatabaseHelper.deleteDatabase(getActivity());
-                Toast.makeText(getActivity(), "Database deleted.", Toast.LENGTH_SHORT).show();
+                DialogHelper.showConfirmDialog(getActivity(), "Are you sure you want to delete the database? Once delete operation completed, app will be finished.",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                DatabaseHelper.deleteDatabase(getActivity());
+                                Toast.makeText(getActivity(), "Database deleted.", Toast.LENGTH_SHORT).show();
+                                getActivity().finish();
+                            }
+                        });
+
                 return true;
             case R.id.action_copy_database:
                 try {
@@ -142,7 +152,7 @@ public class CalculatorFragment extends BaseFragment implements OnProductSelecte
                 }
                 return true;
             case R.id.action_execute_sql:
-                DatabaseHelper.getInstance(getActivity()).executeSql("ALTER TABLE \"main\".\"transaction\" ADD COLUMN \"star\" BOOL DEFAULT false");
+                DatabaseHelper.getInstance(getActivity()).executeSql("ALTER TABLE \"exchange_rate\" ADD COLUMN \"frequency\" DOUBLE NOT NULL  DEFAULT 0");
                 Toast.makeText(getActivity(), "SQL executed.", Toast.LENGTH_SHORT).show();
                 return true;
             default:

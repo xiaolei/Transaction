@@ -7,14 +7,21 @@ import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 import java.math.BigDecimal;
 
+import io.github.xiaolei.enterpriselibrary.logging.Logger;
 import io.github.xiaolei.enterpriselibrary.utility.CurrencyHelper;
 import io.github.xiaolei.transaction.R;
+import io.github.xiaolei.transaction.listener.OnFragmentDialogDismissListener;
+import io.github.xiaolei.transaction.ui.BaseActivity;
+import io.github.xiaolei.transaction.ui.ChooseCurrencyFragment;
+import io.github.xiaolei.transaction.util.ConfigurationManager;
 
 /**
  * TODO: add comment
@@ -78,6 +85,16 @@ public class CurrencyTextView extends RelativeLayout implements View.OnClickList
         }
     }
 
+    public void setCurrencyCode(String currencyCode) {
+        if (TextUtils.isEmpty(currencyCode)) {
+            return;
+        }
+
+        mCurrencyCode = currencyCode;
+        mViewHolder.textViewCurrencyCode.setText(currencyCode);
+        mIsModified = true;
+    }
+
     public void setPrice(BigDecimal price, String currencyCode) {
         if (price == null || TextUtils.isEmpty(currencyCode)) {
             return;
@@ -108,6 +125,21 @@ public class CurrencyTextView extends RelativeLayout implements View.OnClickList
     }
 
     public BigDecimal getPrice() {
+        if(!isModified()){
+            return mPrice;
+        }
+
+        try {
+            mPrice = new BigDecimal(mViewHolder.editTextPrice.getText().toString());
+            mIsModified = true;
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            Toast.makeText(getContext(),
+                    getContext().getString(R.string.validation_error_invalid_price),
+                    Toast.LENGTH_SHORT).show();
+        }
+
         return mPrice;
     }
 
@@ -133,19 +165,32 @@ public class CurrencyTextView extends RelativeLayout implements View.OnClickList
 
             @Override
             public void afterTextChanged(Editable s) {
-                mIsModified = true;
+                if (mEnableEditMode) {
+                    mIsModified = true;
+                }
             }
         });
+
+        mViewHolder.textViewCurrencyCode.setOnClickListener(this);
     }
 
     @Override
-    public void onClick(View v) {
+    public void onClick(final View v) {
         switch (v.getId()) {
             case R.id.textViewCurrency:
                 if (mEnableEditMode) {
                     toggleEditMode(true);
                 }
                 break;
+            case R.id.textViewCurrencyCode:
+                final ChooseCurrencyFragment fragment = ChooseCurrencyFragment.newInstance(getCurrencyCode());
+                fragment.setOnFragmentDialogDismissListener(new OnFragmentDialogDismissListener<String>() {
+                    @Override
+                    public void onFragmentDialogDismiss(String result) {
+                        setCurrencyCode(result);
+                    }
+                });
+                fragment.show(((BaseActivity) getContext()).getSupportFragmentManager(), ChooseCurrencyFragment.TAG);
             default:
                 break;
         }

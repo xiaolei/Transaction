@@ -9,6 +9,7 @@ import com.j256.ormlite.dao.RawRowMapper;
 import com.j256.ormlite.misc.TransactionManager;
 import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.stmt.SelectArg;
+import com.j256.ormlite.stmt.StatementBuilder;
 import com.j256.ormlite.stmt.UpdateBuilder;
 
 import java.math.BigDecimal;
@@ -17,6 +18,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Callable;
 
+import io.github.xiaolei.enterpriselibrary.utility.CurrencyHelper;
 import io.github.xiaolei.enterpriselibrary.utility.DateTimeUtils;
 import io.github.xiaolei.transaction.GlobalApplication;
 import io.github.xiaolei.transaction.entity.Product;
@@ -448,6 +450,19 @@ public class TransactionRepository extends BaseRepository {
         UpdateBuilder<Transaction, Long> updateBuilder = transactionDao.updateBuilder();
         updateBuilder.updateColumnValue(Transaction.STAR, starOn)
                 .where().eq(Transaction.ID, transactionId);
+        transactionDao.update(updateBuilder.prepare());
+    }
+
+    public void updatePrice(long transactionId, BigDecimal price, String currencyCode) throws SQLException {
+        if (price == null || price.equals(BigDecimal.ZERO) || TextUtils.isEmpty(currencyCode)) {
+            return;
+        }
+
+        UpdateBuilder<Transaction, Long> updateBuilder = transactionDao.updateBuilder();
+        updateBuilder.updateColumnValue(Transaction.PRICE, CurrencyHelper.castToInteger(price));
+        updateBuilder.updateColumnValue(Transaction.CURRENCY_CODE, currencyCode);
+        updateBuilder.where().eq(Transaction.ID, transactionId);
+
         transactionDao.update(updateBuilder.prepare());
     }
 }

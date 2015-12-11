@@ -35,7 +35,7 @@
             android:layout_centerVertical="true"
             android:layout_toRightOf="@+id/textViewCurrencyCode"
             android:imeOptions="actionDone"
-            android:inputType="numberDecimal"
+            android:inputType="numberDecimal|numberSigned"
             android:maxLength="9"
             android:paddingTop="0dp"
             android:singleLine="true"

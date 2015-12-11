@@ -15,6 +15,7 @@ import android.widget.GridView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -220,19 +221,30 @@ public class TransactionEditorActivity extends BaseActivity {
     }
 
     private void save() {
+        mIsModified = mIsModified || mViewHolder.textViewPrice.isModified();
+
         if (!mIsModified) {
             return;
         }
 
+        final boolean isPriceModified = mViewHolder.textViewPrice.isModified();
+        final BigDecimal price = mViewHolder.textViewPrice.getPrice();
+        final String currencyCode = mViewHolder.textViewPrice.getCurrencyCode();
         final String description = mViewHolder.editTextTransactionDescription.getText().toString();
+
         AsyncTask<Void, Void, Boolean> task = new AsyncTask<Void, Void, Boolean>() {
 
             @Override
             protected Boolean doInBackground(Void... params) {
                 try {
-                    RepositoryProvider.getInstance(TransactionEditorActivity.this)
-                            .resolve(TransactionRepository.class)
-                            .updateTransactionDescription(mTransactionId, description);
+                    TransactionRepository transactionRepository = RepositoryProvider.getInstance(TransactionEditorActivity.this)
+                            .resolve(TransactionRepository.class);
+                    transactionRepository.updateTransactionDescription(mTransactionId, description);
+
+                    if (isPriceModified) {
+                        transactionRepository.updatePrice(mTransactionId, price, currencyCode);
+                        Logger.d(TAG, String.format("Update transaction => price: %s, currencyCode: %s", price.toString(), currencyCode));
+                    }
                 } catch (SQLException e) {
                     e.printStackTrace();
                     return false;

@@ -3,6 +3,7 @@ package io.github.xiaolei.transaction.repository;
 import android.content.Context;
 
 import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.stmt.QueryBuilder;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -21,13 +22,29 @@ public class ExchangeRateRepository extends BaseRepository {
         exchangeRateDao = getDataAccessObject(ExchangeRate.class);
     }
 
-    public int getExchangeRate(String currency_code) throws SQLException {
+    public int getExchangeRate(String currencyCode) throws SQLException {
         int result = 0;
-        List<ExchangeRate> queryResult = exchangeRateDao.queryForEq(ExchangeRate.CURRENCY_CODE, currency_code);
-        if(queryResult != null && queryResult.size() > 0){
+        List<ExchangeRate> queryResult = exchangeRateDao.queryForEq(ExchangeRate.CURRENCY_CODE, currencyCode);
+        if (queryResult != null && queryResult.size() > 0) {
             result = queryResult.get(0).getExchangeRate();
         }
 
         return result;
+    }
+
+    public List<ExchangeRate> getExchangeRateList() throws SQLException {
+        QueryBuilder<ExchangeRate, Long> query = exchangeRateDao.queryBuilder();
+        query.orderBy(ExchangeRate.FREQUENCY, false).orderBy(ExchangeRate.CURRENCY_CODE, true);
+
+        return exchangeRateDao.query(query.prepare());
+    }
+
+    public List<ExchangeRate> getMostFrequencyUsedCurrencyList(long maxRows) throws SQLException {
+        QueryBuilder<ExchangeRate, Long> query = exchangeRateDao.queryBuilder();
+        query.limit(maxRows)
+                .orderBy(ExchangeRate.FREQUENCY, false)
+                .orderBy(ExchangeRate.CURRENCY_CODE, true);
+
+        return exchangeRateDao.query(query.prepare());
     }
 }
