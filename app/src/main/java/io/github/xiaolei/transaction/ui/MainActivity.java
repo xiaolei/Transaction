@@ -1,7 +1,9 @@
 package io.github.xiaolei.transaction.ui;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -27,6 +29,7 @@ import io.github.xiaolei.transaction.GlobalApplication;
 import io.github.xiaolei.transaction.R;
 import io.github.xiaolei.transaction.event.AccountInfoLoadCompletedEvent;
 import io.github.xiaolei.transaction.event.AppInitCompletedEvent;
+import io.github.xiaolei.transaction.event.CheckPermissionEvent;
 import io.github.xiaolei.transaction.event.NavigationDrawerStateEvent;
 import io.github.xiaolei.transaction.event.PickPhotoEvent;
 import io.github.xiaolei.transaction.widget.AccountView;
@@ -195,6 +198,8 @@ public class MainActivity extends BaseActivity
         mViewHolder.mainViewFlipper.setDisplayedChild(VIEW_INDEX_CONTENT);
         mViewHolder.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
         switchToHomeFragment();
+
+        EventBus.getDefault().post(new CheckPermissionEvent(Manifest.permission.WRITE_EXTERNAL_STORAGE));
     }
 
     private class ViewHolder {

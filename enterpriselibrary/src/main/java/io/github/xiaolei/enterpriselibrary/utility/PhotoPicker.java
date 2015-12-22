@@ -8,18 +8,26 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v7.app.AlertDialog;
+import android.text.TextUtils;
 import android.widget.ArrayAdapter;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
 import io.github.xiaolei.enterpriselibrary.R;
+import io.github.xiaolei.enterpriselibrary.listener.OnOperationCompletedListener;
 
 /**
  * Photo picker. Provides photo related common methods.
@@ -120,6 +128,17 @@ public class PhotoPicker {
         context.startActivityForResult(intent, IMAGE_CAPTURE);
     }
 
+    private String getPhotoStorageFolderPath() throws IOException {
+        File storageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), getPhotoStorageFolderName());
+        if (!storageDir.exists()) {
+            if (!storageDir.mkdirs()) {
+                throw new IOException(String.format("Failed to create path: %s", storageDir.getAbsolutePath()));
+            }
+        }
+
+        return storageDir.getAbsolutePath();
+    }
+
     public void pickPhotoFromGallery(Activity context) {
         Intent intent = new Intent(
                 Intent.ACTION_PICK,
@@ -151,12 +170,76 @@ public class PhotoPicker {
         return file;
     }
 
-    public String extractImageUrlFromGallery(Context context, Intent data) {
-        Uri selectedImage = data.getData();
-        String result = selectedImage.toString();
+    public void extractImageUrlFromGallery(final Context context, final Intent data,
+                                           final OnOperationCompletedListener<String> onOperationCompletedListener) {
+        AsyncTask<Void, Void, String> task = new AsyncTask<Void, Void, String>() {
+
+            @Override
+            protected String doInBackground(Void... params) {
+                String result = null;
+                try {
+                    result = extractImageUrlFromGallery(context, data);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+
+                return result;
+            }
+
+            @Override
+            protected void onPostExecute(String result) {
+                if (TextUtils.isEmpty(result)) {
+                    onOperationCompletedListener.onOperationCompleted(false, null, context.getString(R.string.error_failed_to_pick_photo));
+                    return;
+                }
+                onOperationCompletedListener.onOperationCompleted(true, result, null);
+            }
+        };
+        task.execute();
+    }
+
+    private String extractImageUrlFromGallery(Context context, Intent data) throws FileNotFoundException {
+        Uri selectedImageUri = data.getData();
+        String result = selectedImageUri.toString();
+
         boolean isFilePath = result.startsWith(File.separator);
         if (isFilePath) {
             result = "file:///" + result;
+        } else if (!TextUtils.isEmpty(selectedImageUri.getAuthority())) {
+            InputStream inputStream = context.getContentResolver().openInputStream(selectedImageUri);
+            OutputStream outputStream = null;
+
+            try {
+                String fileName = getPhotoStorageFolderPath() + File.separator +
+                        selectedImageUri.getAuthority() + "_photo_" + Math.abs(result.hashCode()) + ".jpg";
+                File outputFile = new File(fileName);
+                result = Uri.fromFile(outputFile).toString();
+                outputStream = new FileOutputStream(outputFile);
+
+                int read = 0;
+                byte[] bytes = new byte[1024];
+
+                while ((read = inputStream.read(bytes)) != -1) {
+                    outputStream.write(bytes, 0, read);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                if (inputStream != null) {
+                    try {
+                        inputStream.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                if (outputStream != null) {
+                    try {
+                        outputStream.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
         }
 
         return result;

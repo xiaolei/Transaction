@@ -20,11 +20,15 @@ import android.view.View;
 import android.widget.Toast;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 
 import de.greenrobot.event.EventBus;
+import io.github.xiaolei.enterpriselibrary.listener.OnOperationCompletedListener;
 import io.github.xiaolei.enterpriselibrary.logging.Logger;
+import io.github.xiaolei.enterpriselibrary.utility.DialogHelper;
 import io.github.xiaolei.enterpriselibrary.utility.PhotoPicker;
 import io.github.xiaolei.transaction.R;
+import io.github.xiaolei.transaction.event.CheckPermissionEvent;
 import io.github.xiaolei.transaction.event.PickPhotoEvent;
 import io.github.xiaolei.transaction.event.SwitchToFragmentEvent;
 import io.github.xiaolei.transaction.listener.OnGotPermissionResultListener;
@@ -220,6 +224,17 @@ public abstract class BaseActivity extends AppCompatActivity implements Activity
         switchToFragment(event.fragmentTagName, event.arguments);
     }
 
+    public void onEvent(CheckPermissionEvent event) {
+        checkPermission(event.permission, REQUEST_CODE_CHECK_PERMISSION, new OnGotPermissionResultListener() {
+            @Override
+            public void onGotPermissionResult(PermissionResult permissionResult) {
+                if (!permissionResult.granted) {
+                    DialogHelper.showAlertDialog(BaseActivity.this, permissionResult.permission + " not granted.");
+                }
+            }
+        });
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK && (requestCode == PhotoPicker.IMAGE_PICK
@@ -227,22 +242,34 @@ public abstract class BaseActivity extends AppCompatActivity implements Activity
             String photoFileName = "";
             switch (requestCode) {
                 case PhotoPicker.IMAGE_PICK:
-                    photoFileName = PhotoPicker.getInstance(this).extractImageUrlFromGallery(this, data);
-                    Toast.makeText(this, photoFileName, Toast.LENGTH_SHORT).show();
+                    PhotoPicker.getInstance(this).extractImageUrlFromGallery(this, data,
+                            new OnOperationCompletedListener<String>() {
+                                @Override
+                                public void onOperationCompleted(boolean success, String result, String message) {
+                                    if (!success) {
+                                        Toast.makeText(BaseActivity.this, message, Toast.LENGTH_SHORT).show();
+                                        return;
+                                    }
+
+                                    Logger.d(TAG, String.format("photoFileName: %s", result));
+                                    EventBus.getDefault().post(new PickPhotoEvent(result));
+                                }
+                            });
                     break;
 
                 case PhotoPicker.IMAGE_CAPTURE:
                     photoFileName = PhotoPicker.getInstance(this).getCameraPhotoFileName();
-                    Toast.makeText(this, photoFileName, Toast.LENGTH_SHORT).show();
+                    if (!TextUtils.isEmpty(photoFileName)) {
+                        Logger.d(TAG, String.format("photoFileName: %s", photoFileName));
+                        EventBus.getDefault().post(new PickPhotoEvent(photoFileName));
+                    }
+
                     break;
                 default:
                     break;
             }
 
-            if (!TextUtils.isEmpty(photoFileName)) {
-                Logger.d(TAG, String.format("photoFileName: %s", photoFileName));
-                EventBus.getDefault().post(new PickPhotoEvent(photoFileName));
-            }
+
         }
     }
 
