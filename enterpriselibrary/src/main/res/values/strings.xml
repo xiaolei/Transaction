@@ -2,6 +2,7 @@
     <string name="app_name">Enterprise Library</string>
 
     <string name="photo_picker_take_from_camera">Take from camera</string>
+    <string name="photo_picker_input_photo_link">Input photo link</string>
     <string name="photo_picker_select_from_gallery">Select from gallery</string>
     <string name="photo_picker_select_image">Select Image</string>
     <string name="photo_picker_choose_photo_from_gallery">Choose a Photo</string>

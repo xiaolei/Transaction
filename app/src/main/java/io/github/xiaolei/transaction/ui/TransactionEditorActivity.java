@@ -1,6 +1,7 @@
 package io.github.xiaolei.transaction.ui;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -21,10 +22,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.greenrobot.event.EventBus;
+import io.github.xiaolei.enterpriselibrary.listener.OnOperationCompletedListener;
 import io.github.xiaolei.enterpriselibrary.logging.Logger;
 import io.github.xiaolei.enterpriselibrary.utility.DateTimeUtils;
 import io.github.xiaolei.enterpriselibrary.utility.DialogHelper;
 import io.github.xiaolei.enterpriselibrary.utility.PhotoPicker;
+import io.github.xiaolei.enterpriselibrary.utility.UriHelper;
 import io.github.xiaolei.transaction.GlobalApplication;
 import io.github.xiaolei.transaction.R;
 import io.github.xiaolei.transaction.adapter.ActionButtonListAdapter;
@@ -97,7 +100,20 @@ public class TransactionEditorActivity extends BaseActivity {
                 ActionButtonInfo actionButtonInfo = (ActionButtonInfo) parent.getItemAtPosition(position);
                 switch (actionButtonInfo.id) {
                     case ActionButtonId.PICK_PHOTO_FROM_GALLERY:
-                        PhotoPicker.getInstance(TransactionEditorActivity.this).pickPhotoFromGallery(TransactionEditorActivity.this);
+                        // PhotoPicker.getInstance(TransactionEditorActivity.this).pickPhotoFromGallery(TransactionEditorActivity.this);
+                        PhotoPicker.getInstance(TransactionEditorActivity.this).showPhotoChooserDialog(TransactionEditorActivity.this,
+                                TransactionEditorActivity.this.getSupportFragmentManager(),
+                                new OnOperationCompletedListener<String>() {
+                                    @Override
+                                    public void onOperationCompleted(boolean success, String result, String message) {
+                                        if(!UriHelper.isValidUrl(result)){
+                                            DialogHelper.showAlertDialog(TransactionEditorActivity.this, getString(R.string.error_invalid_photo_url));
+                                            return;
+                                        }
+
+                                        onEvent(new PickPhotoEvent(result));
+                                    }
+                                });
                         break;
                     case ActionButtonId.TAKE_PHOTO:
                         checkCameraPermission(new OnGotPermissionResultListener() {

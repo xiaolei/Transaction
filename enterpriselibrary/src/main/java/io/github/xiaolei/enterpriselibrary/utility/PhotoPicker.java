@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.widget.ArrayAdapter;
@@ -28,6 +29,7 @@ import java.util.Locale;
 
 import io.github.xiaolei.enterpriselibrary.R;
 import io.github.xiaolei.enterpriselibrary.listener.OnOperationCompletedListener;
+import io.github.xiaolei.enterpriselibrary.ui.InputDialog;
 
 /**
  * Photo picker. Provides photo related common methods.
@@ -89,6 +91,34 @@ public class PhotoPicker {
                     takePhoto(context);
                 } else {// pick from file
                     pickPhotoFromGallery(context);
+                }
+            }
+        });
+
+        photoPickerDialog = builder.create();
+        photoPickerDialog.show();
+    }
+
+    public void showPhotoChooserDialog(final Activity context, final FragmentManager fragmentManager,
+                                       final OnOperationCompletedListener<String> onOperationCompletedListener) {
+        AlertDialog photoPickerDialog = null;
+        final String[] items = new String[]{context.getString(R.string.photo_picker_select_from_gallery),
+                context.getString(R.string.photo_picker_input_photo_link)};
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(context,
+                R.layout.layout_item_dialog, items);
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+
+        builder.setTitle(context.getString(R.string.photo_picker_select_image));
+        builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int item) {
+                if (item == 0) {
+                    // pick from file
+                    pickPhotoFromGallery(context);
+                } else {
+                    // Input photo link
+                    InputDialog.showDialog(context, fragmentManager, context.getString(R.string.photo_picker_input_photo_link),
+                            "", onOperationCompletedListener);
                 }
             }
         });
@@ -214,6 +244,10 @@ public class PhotoPicker {
                         selectedImageUri.getAuthority() + "_photo_" + Math.abs(result.hashCode()) + ".jpg";
                 File outputFile = new File(fileName);
                 result = Uri.fromFile(outputFile).toString();
+                if (outputFile.exists()) {
+                    return result;
+                }
+
                 outputStream = new FileOutputStream(outputFile);
 
                 int read = 0;
