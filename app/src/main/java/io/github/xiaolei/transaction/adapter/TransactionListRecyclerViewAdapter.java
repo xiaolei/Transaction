@@ -60,7 +60,7 @@ public class TransactionListRecyclerViewAdapter extends EndlessGenericRecyclerVi
             holder.imageViewTransactionPhoto.setVisibility(View.VISIBLE);
             ImageLoader.loadImage(getContext(),
                     transaction.getPhotos().iterator().next().getPhoto().getUrl(),
-                    holder.imageViewTransactionPhoto);
+                    holder.imageViewTransactionPhoto, ImageLoader.PhotoScaleMode.CENTER_CROP);
         } else {
             holder.imageViewTransactionPhoto.setVisibility(View.GONE);
         }

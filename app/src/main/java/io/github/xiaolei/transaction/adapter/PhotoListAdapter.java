@@ -11,6 +11,7 @@ import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.util.Collection;
+import java.util.List;
 
 import io.github.xiaolei.transaction.R;
 import io.github.xiaolei.transaction.entity.Photo;
@@ -22,8 +23,8 @@ import io.github.xiaolei.transaction.util.ImageLoader;
  */
 public class PhotoListAdapter extends GenericListAdapter<Photo, PhotoListAdapter.ViewHolder> {
 
-    public PhotoListAdapter(Context context, Collection<Photo> items) {
-        super(context, CollectionHelper.toList(items));
+    public PhotoListAdapter(Context context, List<Photo> items) {
+        super(context, items);
     }
 
     @Override
@@ -38,7 +39,8 @@ public class PhotoListAdapter extends GenericListAdapter<Photo, PhotoListAdapter
 
     @Override
     public void bindData(final ViewHolder viewHolder, Photo viewModel) {
-        ImageLoader.loadImage(getContext(), viewModel.getUrl(), viewHolder.imageViewPhoto);
+        ImageLoader.loadImage(getContext(), viewModel.getUrl(), viewHolder.imageViewPhoto,
+                ImageLoader.PhotoScaleMode.CENTER_CROP);
 
         if (TextUtils.isEmpty(viewModel.getDescription())) {
             viewHolder.textViewPhotoName.setVisibility(View.GONE);

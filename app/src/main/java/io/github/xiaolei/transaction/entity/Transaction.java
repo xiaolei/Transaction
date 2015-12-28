@@ -6,6 +6,9 @@ import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * TODO: add comment
  */
@@ -111,5 +114,16 @@ public class Transaction extends BaseEntity {
 
     public void setStar(boolean star) {
         this.star = star;
+    }
+
+    public ArrayList<Photo> getTransactionPhotos() {
+        ArrayList<Photo> photos = new ArrayList<>();
+        if (getPhotos() != null) {
+            for (TransactionPhoto transactionPhoto : getPhotos()) {
+                photos.add(transactionPhoto.getPhoto());
+            }
+        }
+
+        return photos;
     }
 }

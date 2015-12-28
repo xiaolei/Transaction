@@ -41,6 +41,7 @@ import io.github.xiaolei.transaction.listener.PermissionResult;
 import io.github.xiaolei.transaction.repository.RepositoryProvider;
 import io.github.xiaolei.transaction.repository.TransactionPhotoRepository;
 import io.github.xiaolei.transaction.repository.TransactionRepository;
+import io.github.xiaolei.transaction.util.ActivityHelper;
 import io.github.xiaolei.transaction.viewmodel.ActionButtonId;
 import io.github.xiaolei.transaction.viewmodel.ActionButtonInfo;
 import io.github.xiaolei.transaction.widget.CurrencyTextView;
@@ -106,7 +107,7 @@ public class TransactionEditorActivity extends BaseActivity {
                                 new OnOperationCompletedListener<String>() {
                                     @Override
                                     public void onOperationCompleted(boolean success, String result, String message) {
-                                        if(!UriHelper.isValidUrl(result)){
+                                        if (!UriHelper.isValidUrl(result)) {
                                             DialogHelper.showAlertDialog(TransactionEditorActivity.this, getString(R.string.error_invalid_photo_url));
                                             return;
                                         }
@@ -137,6 +138,12 @@ public class TransactionEditorActivity extends BaseActivity {
             }
         });
 
+        mViewHolder.photoGalleryViewTransactions.setOnPhotoClickListener(new PhotoGalleryView.OnPhotoClickListener() {
+            @Override
+            public void onPhotoClick(Photo photo, int position) {
+                ActivityHelper.startPhotoListActivity(TransactionEditorActivity.this, mTransaction.getTransactionPhotos(), position);
+            }
+        });
     }
 
     protected void loadData() {
@@ -189,12 +196,7 @@ public class TransactionEditorActivity extends BaseActivity {
             return;
         }
 
-        List<Photo> photos = new ArrayList<>();
-        for (TransactionPhoto transactionPhoto : transaction.getPhotos()) {
-            photos.add(transactionPhoto.getPhoto());
-        }
-
-        mViewHolder.photoGalleryViewTransactions.bindData(photos);
+        mViewHolder.photoGalleryViewTransactions.bindData(mTransaction.getTransactionPhotos());
     }
 
     private void buildActionButtons(Transaction transaction) {

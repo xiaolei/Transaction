@@ -11,6 +11,7 @@ import android.widget.ImageView;
 
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.RequestCreator;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
@@ -24,16 +25,28 @@ import io.github.xiaolei.transaction.R;
  */
 public class ImageLoader {
 
-    public static void loadImage(Context context, String imageUrl, final ImageView imageView) {
+    public static void loadImage(Context context, String imageUrl, final ImageView imageView,
+                                 PhotoScaleMode photoScaleMode) {
         if (context == null || TextUtils.isEmpty(imageUrl) || imageView == null) {
             return;
         }
 
-        Picasso.with(context)
+        RequestCreator requestCreator = Picasso.with(context)
                 .load(imageUrl)
-                .fit()
-                .centerCrop()
-                .error(R.drawable.bitmap_missing)
+                .fit();
+
+        switch (photoScaleMode) {
+            case CENTER_INSIDE:
+                requestCreator.centerInside();
+                break;
+            case CENTER_CROP:
+                requestCreator.centerCrop();
+                break;
+            default:
+                break;
+        }
+
+        requestCreator.error(R.drawable.bitmap_missing)
                 .into(imageView, new Callback() {
                     @Override
                     public void onSuccess() {
@@ -113,5 +126,10 @@ public class ImageLoader {
         String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
 
         return Uri.parse(path);
+    }
+
+    public enum PhotoScaleMode {
+        CENTER_CROP,
+        CENTER_INSIDE
     }
 }

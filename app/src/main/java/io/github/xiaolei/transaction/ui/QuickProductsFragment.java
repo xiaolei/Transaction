@@ -206,7 +206,7 @@ public class QuickProductsFragment extends BaseFragment implements View.OnClickL
     }
 
     private void showProductList(List<Product> products) {
-        if (mViewHolder == null) {
+        if (mViewHolder == null || !isAdded()) {
             return;
         }
 

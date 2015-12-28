@@ -103,4 +103,5 @@
     <string name="hint_type_product_name">Type Product Name</string>
     <string name="default_currency_code">USD</string>
     <string name="error_invalid_photo_url">The photo link is invalid.</string>
+    <string name="photo_list">Photos</string>
 </resources>
