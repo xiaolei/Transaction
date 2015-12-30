@@ -37,7 +37,6 @@ public class PicassoRegionDecoder extends SkiaImageRegionDecoder {
 
     @Override
     public Point init(Context context, Uri uri) throws Exception {
-
         if (uri.toString().startsWith("http")) {
             OkHttpDownloader downloader = new OkHttpDownloader(client);
             InputStream inputStream = downloader.load(uri, 0).getInputStream();
@@ -51,26 +50,38 @@ public class PicassoRegionDecoder extends SkiaImageRegionDecoder {
 
     @Override
     public Bitmap decodeRegion(Rect rect, int sampleSize) {
-        synchronized (this.decoderLock) {
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inSampleSize = sampleSize;
-            options.inPreferredConfig = Bitmap.Config.RGB_565;
-            Bitmap bitmap = this.decoder.decodeRegion(rect, options);
-            if (bitmap == null) {
-                throw new RuntimeException("Region decoder returned null bitmap - image format may not be supported");
-            } else {
-                return bitmap;
+        if (this.decoder != null) {
+            synchronized (this.decoderLock) {
+                BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inSampleSize = sampleSize;
+                options.inPreferredConfig = Bitmap.Config.RGB_565;
+                Bitmap bitmap = this.decoder.decodeRegion(rect, options);
+                if (bitmap == null) {
+                    throw new RuntimeException("Region decoder returned null bitmap - image format may not be supported");
+                } else {
+                    return bitmap;
+                }
             }
+        } else {
+            return super.decodeRegion(rect, sampleSize);
         }
     }
 
     @Override
     public boolean isReady() {
-        return this.decoder != null && !this.decoder.isRecycled();
+        if (this.decoder != null) {
+            return this.decoder != null && !this.decoder.isRecycled();
+        } else {
+            return super.isReady();
+        }
     }
 
     @Override
     public void recycle() {
-        this.decoder.recycle();
+        super.recycle();
+
+        if (this.decoder != null) {
+            this.decoder.recycle();
+        }
     }
 }
