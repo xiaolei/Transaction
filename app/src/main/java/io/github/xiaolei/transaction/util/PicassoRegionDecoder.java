@@ -78,10 +78,10 @@ public class PicassoRegionDecoder extends SkiaImageRegionDecoder {
 
     @Override
     public void recycle() {
-        super.recycle();
-
         if (this.decoder != null) {
             this.decoder.recycle();
+        } else {
+            super.recycle();
         }
     }
 }
