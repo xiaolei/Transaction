@@ -2,13 +2,11 @@ package io.github.xiaolei.transaction.ui;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 
 import java.util.ArrayList;
 
 import io.github.xiaolei.transaction.R;
-import io.github.xiaolei.transaction.adapter.PhotoListAdapter;
 import io.github.xiaolei.transaction.adapter.PhotoViewFragmentPagerAdapter;
 import io.github.xiaolei.transaction.entity.Photo;
 
@@ -32,6 +30,7 @@ public class PhotoListActivity extends BaseToolbarActivity {
     @Override
     protected void initialize() {
         mViewHolder = new ViewHolder(this);
+        setupToolbar(R.id.toolbarPhotoList, false);
 
         handleIntent(getIntent());
     }
@@ -39,6 +38,11 @@ public class PhotoListActivity extends BaseToolbarActivity {
     @Override
     protected String getActionBarTitle() {
         return getString(R.string.photo_list);
+    }
+
+    @Override
+    protected boolean hasActionBar() {
+        return false;
     }
 
     @Override
@@ -52,14 +56,14 @@ public class PhotoListActivity extends BaseToolbarActivity {
         mPhotoList = (ArrayList<Photo>) intent.getSerializableExtra(ARG_PHOTO_URLS);
         mCurrentPosition = intent.getIntExtra(ARG_CURRENT_POSITION, 0);
 
-        if(mPhotoList == null){
+        if (mPhotoList == null) {
             return;
         }
 
         mAdapter = new PhotoViewFragmentPagerAdapter(getSupportFragmentManager(), mPhotoList);
         mViewHolder.viewPagerPhotoList.setAdapter(mAdapter);
 
-        if(mCurrentPosition >= 0 && mCurrentPosition < mPhotoList.size()) {
+        if (mCurrentPosition >= 0 && mCurrentPosition < mPhotoList.size()) {
             mViewHolder.viewPagerPhotoList.setCurrentItem(mCurrentPosition, false);
         }
     }

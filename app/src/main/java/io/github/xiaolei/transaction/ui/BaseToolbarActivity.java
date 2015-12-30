@@ -2,6 +2,8 @@ package io.github.xiaolei.transaction.ui;
 
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
+import android.support.v7.widget.Toolbar;
+import android.view.View;
 import android.widget.LinearLayout;
 
 import io.github.xiaolei.transaction.R;
@@ -19,8 +21,15 @@ public abstract class BaseToolbarActivity extends BaseActivity {
         LinearLayout contentLayout = (LinearLayout) findViewById(R.id.linearLayoutContentContainer);
         getLayoutInflater().inflate(getLayoutId(), contentLayout);
 
-        setupToolbar(R.id.toolbar, false);
-        setTitle(getActionBarTitle());
+        if (hasActionBar()) {
+            setupToolbar(R.id.toolbar, false);
+            setTitle(getActionBarTitle());
+        } else {
+            Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+            if (toolbar != null) {
+                toolbar.setVisibility(View.GONE);
+            }
+        }
 
         initialize();
     }
@@ -43,4 +52,6 @@ public abstract class BaseToolbarActivity extends BaseActivity {
     protected abstract void initialize();
 
     protected abstract String getActionBarTitle();
+
+    protected abstract boolean hasActionBar();
 }

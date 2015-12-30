@@ -6,14 +6,15 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
-import org.w3c.dom.Text;
+import com.davemorrissey.labs.subscaleview.ImageSource;
+import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
 
 import io.github.xiaolei.transaction.R;
 import io.github.xiaolei.transaction.util.ImageLoader;
+import io.github.xiaolei.transaction.util.PicassoDecoder;
+import io.github.xiaolei.transaction.util.PicassoRegionDecoder;
 import io.github.xiaolei.transaction.widget.DataContainerView;
-import uk.co.senab.photoview.PhotoViewAttacher;
 
 /**
  * TODO: add comment
@@ -22,7 +23,6 @@ public class PhotoViewFragment extends Fragment {
     private ViewHolder mViewHolder;
     public static final String ARG_PHOTO_URL = "arg_photo_url";
     private String mPhotoUrl;
-    private PhotoViewAttacher mPhotoViewAttacher;
 
     public static PhotoViewFragment newInstance(String photoUrl) {
         PhotoViewFragment result = new PhotoViewFragment();
@@ -47,7 +47,43 @@ public class PhotoViewFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_photo_view, container, false);
         mViewHolder = new ViewHolder(view);
-        mPhotoViewAttacher = new PhotoViewAttacher(mViewHolder.imageView);
+        mViewHolder.imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                BaseActivity baseActivity = (BaseActivity) getActivity();
+                baseActivity.toggleActionBar(R.id.toolbarPhotoList);
+            }
+        });
+
+        mViewHolder.imageView.setOnImageEventListener(new SubsamplingScaleImageView.OnImageEventListener() {
+            @Override
+            public void onReady() {
+                mViewHolder.dataContainerViewPhotoView.switchToDataView();
+            }
+
+            @Override
+            public void onImageLoaded() {
+                mViewHolder.dataContainerViewPhotoView.switchToDataView();
+            }
+
+            @Override
+            public void onPreviewLoadError(Exception e) {
+                showErrorImage();
+            }
+
+            @Override
+            public void onImageLoadError(Exception e) {
+                showErrorImage();
+            }
+
+            @Override
+            public void onTileLoadError(Exception e) {
+                showErrorImage();
+            }
+        });
+
+        mViewHolder.imageView.setBitmapDecoderClass(PicassoDecoder.class);
+        mViewHolder.imageView.setRegionDecoderClass(PicassoRegionDecoder.class);
 
         return view;
     }
@@ -59,11 +95,15 @@ public class PhotoViewFragment extends Fragment {
         loadImage(mPhotoUrl);
     }
 
+    private void showErrorImage() {
+        mViewHolder.dataContainerViewPhotoView.switchToDataView();
+        mViewHolder.imageView.setImage(ImageSource.resource(R.drawable.bitmap_missing));
+    }
+
     @Override
     public void onDestroy() {
         super.onDestroy();
 
-        mPhotoViewAttacher.cleanup();
     }
 
     public void loadImage(String imageUri) {
@@ -71,18 +111,16 @@ public class PhotoViewFragment extends Fragment {
             return;
         }
 
-        ImageLoader.loadImage(getActivity(), imageUri, mViewHolder.imageView,
-                ImageLoader.PhotoScaleMode.CENTER_INSIDE);
-        mPhotoViewAttacher.update();
+        ImageLoader.loadImage(getActivity(), imageUri, mViewHolder.imageView);
     }
 
     private class ViewHolder {
-        public ImageView imageView;
+        public SubsamplingScaleImageView imageView;
         public DataContainerView dataContainerViewPhotoView;
 
         public ViewHolder(View view) {
             dataContainerViewPhotoView = (DataContainerView) view.findViewById(R.id.dataContainerViewPhotoView);
-            imageView = (ImageView) view.findViewById(R.id.imageView);
+            imageView = (SubsamplingScaleImageView) view.findViewById(R.id.imageView);
         }
     }
 }

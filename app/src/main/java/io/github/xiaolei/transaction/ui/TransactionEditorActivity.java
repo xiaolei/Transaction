@@ -310,6 +310,7 @@ public class TransactionEditorActivity extends BaseActivity {
                 if (result == null) {
                     Toast.makeText(TransactionEditorActivity.this, getString(R.string.error_add_photo), Toast.LENGTH_SHORT).show();
                 } else {
+                    mTransaction = result;
                     bindTransactionPhotos(result);
                     EventBus.getDefault().post(new RefreshTransactionListEvent());
                 }

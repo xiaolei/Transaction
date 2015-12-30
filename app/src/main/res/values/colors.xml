@@ -97,4 +97,6 @@
     <color name="dark_gray">#8A000000</color>
     <color name="black_semi_transparent">#4d000000</color>
     <color name="dash_line">#e0e0e0</color>
+
+    <color name="transparent_app_primary">#8800BFA5</color>
 </resources>

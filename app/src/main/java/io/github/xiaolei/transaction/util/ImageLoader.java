@@ -4,11 +4,16 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.BitmapRegionDecoder;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.widget.ImageView;
 
+import com.davemorrissey.labs.subscaleview.ImageSource;
+import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
+import com.davemorrissey.labs.subscaleview.decoder.SkiaImageDecoder;
+import com.davemorrissey.labs.subscaleview.decoder.SkiaImageRegionDecoder;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
@@ -24,6 +29,14 @@ import io.github.xiaolei.transaction.R;
  * TODO: add comment
  */
 public class ImageLoader {
+
+    public static void loadImage(Context context, String imageUrl, final SubsamplingScaleImageView imageView) {
+        if (context == null || TextUtils.isEmpty(imageUrl) || imageView == null) {
+            return;
+        }
+
+        imageView.setImage(ImageSource.uri(imageUrl));
+    }
 
     public static void loadImage(Context context, String imageUrl, final ImageView imageView,
                                  PhotoScaleMode photoScaleMode) {

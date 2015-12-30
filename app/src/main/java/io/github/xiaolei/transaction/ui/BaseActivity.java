@@ -1,11 +1,12 @@
 package io.github.xiaolei.transaction.ui;
 
 import android.Manifest;
+import android.animation.Animator;
+import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -17,10 +18,10 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
+import android.view.animation.OvershootInterpolator;
 import android.widget.Toast;
-
-import java.io.File;
-import java.io.FileNotFoundException;
 
 import de.greenrobot.event.EventBus;
 import io.github.xiaolei.enterpriselibrary.listener.OnOperationCompletedListener;
@@ -81,6 +82,37 @@ public abstract class BaseActivity extends AppCompatActivity implements Activity
         return R.id.fragmentContainer;
     }
 
+    public void setActionBarVisibility(boolean visible) {
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            if (visible) {
+                actionBar.show();
+            } else {
+                actionBar.hide();
+            }
+        }
+    }
+
+    public void toggleActionBar(int toolbarId) {
+        final Toolbar toolbar = (Toolbar) findViewById(toolbarId);
+
+        if (toolbar != null) {
+            float startValue = 0;
+            float endValue = -toolbar.getMeasuredHeight();
+            boolean visible = toolbar.getTranslationY() >= 0;
+
+            if (!visible) {
+                startValue = -toolbar.getMeasuredHeight();
+                endValue = 0;
+            }
+
+            ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(toolbar, "translationY", startValue, endValue);
+            objectAnimator.setDuration(200);
+            objectAnimator.setInterpolator(new DecelerateInterpolator());
+            objectAnimator.start();
+        }
+    }
+
     protected Toolbar setupToolbar(final DrawerLayout drawerLayout) {
         Toolbar toolbar = setupToolbar(true);
         if (toolbar != null && drawerLayout != null) {
@@ -99,7 +131,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Activity
         return toolbar;
     }
 
-    protected void changeToolbarColor(int color) {
+    protected void setToolbarColor(int color) {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         if (toolbar != null) {
             toolbar.setBackgroundColor(color);
