@@ -54,15 +54,30 @@ public class PhotoViewFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_photo_view, container, false);
         mViewHolder = new ViewHolder(view);
+        mViewHolder.dataContainerViewPhotoView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toggleActionBar();
+            }
+        });
+
         mViewHolder.imageView.setOnPhotoTapListener(new PhotoViewAttacher.OnPhotoTapListener() {
             @Override
             public void onPhotoTap(View view, float x, float y) {
-                BaseActivity baseActivity = (BaseActivity) getActivity();
-                baseActivity.toggleActionBar(R.id.toolbarPhotoList);
+                toggleActionBar();
             }
         });
 
         return view;
+    }
+
+    private void toggleActionBar() {
+        if (!isAdded()) {
+            return;
+        }
+
+        BaseActivity baseActivity = (BaseActivity) getActivity();
+        baseActivity.toggleActionBar(R.id.toolbarPhotoList);
     }
 
     @Override
@@ -119,7 +134,7 @@ public class PhotoViewFragment extends Fragment {
     }
 
     @Override
-    public void onPause(){
+    public void onPause() {
         super.onPause();
     }
 
