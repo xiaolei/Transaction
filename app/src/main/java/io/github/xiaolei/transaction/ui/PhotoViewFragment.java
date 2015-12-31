@@ -6,16 +6,8 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
+import android.widget.LinearLayout;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.UUID;
-
-import io.github.xiaolei.enterpriselibrary.utility.DownloadFileUtil;
-import io.github.xiaolei.enterpriselibrary.utility.DownloadManager;
-import io.github.xiaolei.enterpriselibrary.utility.DownloadManager.DownloaderCallback;
-import io.github.xiaolei.enterpriselibrary.utility.PhotoPicker;
 import io.github.xiaolei.transaction.R;
 import io.github.xiaolei.transaction.util.ImageLoader;
 import io.github.xiaolei.transaction.widget.DataContainerView;
@@ -29,7 +21,6 @@ public class PhotoViewFragment extends Fragment {
     private ViewHolder mViewHolder;
     public static final String ARG_PHOTO_URL = "arg_photo_url";
     private String mPhotoUrl;
-    private String mDownloadFileName;
 
     public static PhotoViewFragment newInstance(String photoUrl) {
         PhotoViewFragment result = new PhotoViewFragment();
@@ -54,16 +45,9 @@ public class PhotoViewFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_photo_view, container, false);
         mViewHolder = new ViewHolder(view);
-        mViewHolder.dataContainerViewPhotoView.setOnClickListener(new View.OnClickListener() {
+        mViewHolder.imageView.setOnViewTapListener(new PhotoViewAttacher.OnViewTapListener() {
             @Override
-            public void onClick(View v) {
-                toggleActionBar();
-            }
-        });
-
-        mViewHolder.imageView.setOnPhotoTapListener(new PhotoViewAttacher.OnPhotoTapListener() {
-            @Override
-            public void onPhotoTap(View view, float x, float y) {
+            public void onViewTap(View view, float x, float y) {
                 toggleActionBar();
             }
         });
@@ -84,48 +68,7 @@ public class PhotoViewFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        loadPhoto();
-    }
-
-    private void loadPhoto() {
-        if (mPhotoUrl.toLowerCase().startsWith("http")) {
-            try {
-                mDownloadFileName = PhotoPicker.getInstance(getActivity()).getPhotoStorageFolderPath()
-                        + File.separator + UUID.randomUUID().toString() + "." + DownloadFileUtil.getFileExtension(mPhotoUrl, "jpg");
-            } catch (IOException e) {
-                e.printStackTrace();
-                Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            mViewHolder.dataContainerViewPhotoView.switchToBusyView();
-            DownloadManager.getInstance(getActivity()).download(mPhotoUrl, mDownloadFileName, new DownloaderCallback() {
-                @Override
-                public void onSuccess(String fileUrl) {
-                    mViewHolder.dataContainerViewPhotoView.switchToDataView();
-                    mPhotoUrl = DownloadFileUtil.getLocalFileUri(mDownloadFileName);
-                    loadImage(mPhotoUrl);
-                }
-
-                @Override
-                public void onFailure(String fileUrl, String errorMessage) {
-                    mViewHolder.dataContainerViewPhotoView.switchToDataView();
-                    Toast.makeText(getActivity(), getString(R.string.error_download_file_failed, fileUrl), Toast.LENGTH_SHORT).show();
-                }
-
-                @Override
-                public void onCancel(String fileUrl) {
-                    mViewHolder.dataContainerViewPhotoView.switchToDataView();
-                }
-
-                @Override
-                public void onProgressUpdate(String fileUrl, long totalFileLength, long currentFileLength) {
-
-                }
-            });
-        } else {
-            loadImage(mPhotoUrl);
-        }
+        loadImage(mPhotoUrl);
     }
 
     @Override
@@ -149,10 +92,12 @@ public class PhotoViewFragment extends Fragment {
     private class ViewHolder {
         public PhotoView imageView;
         public DataContainerView dataContainerViewPhotoView;
+        public LinearLayout linearLayoutPhotoContainer;
 
         public ViewHolder(View view) {
             dataContainerViewPhotoView = (DataContainerView) view.findViewById(R.id.dataContainerViewPhotoView);
             imageView = (PhotoView) view.findViewById(R.id.imageView);
+            linearLayoutPhotoContainer = (LinearLayout) view.findViewById(R.id.linearLayoutPhotoContainer);
         }
     }
 }
