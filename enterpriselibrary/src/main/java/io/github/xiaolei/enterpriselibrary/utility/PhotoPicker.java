@@ -158,7 +158,7 @@ public class PhotoPicker {
         context.startActivityForResult(intent, IMAGE_CAPTURE);
     }
 
-    private String getPhotoStorageFolderPath() throws IOException {
+    public String getPhotoStorageFolderPath() throws IOException {
         File storageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), getPhotoStorageFolderName());
         if (!storageDir.exists()) {
             if (!storageDir.mkdirs()) {
@@ -234,7 +234,7 @@ public class PhotoPicker {
 
         boolean isFilePath = result.startsWith(File.separator);
         if (isFilePath) {
-            result = "file:///" + result;
+            result = DownloadFileUtil.getLocalFileUri(result);
         } else if (!TextUtils.isEmpty(selectedImageUri.getAuthority())) {
             InputStream inputStream = context.getContentResolver().openInputStream(selectedImageUri);
             OutputStream outputStream = null;

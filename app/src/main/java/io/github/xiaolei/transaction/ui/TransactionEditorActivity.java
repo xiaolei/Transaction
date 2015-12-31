@@ -1,7 +1,6 @@
 package io.github.xiaolei.transaction.ui;
 
 import android.app.Activity;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -16,16 +15,21 @@ import android.widget.GridView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.File;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import de.greenrobot.event.EventBus;
+import io.github.xiaolei.enterpriselibrary.listener.OnCancellableOperationCompletedListener;
 import io.github.xiaolei.enterpriselibrary.listener.OnOperationCompletedListener;
 import io.github.xiaolei.enterpriselibrary.logging.Logger;
 import io.github.xiaolei.enterpriselibrary.utility.DateTimeUtils;
 import io.github.xiaolei.enterpriselibrary.utility.DialogHelper;
+import io.github.xiaolei.enterpriselibrary.utility.DownloadFileUtil;
 import io.github.xiaolei.enterpriselibrary.utility.PhotoPicker;
 import io.github.xiaolei.enterpriselibrary.utility.UriHelper;
 import io.github.xiaolei.transaction.GlobalApplication;
@@ -33,7 +37,6 @@ import io.github.xiaolei.transaction.R;
 import io.github.xiaolei.transaction.adapter.ActionButtonListAdapter;
 import io.github.xiaolei.transaction.entity.Photo;
 import io.github.xiaolei.transaction.entity.Transaction;
-import io.github.xiaolei.transaction.entity.TransactionPhoto;
 import io.github.xiaolei.transaction.event.PickPhotoEvent;
 import io.github.xiaolei.transaction.event.RefreshTransactionListEvent;
 import io.github.xiaolei.transaction.listener.OnGotPermissionResultListener;
@@ -101,18 +104,46 @@ public class TransactionEditorActivity extends BaseActivity {
                 ActionButtonInfo actionButtonInfo = (ActionButtonInfo) parent.getItemAtPosition(position);
                 switch (actionButtonInfo.id) {
                     case ActionButtonId.PICK_PHOTO_FROM_GALLERY:
-                        // PhotoPicker.getInstance(TransactionEditorActivity.this).pickPhotoFromGallery(TransactionEditorActivity.this);
                         PhotoPicker.getInstance(TransactionEditorActivity.this).showPhotoChooserDialog(TransactionEditorActivity.this,
                                 TransactionEditorActivity.this.getSupportFragmentManager(),
                                 new OnOperationCompletedListener<String>() {
                                     @Override
-                                    public void onOperationCompleted(boolean success, String result, String message) {
+                                    public void onOperationCompleted(boolean success, final String result, String message) {
+                                        if (TextUtils.isEmpty(result)) {
+                                            return;
+                                        }
+
                                         if (!UriHelper.isValidUrl(result)) {
                                             DialogHelper.showAlertDialog(TransactionEditorActivity.this, getString(R.string.error_invalid_photo_url));
                                             return;
                                         }
 
-                                        onEvent(new PickPhotoEvent(result));
+                                        String downloadFileName = "";
+                                        try {
+                                            downloadFileName = PhotoPicker.getInstance(TransactionEditorActivity.this).getPhotoStorageFolderPath()
+                                                    + File.separator + UUID.randomUUID().toString() + "." + DownloadFileUtil.getFileExtension(result, "jpg");
+                                        } catch (IOException e) {
+                                            e.printStackTrace();
+                                            Toast.makeText(TransactionEditorActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                            return;
+                                        }
+
+                                        final String finalDownloadFileName = downloadFileName;
+                                        DownloadFileUtil.downloadFile(TransactionEditorActivity.this, result, downloadFileName, new OnCancellableOperationCompletedListener<String>() {
+                                            @Override
+                                            public void onOperationCompleted(boolean cancelled, boolean success, String fileName, String message) {
+                                                if (cancelled) {
+                                                    return;
+                                                }
+
+                                                if (!success) {
+                                                    Toast.makeText(TransactionEditorActivity.this, getString(R.string.error_download_file_failed, result), Toast.LENGTH_SHORT).show();
+                                                    return;
+                                                }
+
+                                                onEvent(new PickPhotoEvent(DownloadFileUtil.getLocalFileUri(finalDownloadFileName)));
+                                            }
+                                        });
                                     }
                                 });
                         break;

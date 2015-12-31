@@ -6,15 +6,21 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
-import com.davemorrissey.labs.subscaleview.ImageSource;
-import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
+import java.io.File;
+import java.io.IOException;
+import java.util.UUID;
 
+import io.github.xiaolei.enterpriselibrary.utility.DownloadFileUtil;
+import io.github.xiaolei.enterpriselibrary.utility.DownloadManager;
+import io.github.xiaolei.enterpriselibrary.utility.DownloadManager.DownloaderCallback;
+import io.github.xiaolei.enterpriselibrary.utility.PhotoPicker;
 import io.github.xiaolei.transaction.R;
 import io.github.xiaolei.transaction.util.ImageLoader;
-import io.github.xiaolei.transaction.util.PicassoDecoder;
-import io.github.xiaolei.transaction.util.PicassoRegionDecoder;
 import io.github.xiaolei.transaction.widget.DataContainerView;
+import uk.co.senab.photoview.PhotoView;
+import uk.co.senab.photoview.PhotoViewAttacher;
 
 /**
  * TODO: add comment
@@ -23,6 +29,7 @@ public class PhotoViewFragment extends Fragment {
     private ViewHolder mViewHolder;
     public static final String ARG_PHOTO_URL = "arg_photo_url";
     private String mPhotoUrl;
+    private String mDownloadFileName;
 
     public static PhotoViewFragment newInstance(String photoUrl) {
         PhotoViewFragment result = new PhotoViewFragment();
@@ -47,43 +54,13 @@ public class PhotoViewFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_photo_view, container, false);
         mViewHolder = new ViewHolder(view);
-        mViewHolder.imageView.setOnClickListener(new View.OnClickListener() {
+        mViewHolder.imageView.setOnPhotoTapListener(new PhotoViewAttacher.OnPhotoTapListener() {
             @Override
-            public void onClick(View v) {
+            public void onPhotoTap(View view, float x, float y) {
                 BaseActivity baseActivity = (BaseActivity) getActivity();
                 baseActivity.toggleActionBar(R.id.toolbarPhotoList);
             }
         });
-
-        mViewHolder.imageView.setOnImageEventListener(new SubsamplingScaleImageView.OnImageEventListener() {
-            @Override
-            public void onReady() {
-                mViewHolder.dataContainerViewPhotoView.switchToDataView();
-            }
-
-            @Override
-            public void onImageLoaded() {
-                mViewHolder.dataContainerViewPhotoView.switchToDataView();
-            }
-
-            @Override
-            public void onPreviewLoadError(Exception e) {
-                showErrorImage();
-            }
-
-            @Override
-            public void onImageLoadError(Exception e) {
-                showErrorImage();
-            }
-
-            @Override
-            public void onTileLoadError(Exception e) {
-                showErrorImage();
-            }
-        });
-
-        mViewHolder.imageView.setBitmapDecoderClass(PicassoDecoder.class);
-        mViewHolder.imageView.setRegionDecoderClass(PicassoRegionDecoder.class);
 
         return view;
     }
@@ -92,18 +69,58 @@ public class PhotoViewFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        loadImage(mPhotoUrl);
+        loadPhoto();
     }
 
-    private void showErrorImage() {
-        mViewHolder.dataContainerViewPhotoView.switchToDataView();
-        mViewHolder.imageView.setImage(ImageSource.resource(R.drawable.bitmap_missing));
+    private void loadPhoto() {
+        if (mPhotoUrl.toLowerCase().startsWith("http")) {
+            try {
+                mDownloadFileName = PhotoPicker.getInstance(getActivity()).getPhotoStorageFolderPath()
+                        + File.separator + UUID.randomUUID().toString() + "." + DownloadFileUtil.getFileExtension(mPhotoUrl, "jpg");
+            } catch (IOException e) {
+                e.printStackTrace();
+                Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            mViewHolder.dataContainerViewPhotoView.switchToBusyView();
+            DownloadManager.getInstance(getActivity()).download(mPhotoUrl, mDownloadFileName, new DownloaderCallback() {
+                @Override
+                public void onSuccess(String fileUrl) {
+                    mViewHolder.dataContainerViewPhotoView.switchToDataView();
+                    mPhotoUrl = DownloadFileUtil.getLocalFileUri(mDownloadFileName);
+                    loadImage(mPhotoUrl);
+                }
+
+                @Override
+                public void onFailure(String fileUrl, String errorMessage) {
+                    mViewHolder.dataContainerViewPhotoView.switchToDataView();
+                    Toast.makeText(getActivity(), getString(R.string.error_download_file_failed, fileUrl), Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onCancel(String fileUrl) {
+                    mViewHolder.dataContainerViewPhotoView.switchToDataView();
+                }
+
+                @Override
+                public void onProgressUpdate(String fileUrl, long totalFileLength, long currentFileLength) {
+
+                }
+            });
+        } else {
+            loadImage(mPhotoUrl);
+        }
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
+    }
 
+    @Override
+    public void onPause(){
+        super.onPause();
     }
 
     public void loadImage(String imageUri) {
@@ -111,16 +128,16 @@ public class PhotoViewFragment extends Fragment {
             return;
         }
 
-        ImageLoader.loadImage(getActivity(), imageUri, mViewHolder.imageView);
+        ImageLoader.loadImage(getActivity(), imageUri, mViewHolder.imageView, ImageLoader.PhotoScaleMode.CENTER_INSIDE);
     }
 
     private class ViewHolder {
-        public SubsamplingScaleImageView imageView;
+        public PhotoView imageView;
         public DataContainerView dataContainerViewPhotoView;
 
         public ViewHolder(View view) {
             dataContainerViewPhotoView = (DataContainerView) view.findViewById(R.id.dataContainerViewPhotoView);
-            imageView = (SubsamplingScaleImageView) view.findViewById(R.id.imageView);
+            imageView = (PhotoView) view.findViewById(R.id.imageView);
         }
     }
 }

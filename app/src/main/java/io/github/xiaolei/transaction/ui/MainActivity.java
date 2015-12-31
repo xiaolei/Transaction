@@ -9,6 +9,7 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -143,7 +144,10 @@ public class MainActivity extends BaseActivity
 
     @Override
     public void setActionBarTitle(int resId) {
-        this.getSupportActionBar().setTitle(getString(resId));
+        ActionBar actionBar = this.getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setTitle(getString(resId));
+        }
     }
 
     @Override
@@ -155,7 +159,7 @@ public class MainActivity extends BaseActivity
         return true;
     }
 
-    public Toolbar getToolbar(){
+    public Toolbar getToolbar() {
         return mViewHolder.toolbar;
     }
 
@@ -182,7 +186,7 @@ public class MainActivity extends BaseActivity
     }
 
     private void showAccountInfo() {
-        if (mViewHolder != null) {
+        if (mViewHolder != null && mViewHolder.accountView != null) {
             mViewHolder.accountView.bind(GlobalApplication.getCurrentAccount());
         }
     }

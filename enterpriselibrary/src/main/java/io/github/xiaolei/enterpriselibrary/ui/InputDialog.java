@@ -10,6 +10,7 @@ import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
 import io.github.xiaolei.enterpriselibrary.R;
@@ -70,6 +71,7 @@ public class InputDialog extends DialogFragment {
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        hideSoftKeyboard();
                         if (mOnOperationCompletedListener != null) {
                             mOnOperationCompletedListener.onOperationCompleted(true, mViewHolder.editTextProductName.getText().toString(), null);
                         }
@@ -78,6 +80,7 @@ public class InputDialog extends DialogFragment {
                 .setNegativeButton(android.R.string.cancel,
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
+                                hideSoftKeyboard();
                                 dialog.dismiss();
                             }
                         }
@@ -85,6 +88,18 @@ public class InputDialog extends DialogFragment {
                 .create();
 
         return dialog;
+    }
+
+    protected void hideSoftKeyboard() {
+        if(!isAdded()){
+            return;
+        }
+
+        View view = getDialog().getWindow().getCurrentFocus();
+        if (view != null) {
+            InputMethodManager inputManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        }
     }
 
     @Override

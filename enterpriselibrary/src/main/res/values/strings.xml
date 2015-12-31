@@ -11,4 +11,10 @@
     <string name="camera_app_not_found">Sorry, no available camera app found.</string>
     <string name="error_failed_to_create_image_file">Sorry, create photo folder failed.</string>
     <string name="error_failed_to_pick_photo">Sorry, pick photo failed.</string>
+    <string name="error_download_file_failed">Sorry, failed to download file: %s</string>
+    <string name="error_create_target_path_failed">Sorry, create target download path failed.</string>
+    <string name="error_file_name_is_empty">File name is empty.</string>
+    <string name="error_file_is_downloading">File: %s is downloading…</string>
+    <string name="error_download_file_cancelled">Cancelled download file: %s</string>
+    <string name="error_target_folder_path_is_empty">Download folder path is empty.</string>
 </resources>
