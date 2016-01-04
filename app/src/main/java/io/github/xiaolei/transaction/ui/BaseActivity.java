@@ -1,7 +1,6 @@
 package io.github.xiaolei.transaction.ui;
 
 import android.Manifest;
-import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Context;
@@ -19,9 +18,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
-import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
-import android.view.animation.OvershootInterpolator;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
@@ -48,25 +45,6 @@ public abstract class BaseActivity extends AppCompatActivity implements Activity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getSupportFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
-            @Override
-            public void onBackStackChanged() {
-                FragmentManager manager = getSupportFragmentManager();
-                if (manager != null) {
-                    int backStackEntryCount = manager.getBackStackEntryCount();
-                    if (backStackEntryCount == 0) {
-                        finish();
-                        return;
-                    }
-
-                    BaseFragment fragment = (BaseFragment) manager.getFragments().get(backStackEntryCount - 1);
-                    if (fragment != null) {
-                        fragment.onPoppedFromBackStack();
-                        onFragmentPoppedFromBackStack(fragment);
-                    }
-                }
-            }
-        });
         EventBus.getDefault().register(this);
     }
 
@@ -74,10 +52,6 @@ public abstract class BaseActivity extends AppCompatActivity implements Activity
     public void onDestroy() {
         EventBus.getDefault().unregister(this);
         super.onDestroy();
-    }
-
-    protected void onFragmentPoppedFromBackStack(BaseFragment fragment) {
-
     }
 
     protected int getFragmentContainerId() {
@@ -219,33 +193,9 @@ public abstract class BaseActivity extends AppCompatActivity implements Activity
             return;
         }
 
-        if (containsInFragmentBackStack(fragmentTagName)) {
-            fragmentManager.popBackStack(fragmentTagName, 0);
-            return;
-        }
-
         Fragment fragment = Fragment.instantiate(this, fragmentTagName, arguments);
-
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.addToBackStack(fragmentTagName);
         transaction.replace(fragmentContainerId, fragment).commit();
-    }
-
-    private boolean containsInFragmentBackStack(String fragmentTagName) {
-        if (TextUtils.isEmpty(fragmentTagName)) {
-            return false;
-        }
-
-        FragmentManager fragmentManager = getSupportFragmentManager();
-
-        for (int i = 0; i < fragmentManager.getBackStackEntryCount(); i++) {
-            FragmentManager.BackStackEntry backStackEntry = fragmentManager.getBackStackEntryAt(0);
-            if (fragmentTagName.equalsIgnoreCase(backStackEntry.getName())) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     @Override

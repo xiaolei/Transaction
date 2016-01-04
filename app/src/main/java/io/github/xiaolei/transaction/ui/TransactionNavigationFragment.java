@@ -29,6 +29,7 @@ public class TransactionNavigationFragment extends BaseFragment {
     private Date mTransactionDate = DateTimeUtils.getStartTimeOfDate(new Date());
     private TransactionListPagerAdapter mTransactionListPagerAdapter;
     private TransactionFilterType mFilterType = TransactionFilterType.BY_DAY;
+    private int mCheckedMenuItemId = R.id.action_by_day;
 
     public static TransactionNavigationFragment newInstance(Date transactionDate) {
         TransactionNavigationFragment result = new TransactionNavigationFragment();
@@ -49,8 +50,15 @@ public class TransactionNavigationFragment extends BaseFragment {
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+
         // Show add action button, only when filter type is by day.
         menu.getItem(0).setVisible(mFilterType == TransactionFilterType.BY_DAY);
+
+        MenuItem checkedMenuItem = menu.findItem(mCheckedMenuItemId);
+        if (checkedMenuItem != null) {
+            checkedMenuItem.setChecked(true);
+        }
     }
 
     @Override
@@ -75,17 +83,27 @@ public class TransactionNavigationFragment extends BaseFragment {
                 }
                 return true;
             case R.id.action_by_day:
-                query(TransactionFilterType.BY_DAY, mTransactionDate);
-                return true;
             case R.id.action_by_week:
-                query(TransactionFilterType.BY_WEEK, mTransactionDate);
-                return true;
             case R.id.action_by_month:
-                query(TransactionFilterType.BY_MONTH, mTransactionDate);
-                return true;
             case R.id.action_by_year:
-                query(TransactionFilterType.BY_YEAR, mTransactionDate);
-                return true;
+                mCheckedMenuItemId = item.getItemId();
+
+                switch (item.getItemId()) {
+                    case R.id.action_by_day:
+                        query(TransactionFilterType.BY_DAY, mTransactionDate);
+                        return true;
+                    case R.id.action_by_week:
+                        query(TransactionFilterType.BY_WEEK, mTransactionDate);
+                        return true;
+                    case R.id.action_by_month:
+                        query(TransactionFilterType.BY_MONTH, mTransactionDate);
+                        return true;
+                    case R.id.action_by_year:
+                        query(TransactionFilterType.BY_YEAR, mTransactionDate);
+                        return true;
+                    default:
+                        break;
+                }
             default:
                 return true;
         }
@@ -123,11 +141,6 @@ public class TransactionNavigationFragment extends BaseFragment {
 
             }
         });
-    }
-
-    @Override
-    public void onPoppedFromBackStack() {
-        super.onPoppedFromBackStack();
     }
 
     @Override

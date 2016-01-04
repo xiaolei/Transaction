@@ -7,20 +7,23 @@
         android:title="@string/new_transaction"
         app:showAsAction="always" />
 
-    <item
-        android:id="@+id/action_by_day"
-        android:title="@string/transaction_navigator_by_day"
-        app:showAsAction="never" />
-    <item
-        android:id="@+id/action_by_week"
-        android:title="@string/transaction_navigator_by_week"
-        app:showAsAction="never" />
-    <item
-        android:id="@+id/action_by_month"
-        android:title="@string/transaction_navigator_by_month"
-        app:showAsAction="never" />
-    <item
-        android:id="@+id/action_by_year"
-        android:title="@string/transaction_navigator_by_year"
-        app:showAsAction="never" />
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/action_by_day"
+            android:checked="true"
+            android:title="@string/transaction_navigator_by_day"
+            app:showAsAction="never" />
+        <item
+            android:id="@+id/action_by_week"
+            android:title="@string/transaction_navigator_by_week"
+            app:showAsAction="never" />
+        <item
+            android:id="@+id/action_by_month"
+            android:title="@string/transaction_navigator_by_month"
+            app:showAsAction="never" />
+        <item
+            android:id="@+id/action_by_year"
+            android:title="@string/transaction_navigator_by_year"
+            app:showAsAction="never" />
+    </group>
 </menu>

@@ -21,8 +21,6 @@ public class TransactionListPagerAdapter extends FragmentStatePagerAdapter {
     private Date mStartDate;
     private int mCount;
     private TransactionFilterType mTransactionFilterType = TransactionFilterType.BY_DAY;
-    private Date mCurrentStartDate;
-    private Date mCurrentEndDate;
 
     public TransactionListPagerAdapter(FragmentManager fm, Date startDate, Date endDate) {
         super(fm);
@@ -86,10 +84,12 @@ public class TransactionListPagerAdapter extends FragmentStatePagerAdapter {
         return new DateRange(startDate, endDate);
     }
 
+    /*
     @Override
     public int getItemPosition(Object object) {
         return POSITION_NONE;
     }
+    */
 
     @Override
     public Fragment getItem(int position) {

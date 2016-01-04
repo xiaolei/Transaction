@@ -2,8 +2,6 @@ package io.github.xiaolei.transaction.ui;
 
 import android.Manifest;
 import android.app.Activity;
-import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -12,12 +10,10 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 import java.util.HashMap;
@@ -25,14 +21,12 @@ import java.util.Map;
 
 import de.greenrobot.event.EventBus;
 import io.github.xiaolei.enterpriselibrary.logging.Logger;
-import io.github.xiaolei.enterpriselibrary.utility.PhotoPicker;
 import io.github.xiaolei.transaction.GlobalApplication;
 import io.github.xiaolei.transaction.R;
 import io.github.xiaolei.transaction.event.AccountInfoLoadCompletedEvent;
 import io.github.xiaolei.transaction.event.AppInitCompletedEvent;
 import io.github.xiaolei.transaction.event.CheckPermissionEvent;
 import io.github.xiaolei.transaction.event.NavigationDrawerStateEvent;
-import io.github.xiaolei.transaction.event.PickPhotoEvent;
 import io.github.xiaolei.transaction.widget.AccountView;
 
 
@@ -43,7 +37,7 @@ public class MainActivity extends BaseActivity
     public static final int VIEW_INDEX_CONTENT = 1;
 
     private ViewHolder mViewHolder;
-    private HashMap<Integer, String> mMenuItemAndFragmentMapping = new HashMap<Integer, String>();
+    private HashMap<Integer, String> mMenuItemAndFragmentMapping = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,7 +64,7 @@ public class MainActivity extends BaseActivity
         return null;
     }
 
-    private int getMenuItemIdByFragmentTagName(String fragmentTagName) {
+    protected int getMenuItemIdByFragmentTagName(String fragmentTagName) {
         for (Map.Entry<Integer, String> entry : mMenuItemAndFragmentMapping.entrySet()) {
             if (entry.getValue().equalsIgnoreCase(fragmentTagName)) {
                 return entry.getKey();
@@ -78,14 +72,6 @@ public class MainActivity extends BaseActivity
         }
 
         return -1;
-    }
-
-    @Override
-    protected void onFragmentPoppedFromBackStack(BaseFragment fragment) {
-        int menuId = getMenuItemIdByFragmentTagName(fragment.getClass().getName());
-        if (menuId > 0) {
-            mViewHolder.navigationView.setCheckedItem(menuId);
-        }
     }
 
     private void start() {
