@@ -288,12 +288,12 @@ public class TransactionListFragment extends BaseFragment implements OnLoadMoreL
         @Override
         public void onItemCheckedStateChanged(android.view.ActionMode actionMode, int position, long id, boolean checked) {
             int selectCount = mAdapter.getCheckedItemCount();
-            Transaction transaction = (Transaction) mAdapter.getItem(position);
+            Transaction transaction = mAdapter.getItem(position);
             transaction.checked = checked;
             mAdapter.notifyItemChanged(position);
 
             if (selectCount >= 1) {
-                actionMode.setSubtitle("" + selectCount + " selected");
+                actionMode.setSubtitle(getString(R.string.selected_count_text_format, selectCount));
             } else {
                 mActionMode.finish();
             }
@@ -303,8 +303,8 @@ public class TransactionListFragment extends BaseFragment implements OnLoadMoreL
         public boolean onCreateActionMode(android.view.ActionMode actionMode, Menu menu) {
             mActionMode = actionMode;
             actionMode.getMenuInflater().inflate(R.menu.action_mode_transaction_list, menu);
-            actionMode.setTitle("Select Transactions");
-            actionMode.setSubtitle("1 Transaction selected");
+            actionMode.setTitle(R.string.action_mode_title_select_transactions);
+            actionMode.setSubtitle(getString(R.string.selected_count_text_format, 1));
 
             return true;
         }

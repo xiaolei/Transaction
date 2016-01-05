@@ -28,6 +28,8 @@ public class Product extends BaseEntity {
     @DatabaseField
     private double frequency;
 
+    public boolean checked;
+
     public String getName() {
         return name;
     }

@@ -8,13 +8,15 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <RelativeLayout
-            android:id="@+id/relativeLayoutProductBanner"
+        <ImageView
+            android:id="@+id/imageViewProductPrimaryPhoto"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:background="@color/divider_color">
+            android:layout_height="wrap_content"
+            android:background="@color/divider_color"
+            android:maxHeight="200dp"
+            android:scaleType="centerCrop">
 
-        </RelativeLayout>
+        </ImageView>
 
         <io.github.xiaolei.transaction.widget.DataContainerView
             android:id="@+id/dataContainerViewProductEditor"

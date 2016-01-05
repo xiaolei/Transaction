@@ -100,6 +100,17 @@ public class TransactionRepository extends BaseRepository {
         transactionDao.update(updateBuilder.prepare());
     }
 
+    public void removeTransaction(long transactionId) throws SQLException {
+        if (transactionId <= 0) {
+            return;
+        }
+
+        UpdateBuilder<Transaction, Long> updateBuilder = transactionDao.updateBuilder();
+        updateBuilder.updateColumnValue(Transaction.ACTIVE, false)
+                .where().eq(Transaction.ID, transactionId);
+        transactionDao.update(updateBuilder.prepare());
+    }
+
     public void updateTransactionDescription(long transactionId, String description) throws SQLException {
         UpdateBuilder<Transaction, Long> updateBuilder = transactionDao.updateBuilder();
         updateBuilder.updateColumnValue(Transaction.DESCRIPTION, new SelectArg(description))

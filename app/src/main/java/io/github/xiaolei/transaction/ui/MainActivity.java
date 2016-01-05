@@ -49,7 +49,7 @@ public class MainActivity extends BaseActivity
         mMenuItemAndFragmentMapping.put(R.id.navigation_item_calculator, CalculatorFragment.class.getName());
         mMenuItemAndFragmentMapping.put(R.id.navigation_item_dashboard, DashboardFragment.class.getName());
         mMenuItemAndFragmentMapping.put(R.id.navigation_item_transactions, TransactionNavigationFragment.class.getName());
-        mMenuItemAndFragmentMapping.put(R.id.navigation_item_analysis, AnalysisFragment.class.getName());
+        //mMenuItemAndFragmentMapping.put(R.id.navigation_item_analysis, AnalysisFragment.class.getName());
         mMenuItemAndFragmentMapping.put(R.id.navigation_item_products, ProductsFragment.class.getName());
         mMenuItemAndFragmentMapping.put(R.id.navigation_item_tags, TagsFragment.class.getName());
 

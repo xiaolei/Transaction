@@ -3,14 +3,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
-    <ImageView
-        android:id="@+id/imageViewCheckState"
+    <io.github.xiaolei.transaction.widget.AnimationCheckBox
+        android:id="@+id/checkBoxSelectIndicator"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:scaleType="center"
-        android:src="@drawable/ic_check_circle_white_36dp"
-        android:visibility="gone" />
+        android:layout_gravity="right|top"
+        android:layout_marginBottom="@dimen/spacing_small"
+        android:layout_marginRight="@dimen/spacing_small"
+        android:layout_marginTop="@dimen/spacing_small"
+        android:button="@drawable/selector_checkbox"
+        android:checked="true"
+        android:visibility="gone"
+        android:clickable="false" />
 </merge>
 

@@ -66,7 +66,7 @@ public class TransactionNavigationFragment extends BaseFragment {
         super.onCreateOptionsMenu(menu, inflater);
 
         menu.clear();
-        inflater.inflate(R.menu.transactions_fragment, menu);
+        inflater.inflate(R.menu.menu_transactions_fragment, menu);
     }
 
     @Override
@@ -105,7 +105,7 @@ public class TransactionNavigationFragment extends BaseFragment {
                         break;
                 }
             default:
-                return true;
+                return super.onOptionsItemSelected(item);
         }
     }
 

@@ -40,7 +40,7 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="new_tag">New Tag</string>
-    <string name="tag_hint">Type new tag names below, separate multiple tags with space</string>
+    <string name="tag_hint">Type new tag names below, separate multiple tags with space. For example: food fruit</string>
     <string name="today_transactions_amount">Today amount</string>
     <string name="validation_error_input_price">Please input price.</string>
     <string name="validation_error_choose_product">Please choose product.</string>
@@ -104,4 +104,9 @@
     <string name="default_currency_code">USD</string>
     <string name="error_invalid_photo_url">The photo link is invalid.</string>
     <string name="photo_list">Photos</string>
+    <string name="msg_confirm_remove_transaction">Are you sure you want to remove this transaction?</string>
+    <string name="selected_count_text_format">%d selected</string>
+    <string name="action_mode_title_select_transactions">Select Transactions</string>
+    <string name="msg_confirm_remove_product">Are you sure you want to remove this product?</string>
+    <string name="action_mode_title_select_products">Select Products</string>
 </resources>

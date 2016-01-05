@@ -1,6 +1,7 @@
 package io.github.xiaolei.transaction.ui;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -8,6 +9,9 @@ import android.support.v4.widget.NestedScrollView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
@@ -175,6 +179,63 @@ public class TransactionEditorActivity extends BaseActivity {
                 ActivityHelper.startPhotoListActivity(TransactionEditorActivity.this, mTransaction.getTransactionPhotos(), position);
             }
         });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+
+        menu.clear();
+        getMenuInflater().inflate(R.menu.menu_transaction_editor, menu);
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_delete_transaction:
+                DialogHelper.showConfirmDialog(TransactionEditorActivity.this, getString(R.string.msg_confirm_remove_transaction), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        removeTransactions(mTransactionId);
+                    }
+                });
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void removeTransactions(long transactionId) {
+        if (transactionId <= 0) {
+            return;
+        }
+
+        AsyncTask<Long, Void, String> task = new AsyncTask<Long, Void, String>() {
+
+            @Override
+            protected String doInBackground(Long... params) {
+                Long id = params[0];
+                String errorMessage = null;
+                try {
+                    RepositoryProvider.getInstance(TransactionEditorActivity.this).resolve(TransactionRepository.class)
+                            .removeTransaction(id);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    errorMessage = e.getMessage();
+                }
+
+                return errorMessage;
+            }
+
+            @Override
+            public void onPostExecute(String errorMessage) {
+                EventBus.getDefault().post(new RefreshTransactionListEvent());
+                finish();
+            }
+        };
+        task.execute(transactionId);
     }
 
     protected void loadData() {

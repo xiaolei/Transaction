@@ -19,11 +19,13 @@
             android:orderInCategory="2"
             android:title="@string/dashboard" />
 
+        <!--
         <item
             android:id="@+id/navigation_item_analysis"
             android:icon="@drawable/ic_insert_chart_white_24dp"
             android:orderInCategory="3"
             android:title="@string/analysis" />
+        -->
 
         <item
             android:id="@+id/navigation_item_products"

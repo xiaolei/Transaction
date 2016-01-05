@@ -197,7 +197,7 @@ public class DashboardFragment extends BaseFragment implements GenericRecyclerVi
 
     @Override
     public void onRecyclerViewItemClick(int position) {
-        Toast.makeText(getContext(), "Position:" + position, Toast.LENGTH_SHORT).show();
+
     }
 
     private class ViewHolder {

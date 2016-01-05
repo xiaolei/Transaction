@@ -5,7 +5,6 @@ import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.support.v4.animation.ValueAnimatorCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.PopupMenu;
@@ -18,10 +17,6 @@ import android.widget.TextSwitcher;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
-import com.nineoldandroids.animation.ArgbEvaluator;
-import com.nineoldandroids.animation.ObjectAnimator;
-import com.nineoldandroids.animation.TypeEvaluator;
-import com.nineoldandroids.animation.ValueAnimator;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
@@ -113,7 +108,7 @@ public class CalculatorOutputView extends RelativeLayout {
         });
 
         mPopupMenu = new PopupMenu(getContext(), mViewHolder.textViewCalculatorProductName);
-        mPopupMenu.getMenuInflater().inflate(R.menu.product_name, mPopupMenu.getMenu());
+        mPopupMenu.getMenuInflater().inflate(R.menu.menu_product_name, mPopupMenu.getMenu());
         mPopupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {

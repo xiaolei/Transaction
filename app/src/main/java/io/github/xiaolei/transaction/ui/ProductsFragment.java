@@ -123,8 +123,8 @@ public class ProductsFragment extends BaseFragment {
             }
         });
 
-        mViewHolder.gridViewProducts.setChoiceMode(GridView.CHOICE_MODE_MULTIPLE_MODAL);
-        mViewHolder.gridViewProducts.setMultiChoiceModeListener(new MultiChoiceModeListener());
+        //mViewHolder.gridViewProducts.setChoiceMode(GridView.CHOICE_MODE_MULTIPLE_MODAL);
+        //mViewHolder.gridViewProducts.setMultiChoiceModeListener(new MultiChoiceModeListener());
     }
 
     @Override
@@ -235,14 +235,7 @@ public class ProductsFragment extends BaseFragment {
         @Override
         public void onItemCheckedStateChanged(android.view.ActionMode actionMode, int position, long id, boolean checked) {
             int selectCount = mViewHolder.gridViewProducts.getCheckedItemCount();
-            switch (selectCount) {
-                case 1:
-                    actionMode.setSubtitle("One product selected");
-                    break;
-                default:
-                    actionMode.setSubtitle("" + selectCount + " products selected");
-                    break;
-            }
+            actionMode.setSubtitle(getString(R.string.selected_count_text_format, selectCount));
         }
 
         @Override
@@ -253,8 +246,8 @@ public class ProductsFragment extends BaseFragment {
 
             mActionMode = actionMode;
             actionMode.getMenuInflater().inflate(R.menu.action_mode_product_list, menu);
-            actionMode.setTitle("Select Products");
-            actionMode.setSubtitle("One product selected");
+            actionMode.setTitle(R.string.action_mode_title_select_products);
+            actionMode.setSubtitle(getString(R.string.selected_count_text_format, 1));
 
             return true;
         }

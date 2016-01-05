@@ -5,7 +5,6 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.Checkable;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 
 import io.github.xiaolei.transaction.R;
 
@@ -44,7 +43,8 @@ public class SquareCheckableLayout extends FrameLayout implements Checkable {
             mViewHolder = new ViewHolder(mCheckableView);
         }
 
-        mViewHolder.imageViewCheckState.setVisibility(checked ? View.VISIBLE : View.GONE);
+        //mViewHolder.checkBoxSelectIndicator.setVisibility(checked ? View.VISIBLE : View.GONE);
+        //mViewHolder.checkBoxSelectIndicator.setChecked(checked);
     }
 
     @Override
@@ -67,10 +67,10 @@ public class SquareCheckableLayout extends FrameLayout implements Checkable {
     }
 
     private class ViewHolder {
-        public ImageView imageViewCheckState;
+        public AnimationCheckBox checkBoxSelectIndicator;
 
         public ViewHolder(View view) {
-            imageViewCheckState = (ImageView) view.findViewById(R.id.imageViewCheckState);
+            checkBoxSelectIndicator = (AnimationCheckBox) view.findViewById(R.id.checkBoxSelectIndicator);
         }
     }
 }

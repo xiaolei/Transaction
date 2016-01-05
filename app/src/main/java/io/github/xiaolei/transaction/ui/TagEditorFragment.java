@@ -1,12 +1,10 @@
 package io.github.xiaolei.transaction.ui;
 
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -37,7 +35,7 @@ public class TagEditorFragment extends BaseEditorFragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         menu.clear();
-        inflater.inflate(R.menu.product_editor_fragment, menu);
+        inflater.inflate(R.menu.menu_product_editor, menu);
     }
 
     @Override

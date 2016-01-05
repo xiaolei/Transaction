@@ -1,22 +1,20 @@
 package io.github.xiaolei.transaction.ui;
 
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
-import android.widget.GridView;
-import android.widget.RelativeLayout;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.mobsandgeeks.saripaar.annotation.NotEmpty;
@@ -26,9 +24,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.greenrobot.event.EventBus;
+import io.github.xiaolei.enterpriselibrary.utility.DialogHelper;
 import io.github.xiaolei.transaction.GlobalApplication;
 import io.github.xiaolei.transaction.R;
-import io.github.xiaolei.transaction.adapter.ProductTagsAdapter;
 import io.github.xiaolei.transaction.entity.Product;
 import io.github.xiaolei.transaction.entity.Tag;
 import io.github.xiaolei.transaction.event.NewProductCreatedEvent;
@@ -194,7 +192,7 @@ public class ProductEditorFragment extends BaseEditorFragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         menu.clear();
-        inflater.inflate(R.menu.product_editor_fragment, menu);
+        inflater.inflate(R.menu.menu_product_editor, menu);
     }
 
     @Override
@@ -203,9 +201,49 @@ public class ProductEditorFragment extends BaseEditorFragment {
             case R.id.action_save_product:
                 validateThenSave();
                 return true;
+            case R.id.action_delete_product:
+                DialogHelper.showConfirmDialog(getActivity(), getString(R.string.msg_confirm_remove_product), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        removeProduct(mProductId);
+                    }
+                });
+
+                return true;
             default:
                 return false;
         }
+    }
+
+    private void removeProduct(long productId) {
+        AsyncTask<Long, Void, Boolean> task = new AsyncTask<Long, Void, Boolean>() {
+
+            @Override
+            protected Boolean doInBackground(Long... params) {
+                long id = params[0];
+                try {
+                    RepositoryProvider.getInstance(getActivity()).resolve(ProductRepository.class)
+                            .remove(id);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    return false;
+                }
+
+                return true;
+            }
+
+            @Override
+            protected void onPostExecute(Boolean result) {
+                if (!isAdded()) {
+                    return;
+                }
+
+                EventBus.getDefault().post(new RefreshProductListEvent());
+                getActivity().finish();
+            }
+        };
+
+        task.execute(productId);
     }
 
     private List<Tag> getTags() {
@@ -243,7 +281,7 @@ public class ProductEditorFragment extends BaseEditorFragment {
             mViewHolder.editTextProductTags.setText("");
         }
 
-        mViewHolder.relativeLayoutProductBanner.setBackgroundColor(mProduct.getBannerColor());
+        mViewHolder.imageViewProductPrimaryPhoto.setBackgroundColor(mProduct.getBannerColor());
         mViewHolder.productTagsView.bind(tags);
         mViewHolder.editTextProductName.addTextChangedListener(mTextWatcher);
     }
@@ -275,14 +313,14 @@ public class ProductEditorFragment extends BaseEditorFragment {
 
         public EditText editTextProductTags;
         public TagsView productTagsView;
-        public RelativeLayout relativeLayoutProductBanner;
+        public ImageView imageViewProductPrimaryPhoto;
 
         public ViewHolder(View view) {
             dataContainerView = (DataContainerView) view.findViewById(R.id.dataContainerViewProductEditor);
             editTextProductName = (AutoCompleteTextView) view.findViewById(R.id.editTextProductName);
             editTextProductTags = (EditText) view.findViewById(R.id.editTextProductTags);
             productTagsView = (TagsView) view.findViewById(R.id.productTagsView);
-            relativeLayoutProductBanner = (RelativeLayout) view.findViewById(R.id.relativeLayoutProductBanner);
+            imageViewProductPrimaryPhoto = (ImageView) view.findViewById(R.id.imageViewProductPrimaryPhoto);
         }
     }
 }
