@@ -64,7 +64,7 @@ public class DataContainerView extends ViewFlipper {
             throw new IllegalArgumentException("dataLayout is required. You must set a layout resource id to this attribute.");
         }
 
-        mLayoutViewIndexMapping = new HashMap<Integer, Integer>();
+        mLayoutViewIndexMapping = new HashMap<>();
 
         mViewHolder = new ViewHolder();
         mViewHolder.dataView = View.inflate(context, mDataLayoutResourceId, this);

@@ -24,6 +24,7 @@ import io.github.xiaolei.enterpriselibrary.utility.DateTimeUtils;
 import io.github.xiaolei.enterpriselibrary.utility.DialogHelper;
 import io.github.xiaolei.transaction.GlobalApplication;
 import io.github.xiaolei.transaction.R;
+import io.github.xiaolei.transaction.adapter.GenericRecyclerViewAdapter;
 import io.github.xiaolei.transaction.adapter.TransactionListRecyclerViewAdapter;
 import io.github.xiaolei.transaction.entity.Transaction;
 import io.github.xiaolei.transaction.event.FinishActionMode;
@@ -31,6 +32,7 @@ import io.github.xiaolei.transaction.event.RefreshTransactionListEvent;
 import io.github.xiaolei.transaction.listener.OnLoadMoreListener;
 import io.github.xiaolei.transaction.repository.RepositoryProvider;
 import io.github.xiaolei.transaction.repository.TransactionRepository;
+import io.github.xiaolei.transaction.util.ActivityHelper;
 import io.github.xiaolei.transaction.util.ConfigurationManager;
 import io.github.xiaolei.transaction.viewmodel.LoadMoreReturnInfo;
 import io.github.xiaolei.transaction.widget.DataContainerView;
@@ -38,7 +40,7 @@ import io.github.xiaolei.transaction.widget.DataContainerView;
 /**
  * Transaction list fragment
  */
-public class TransactionListFragment extends BaseFragment implements OnLoadMoreListener<Transaction> {
+public class TransactionListFragment extends BaseFragment implements OnLoadMoreListener<Transaction>, GenericRecyclerViewAdapter.OnRecyclerViewItemClickListener, GenericRecyclerViewAdapter.OnRecyclerViewItemLongClickListener {
     public static final String TAG = TransactionListFragment.class.getSimpleName();
     public static final String ARG_TRANSACTION_START_DATE = "arg_transaction_start_date";
     public static final String ARG_TRANSACTION_END_DATE = "arg_transaction_end_date";
@@ -68,8 +70,6 @@ public class TransactionListFragment extends BaseFragment implements OnLoadMoreL
     @Override
     public void initialize(View view) {
         mViewHolder = new ViewHolder(view);
-        //mViewHolder.recyclerViewTransactions.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
-        //mViewHolder.recyclerViewTransactions.setMultiChoiceModeListener(new MultiChoiceModeListener());
 
         RecyclerView.LayoutManager layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         mViewHolder.recyclerViewTransactions.setLayoutManager(layoutManager);
@@ -159,6 +159,10 @@ public class TransactionListFragment extends BaseFragment implements OnLoadMoreL
 
     @Override
     public void load() {
+        if (mActionMode != null) {
+            mActionMode.finish();
+        }
+
         showDateRange(mStartDate, mEndDate);
         mViewHolder.dataContainerViewTransactions.switchToBusyView();
         AsyncTask<Void, Void, List<Transaction>> task = new AsyncTask<Void, Void, List<Transaction>>() {
@@ -181,6 +185,8 @@ public class TransactionListFragment extends BaseFragment implements OnLoadMoreL
 
                     if (mAdapter == null) {
                         mAdapter = new TransactionListRecyclerViewAdapter(mViewHolder.recyclerViewTransactions, result, TransactionListFragment.this);
+                        mAdapter.setOnItemClickListener(TransactionListFragment.this);
+                        mAdapter.setOnItemLongClickListener(TransactionListFragment.this);
                         mViewHolder.recyclerViewTransactions.setAdapter(mAdapter);
                     } else {
                         mAdapter.swap(result);
@@ -235,7 +241,6 @@ public class TransactionListFragment extends BaseFragment implements OnLoadMoreL
                 } catch (SQLException e) {
                     e.printStackTrace();
                     errorMessage = e.getMessage();
-
                 }
 
                 return errorMessage;
@@ -258,21 +263,39 @@ public class TransactionListFragment extends BaseFragment implements OnLoadMoreL
         return new LoadMoreReturnInfo<>(transactions, hasMore);
     }
 
+    @Override
+    public void onRecyclerViewItemClick(int position) {
+        if (mActionMode != null) {
+            Transaction transaction = mAdapter.toggleSelection(position);
+            mActionModeCallback.onItemCheckedStateChanged(mActionMode, position, transaction.getId(), transaction.checked);
+            return;
+        }
+
+        ActivityHelper.startTransactionEditorActivity(getContext(), mAdapter.getItemId(position));
+    }
+
+    @Override
+    public void onRecyclerViewItemLongClick(int position) {
+        if (mActionMode != null) {
+            return;
+        }
+
+        mAdapter.toggleSelection(position);
+        mActionMode = getActivity().startActionMode(mActionModeCallback);
+    }
+
     private class MultiChoiceModeListener implements ListView.MultiChoiceModeListener {
         @Override
         public void onItemCheckedStateChanged(android.view.ActionMode actionMode, int position, long id, boolean checked) {
-            int selectCount = 0; //mViewHolder.recyclerViewTransactions.getCheckedItemCount();
+            int selectCount = mAdapter.getCheckedItemCount();
             Transaction transaction = (Transaction) mAdapter.getItem(position);
             transaction.checked = checked;
-            mAdapter.notifyDataSetChanged();
+            mAdapter.notifyItemChanged(position);
 
-            switch (selectCount) {
-                case 1:
-                    actionMode.setSubtitle("One selected");
-                    break;
-                default:
-                    actionMode.setSubtitle("" + selectCount + " selected");
-                    break;
+            if (selectCount >= 1) {
+                actionMode.setSubtitle("" + selectCount + " selected");
+            } else {
+                mActionMode.finish();
             }
         }
 
@@ -281,7 +304,7 @@ public class TransactionListFragment extends BaseFragment implements OnLoadMoreL
             mActionMode = actionMode;
             actionMode.getMenuInflater().inflate(R.menu.action_mode_transaction_list, menu);
             actionMode.setTitle("Select Transactions");
-            actionMode.setSubtitle("One Transaction selected");
+            actionMode.setSubtitle("1 Transaction selected");
 
             return true;
         }
@@ -317,13 +340,11 @@ public class TransactionListFragment extends BaseFragment implements OnLoadMoreL
     }
 
     private class ViewHolder {
-        //public ListView listViewTransactions;
         public RecyclerView recyclerViewTransactions;
         public DataContainerView dataContainerViewTransactions;
         public TextView textViewTransactionDateRange;
 
         public ViewHolder(View view) {
-            //listViewTransactions = (ListView) view.findViewById(R.id.listViewTransactions);
             recyclerViewTransactions = (RecyclerView) view.findViewById(R.id.recyclerViewTransactions);
             dataContainerViewTransactions = (DataContainerView) view.findViewById(R.id.dataContainerViewTransactions);
             textViewTransactionDateRange = (TextView) view.findViewById(R.id.textViewTransactionDateRange);

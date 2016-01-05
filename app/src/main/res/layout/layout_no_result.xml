@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:drawableLeft="@drawable/ic_info_outline_black_18dp"
+        android:drawableLeft="@drawable/bitmap_info_icon"
         android:drawablePadding="6dp"
         android:gravity="center_vertical"
         android:text="@string/no_result"

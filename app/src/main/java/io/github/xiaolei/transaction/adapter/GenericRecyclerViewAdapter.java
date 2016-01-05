@@ -67,7 +67,11 @@ public abstract class GenericRecyclerViewAdapter<T extends BaseViewModel, V exte
         return mItems;
     }
 
-    public interface OnRecyclerViewItemClickListener<T> {
+    public interface OnRecyclerViewItemClickListener {
         void onRecyclerViewItemClick(int position);
+    }
+
+    public interface OnRecyclerViewItemLongClickListener{
+        void onRecyclerViewItemLongClick(int position);
     }
 }

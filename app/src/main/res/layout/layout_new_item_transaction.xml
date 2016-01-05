@@ -20,7 +20,8 @@
             android:id="@+id/imageViewTransactionPhoto"
             android:layout_width="match_parent"
             android:layout_height="@dimen/card_view_image_height"
-            android:background="@color/light_gray" />
+            android:background="@color/light_gray"
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/textViewProductName"
@@ -97,8 +98,25 @@
                 android:visibility="gone" />
 
         </RelativeLayout>
-
     </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <io.github.xiaolei.transaction.widget.AnimationCheckBox
+            android:id="@+id/checkBoxTransaction"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|top"
+            android:layout_marginBottom="@dimen/spacing_small"
+            android:layout_marginRight="@dimen/spacing_small"
+            android:layout_marginTop="@dimen/spacing_small"
+            android:button="@drawable/selector_checkbox"
+            android:checked="true"
+            android:clickable="false" />
+
+    </FrameLayout>
 
 </android.support.v7.widget.CardView>
 

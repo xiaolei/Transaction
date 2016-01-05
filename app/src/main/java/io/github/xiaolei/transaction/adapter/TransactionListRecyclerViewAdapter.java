@@ -1,10 +1,17 @@
 package io.github.xiaolei.transaction.adapter;
 
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.animation.PropertyValuesHolder;
+import android.animation.ValueAnimator;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -16,7 +23,6 @@ import io.github.xiaolei.enterpriselibrary.utility.DateTimeUtils;
 import io.github.xiaolei.transaction.R;
 import io.github.xiaolei.transaction.entity.Transaction;
 import io.github.xiaolei.transaction.listener.OnLoadMoreListener;
-import io.github.xiaolei.transaction.util.ActivityHelper;
 import io.github.xiaolei.transaction.util.ImageLoader;
 import io.github.xiaolei.transaction.viewholder.GenericRecyclerViewHolder;
 import io.github.xiaolei.transaction.widget.CurrencyTextView;
@@ -24,21 +30,28 @@ import io.github.xiaolei.transaction.widget.CurrencyTextView;
 /**
  * Transaction list adapter.
  */
-public class TransactionListRecyclerViewAdapter extends EndlessGenericRecyclerViewAdapter<Transaction, TransactionListRecyclerViewAdapter.ViewHolder> implements GenericRecyclerViewAdapter.OnRecyclerViewItemClickListener {
+public class TransactionListRecyclerViewAdapter extends EndlessGenericRecyclerViewAdapter<Transaction, TransactionListRecyclerViewAdapter.ViewHolder> {
+    protected GenericRecyclerViewAdapter.OnRecyclerViewItemLongClickListener mOnLongClickListener;
+    protected GenericRecyclerViewAdapter.OnRecyclerViewItemClickListener mOnItemClickListener;
 
     public TransactionListRecyclerViewAdapter(RecyclerView recyclerView, List<Transaction> transactions,
                                               OnLoadMoreListener<Transaction> onLoadMoreListener) {
         super(recyclerView, transactions, onLoadMoreListener);
     }
 
+    public void setOnItemLongClickListener(GenericRecyclerViewAdapter.OnRecyclerViewItemLongClickListener onLongClickListener) {
+        mOnLongClickListener = onLongClickListener;
+    }
+
+    public void setOnItemClickListener(GenericRecyclerViewAdapter.OnRecyclerViewItemClickListener onItemClickListener) {
+        mOnItemClickListener = onItemClickListener;
+    }
+
     @Override
     protected ViewHolder createDataItemViewHolder(ViewGroup parent, int viewType) {
         View view = getLayoutInflater().inflate(R.layout.layout_new_item_transaction, parent, false);
 
-        ViewHolder result = new ViewHolder(view);
-        result.setOnItemClickListener(this);
-
-        return result;
+        return new ViewHolder(view);
     }
 
     @Override
@@ -47,7 +60,7 @@ public class TransactionListRecyclerViewAdapter extends EndlessGenericRecyclerVi
     }
 
     @Override
-    public void bindData(ViewHolder holder, Transaction transaction) {
+    public void bindData(final ViewHolder holder, Transaction transaction) {
         if (holder == null || transaction == null) {
             return;
         }
@@ -76,15 +89,10 @@ public class TransactionListRecyclerViewAdapter extends EndlessGenericRecyclerVi
             holder.textViewDescription.setText(transaction.getDescription());
         }
 
-        /*
-        holder.checkedTextViewTransactionIcon.setTag(transaction);
-        holder.checkedTextViewTransactionIcon.setChecked(transaction.checked);
-        if (!transaction.checked) {
-            holder.checkedTextViewTransactionIcon.setText(transaction.getProduct().getName().substring(0, 1).toUpperCase());
-        } else {
-            holder.checkedTextViewTransactionIcon.setText("");
+        holder.checkBoxTransaction.setVisibility(transaction.checked ? View.VISIBLE : View.GONE);
+        if (transaction.checked) {
+            holder.checkBoxTransaction.setChecked(transaction.checked);
         }
-        */
     }
 
     public List<Transaction> getCheckedItems() {
@@ -98,6 +106,17 @@ public class TransactionListRecyclerViewAdapter extends EndlessGenericRecyclerVi
         return result;
     }
 
+    public int getCheckedItemCount() {
+        int count = 0;
+        for (Transaction transaction : mItems) {
+            if (transaction.checked) {
+                count++;
+            }
+        }
+
+        return count;
+    }
+
     public void uncheckAll() {
         ArrayList<Transaction> result = new ArrayList<Transaction>();
         for (Transaction transaction : mItems) {
@@ -109,9 +128,14 @@ public class TransactionListRecyclerViewAdapter extends EndlessGenericRecyclerVi
         notifyDataSetChanged();
     }
 
-    @Override
-    public void onRecyclerViewItemClick(int position) {
-        ActivityHelper.startTransactionEditorActivity(getContext(), getItemId(position));
+    public Transaction toggleSelection(int position) {
+        Transaction transaction = mItems.get(position);
+        if (transaction != null) {
+            transaction.checked = !transaction.checked;
+            notifyItemChanged(position);
+        }
+
+        return transaction;
     }
 
     public class ViewHolder extends GenericRecyclerViewHolder {
@@ -121,6 +145,7 @@ public class TransactionListRecyclerViewAdapter extends EndlessGenericRecyclerVi
         public ImageView imageViewTransactionPhoto;
         public TextView textViewDescription;
         public CardView cardViewTransaction;
+        public CheckBox checkBoxTransaction;
 
         public ViewHolder(View view) {
             super(view);
@@ -131,11 +156,25 @@ public class TransactionListRecyclerViewAdapter extends EndlessGenericRecyclerVi
             imageViewTransactionPhoto = (ImageView) view.findViewById(R.id.imageViewTransactionPhoto);
             textViewDescription = (TextView) view.findViewById(R.id.textViewDescription);
             cardViewTransaction = (CardView) view.findViewById(R.id.cardViewTransaction);
+            checkBoxTransaction = (CheckBox) view.findViewById(R.id.checkBoxTransaction);
 
             cardViewTransaction.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    itemClickListener.onRecyclerViewItemClick(getLayoutPosition());
+                    if (mOnItemClickListener != null) {
+                        mOnItemClickListener.onRecyclerViewItemClick(getLayoutPosition());
+                    }
+                }
+            });
+
+            cardViewTransaction.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    if (mOnLongClickListener != null) {
+                        mOnLongClickListener.onRecyclerViewItemLongClick(getLayoutPosition());
+                    }
+
+                    return true;
                 }
             });
         }
