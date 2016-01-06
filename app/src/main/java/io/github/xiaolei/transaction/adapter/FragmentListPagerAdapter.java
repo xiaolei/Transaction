@@ -9,13 +9,12 @@ import java.util.Date;
 import java.util.List;
 
 import io.github.xiaolei.enterpriselibrary.utility.DateTimeUtils;
-import io.github.xiaolei.enterpriselibrary.widget.FragmentViewPager;
 import io.github.xiaolei.transaction.ui.AnalysisFragment;
 import io.github.xiaolei.transaction.ui.BaseFragment;
 import io.github.xiaolei.transaction.ui.CalculatorFragment;
 import io.github.xiaolei.transaction.ui.DashboardFragment;
-import io.github.xiaolei.transaction.ui.ProductsFragment;
-import io.github.xiaolei.transaction.ui.TagsFragment;
+import io.github.xiaolei.transaction.ui.ProductListFragment;
+import io.github.xiaolei.transaction.ui.TagListFragment;
 import io.github.xiaolei.transaction.ui.TransactionNavigationFragment;
 
 /**
@@ -33,8 +32,8 @@ public class FragmentListPagerAdapter extends FragmentPagerAdapter {
         mFragments.add(DashboardFragment.newInstance());
         mFragments.add(TransactionNavigationFragment.newInstance(DateTimeUtils.getStartTimeOfDate(transactionDate)));
         mFragments.add(AnalysisFragment.newInstance());
-        mFragments.add(ProductsFragment.newInstance(false, false));
-        mFragments.add(TagsFragment.newInstance());
+        mFragments.add(ProductListFragment.newInstance(false, false));
+        mFragments.add(TagListFragment.newInstance());
     }
 
     public List<BaseFragment> getAllFragments() {

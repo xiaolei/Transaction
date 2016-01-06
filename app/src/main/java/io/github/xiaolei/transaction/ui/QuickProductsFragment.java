@@ -22,7 +22,6 @@ import java.util.Date;
 import java.util.List;
 
 import de.greenrobot.event.EventBus;
-import io.github.xiaolei.enterpriselibrary.utility.PhotoPicker;
 import io.github.xiaolei.transaction.R;
 import io.github.xiaolei.transaction.adapter.GenericEndlessAdapter;
 import io.github.xiaolei.transaction.adapter.IPaginationDataLoader;
@@ -56,10 +55,6 @@ public class QuickProductsFragment extends BaseFragment implements View.OnClickL
     private OnProductSelectedListener mOnProductSelectedListener;
     private android.view.ActionMode mActionMode;
 
-    /**
-     * Returns a new instance of this fragment for the given section
-     * number.
-     */
     public static QuickProductsFragment newInstance(boolean isSelectionMode, boolean showAddButton) {
         QuickProductsFragment fragment = new QuickProductsFragment();
         Bundle args = new Bundle();
@@ -143,7 +138,6 @@ public class QuickProductsFragment extends BaseFragment implements View.OnClickL
             }
         });
         mViewHolder.fabScanBarcode.setOnClickListener(this);
-        mViewHolder.fabTakePhoto.setOnClickListener(this);
         mViewHolder.fabChooseDate.setOnClickListener(this);
         mViewHolder.fabNewProduct.setOnClickListener(this);
     }
@@ -294,10 +288,6 @@ public class QuickProductsFragment extends BaseFragment implements View.OnClickL
                 scanBarcode();
                 mViewHolder.famProduct.collapse();
                 break;
-            case R.id.fabTakePhoto:
-                PhotoPicker.getInstance(getActivity()).showPhotoPickerDialog(getActivity());
-                mViewHolder.famProduct.collapse();
-                break;
             default:
                 break;
         }
@@ -359,7 +349,6 @@ public class QuickProductsFragment extends BaseFragment implements View.OnClickL
         public GridView gridViewProducts;
         public FloatingActionsMenu famProduct;
         public FloatingActionButton fabScanBarcode;
-        public FloatingActionButton fabTakePhoto;
         public FloatingActionButton fabChooseDate;
         public FloatingActionButton fabNewProduct;
 
@@ -368,7 +357,6 @@ public class QuickProductsFragment extends BaseFragment implements View.OnClickL
             gridViewProducts = (GridView) view.findViewById(R.id.gridViewProducts);
             famProduct = (FloatingActionsMenu) view.findViewById(R.id.famProduct);
             fabScanBarcode = (FloatingActionButton) view.findViewById(R.id.fabScanBarcode);
-            fabTakePhoto = (FloatingActionButton) view.findViewById(R.id.fabTakePhoto);
             fabChooseDate = (FloatingActionButton) view.findViewById(R.id.fabChooseDate);
             fabNewProduct = (FloatingActionButton) view.findViewById(R.id.fabNewProduct);
         }

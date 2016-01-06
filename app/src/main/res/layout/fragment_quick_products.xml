@@ -30,21 +30,11 @@
             android:id="@+id/fabChooseDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            app:fab_icon="@drawable/ic_calendar_white_24dp"
             fab:fab_colorNormal="@color/action_button_normal_color"
             fab:fab_colorPressed="@color/action_button_pressed_color"
             fab:fab_size="mini"
-            fab:fab_title="@string/action_button_choose_date"
-            app:fab_icon="@drawable/ic_calendar_white_24dp" />
-
-        <net.i2p.android.ext.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fabTakePhoto"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            fab:fab_colorNormal="@color/action_button_normal_color"
-            fab:fab_colorPressed="@color/action_button_pressed_color"
-            fab:fab_icon="@drawable/ic_photo_camera_white_24dp"
-            fab:fab_size="mini"
-            fab:fab_title="@string/action_button_take_photo" />
+            fab:fab_title="@string/action_button_choose_date" />
 
         <net.i2p.android.ext.floatingactionbutton.FloatingActionButton
             android:id="@+id/fabScanBarcode"

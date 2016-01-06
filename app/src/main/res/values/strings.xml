@@ -51,7 +51,7 @@
     <string name="copy_database">Copy Database</string>
     <string name="validation_error_product_name_duplicate">Product name is duplicate, please change another one.</string>
     <string name="unlock">Unlock</string>
-    <string name="no_product">You don\'t have any product yet, before create a new transaction, please create a product at first.</string>
+    <string name="no_product">No product found</string>
     <string name="search">Search</string>
     <string name="dashboard">Dashboard</string>
     <string name="transactions">Transactions</string>
@@ -109,4 +109,5 @@
     <string name="action_mode_title_select_transactions">Select Transactions</string>
     <string name="msg_confirm_remove_product">Are you sure you want to remove this product?</string>
     <string name="action_mode_title_select_products">Select Products</string>
+    <string name="search_product">Type product name</string>
 </resources>

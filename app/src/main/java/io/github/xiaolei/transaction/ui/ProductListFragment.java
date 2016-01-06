@@ -4,22 +4,29 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.TextView;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 import de.greenrobot.event.EventBus;
+import io.github.xiaolei.enterpriselibrary.logging.Logger;
 import io.github.xiaolei.transaction.R;
 import io.github.xiaolei.transaction.adapter.GenericEndlessAdapter;
 import io.github.xiaolei.transaction.adapter.IPaginationDataLoader;
 import io.github.xiaolei.transaction.adapter.ProductListAdapter;
+import io.github.xiaolei.transaction.adapter.ProductNameAutoCompleteAdapter;
 import io.github.xiaolei.transaction.entity.Product;
 import io.github.xiaolei.transaction.event.RefreshProductListEvent;
 import io.github.xiaolei.transaction.listener.OnProductSelectedListener;
@@ -32,10 +39,11 @@ import io.github.xiaolei.transaction.widget.DataContainerView;
 /**
  * TODO: add comments
  */
-public class ProductsFragment extends BaseFragment {
+public class ProductListFragment extends BaseFragment {
     public static final String ARG_IS_SELECTION_MODE = "is_selection_mode";
     public static final String ARG_SHOW_ADD_BUTTON = "arg_show_add_button";
-    private static final String TAG = ProductsFragment.class.getSimpleName();
+    private static final String TAG = ProductListFragment.class.getSimpleName();
+
     private ViewHolder mViewHolder;
     private boolean mShowAddButton = false;
     private GenericEndlessAdapter<Product> mAdapter;
@@ -44,13 +52,10 @@ public class ProductsFragment extends BaseFragment {
 
     private android.view.ActionMode mActionMode;
     private boolean mIsSelectionMode = false;
+    private String mSearchKeywords = "";
 
-    /**
-     * Returns a new instance of this fragment for the given section
-     * number.
-     */
-    public static ProductsFragment newInstance(boolean isSelectionMode, boolean showAddButton) {
-        ProductsFragment fragment = new ProductsFragment();
+    public static ProductListFragment newInstance(boolean isSelectionMode, boolean showAddButton) {
+        ProductListFragment fragment = new ProductListFragment();
         Bundle args = new Bundle();
         args.putBoolean(ARG_IS_SELECTION_MODE, isSelectionMode);
         args.putBoolean(ARG_SHOW_ADD_BUTTON, showAddButton);
@@ -58,13 +63,12 @@ public class ProductsFragment extends BaseFragment {
         return fragment;
     }
 
-    public ProductsFragment() {
+    public ProductListFragment() {
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setHasOptionsMenu(false);
         EventBus.getDefault().register(this);
 
         Bundle args = getArguments();
@@ -151,7 +155,7 @@ public class ProductsFragment extends BaseFragment {
             protected List<Product> doInBackground(Void... voids) {
                 List<Product> result = new ArrayList<Product>();
                 try {
-                    result = RepositoryProvider.getInstance(getActivity()).resolve(ProductRepository.class).query(0, ConfigurationManager.DEFAULT_PAGE_SIZE);
+                    result = RepositoryProvider.getInstance(getActivity()).resolve(ProductRepository.class).query(mSearchKeywords, 0, ConfigurationManager.DEFAULT_PAGE_SIZE);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -228,6 +232,78 @@ public class ProductsFragment extends BaseFragment {
         super.onPause();
         if (mActionMode != null) {
             mActionMode.finish();
+        }
+    }
+
+    private void initializeSearchView(final MenuItem searchMenuItem) {
+        if (searchMenuItem == null) {
+            return;
+        }
+
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchMenuItem);
+
+        MenuItemCompat.setOnActionExpandListener(searchMenuItem, new MenuItemCompat.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                mSearchKeywords = "";
+                load();
+                return true;
+            }
+        });
+
+        searchView.setQueryHint(getString(R.string.search_product));
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                mSearchKeywords = query;
+                load();
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                mSearchKeywords = newText;
+                load();
+                return true;
+            }
+        });
+
+        searchView.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    MenuItemCompat.collapseActionView(searchMenuItem);
+                }
+            }
+        });
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+
+        menu.clear();
+        inflater.inflate(R.menu.menu_product_list, menu);
+
+        initializeSearchView(menu.findItem(R.id.action_search_product));
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (!isAdded()) {
+            return true;
+        }
+
+        switch (item.getItemId()) {
+
+            default:
+                return true;
         }
     }
 

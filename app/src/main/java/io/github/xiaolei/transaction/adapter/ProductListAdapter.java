@@ -52,7 +52,6 @@ public class ProductListAdapter extends BaseAdapter implements IDataAdapter<Prod
 
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
-        Product product = mProducts.get(i);
         if (view == null) {
             view = mInflater.inflate(R.layout.layout_item_product, viewGroup, false);
             mViewHolder = new ViewHolder(view);

@@ -27,18 +27,18 @@ import io.github.xiaolei.transaction.widget.SearchBoxView;
 /**
  * TODO: add comments
  */
-public class TagsFragment extends BaseFragment implements AdapterView.OnItemClickListener, SearchBoxView.OnSearchListener {
-    public static final String TAG = TagsFragment.class.getSimpleName();
+public class TagListFragment extends BaseFragment implements AdapterView.OnItemClickListener, SearchBoxView.OnSearchListener {
+    public static final String TAG = TagListFragment.class.getSimpleName();
     private ViewHolder mViewHolder;
     private GenericEndlessAdapter<Tag> mAdapter;
     private String mSearchKeywords;
 
-    public static TagsFragment newInstance() {
-        TagsFragment fragment = new TagsFragment();
+    public static TagListFragment newInstance() {
+        TagListFragment fragment = new TagListFragment();
         return fragment;
     }
 
-    public TagsFragment() {
+    public TagListFragment() {
 
     }
 

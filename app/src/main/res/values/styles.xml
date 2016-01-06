@@ -39,16 +39,23 @@ by AppBaseTheme from res/values-vXX/styles.xml on newer devices. -->
 
 
         <item name="android:windowBackground">@color/app_window_background</item>
+        <item name="android:windowActionBarOverlay">true</item>
 
         <item name="windowActionModeOverlay">true</item>
         <item name="actionModeBackground">@color/app_primary</item>
     </style>
 
-    <style name="ActionBarTheme" parent="@style/ThemeOverlay.AppCompat.ActionBar">
-        <item name="android:textColorPrimary">@android:color/white</item>
+    <style name="SearchViewStyle" parent="Widget.AppCompat.AutoCompleteTextView">
+        <!-- Disable text selection in search view -->
+        <item name="android:longClickable">false</item>
     </style>
 
-    <style name="TransparentActionBarTheme" parent="@style/ThemeOverlay.AppCompat.ActionBar">
+    <style name="ActionBarTheme" parent="@style/ThemeOverlay.AppCompat.ActionBar">
+        <item name="android:textColorPrimary">@android:color/white</item>
+        <item name="android:autoCompleteTextViewStyle">@style/SearchViewStyle</item>
+    </style>
+
+    <style name="TransparentActionBarTheme" parent="@style/ActionBarTheme">
         <item name="android:textColorPrimary">@android:color/white</item>
         <item name="android:windowActionBarOverlay">true</item>
 
