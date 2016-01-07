@@ -1,2 +1,2 @@
 # Transaction
-Personal Finance & Money Manager Android App
+Personal Finance & Money Management Android App
