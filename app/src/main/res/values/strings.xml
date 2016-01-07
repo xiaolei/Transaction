@@ -110,4 +110,7 @@
     <string name="msg_confirm_remove_product">Are you sure you want to remove this product?</string>
     <string name="action_mode_title_select_products">Select Products</string>
     <string name="search_product">Type product name</string>
+    <string name="title_rename_tag">Rename tag</string>
+    <string name="error_tag_rename_failed">Sorry, failed to rename this tag, please try again later.</string>
+    <string name="error_duplicate_tag_name">Sorry, this name already be taken, please try another one.</string>
 </resources>

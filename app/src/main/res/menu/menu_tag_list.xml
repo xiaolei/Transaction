@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-
     <item
-        android:id="@+id/action_new_product"
+        android:id="@+id/action_new_tag"
         android:icon="@drawable/ic_add_white_24dp"
         android:title="@string/action_new_tag"
         app:showAsAction="always" />
 
     <item
-        android:id="@+id/action_search_product"
+        android:id="@+id/action_search_tag"
         android:icon="@drawable/ic_search_white_24dp"
         android:title="@string/search"
         app:actionViewClass="android.support.v7.widget.SearchView"

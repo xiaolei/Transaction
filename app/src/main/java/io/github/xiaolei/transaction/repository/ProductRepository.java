@@ -2,12 +2,12 @@ package io.github.xiaolei.transaction.repository;
 
 import android.content.Context;
 import android.text.TextUtils;
-import android.view.TextureView;
 
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.misc.TransactionManager;
 import com.j256.ormlite.stmt.DeleteBuilder;
 import com.j256.ormlite.stmt.QueryBuilder;
+import com.j256.ormlite.stmt.SelectArg;
 import com.j256.ormlite.stmt.UpdateBuilder;
 
 import java.lang.reflect.InvocationTargetException;
@@ -15,20 +15,17 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
-import de.greenrobot.event.EventBus;
 import io.github.xiaolei.transaction.GlobalApplication;
 import io.github.xiaolei.transaction.R;
 import io.github.xiaolei.transaction.common.ValidationException;
 import io.github.xiaolei.transaction.entity.Product;
 import io.github.xiaolei.transaction.entity.ProductTag;
 import io.github.xiaolei.transaction.entity.Tag;
-import io.github.xiaolei.transaction.event.RefreshProductListEvent;
 
 /**
  * TODO: add comment
@@ -62,7 +59,7 @@ public class ProductRepository extends BaseRepository {
 
     public boolean exists(Product product) throws SQLException {
         QueryBuilder<Product, Long> queryBuilder = productDao.queryBuilder();
-        queryBuilder.where().eq(Product.NAME, product.getName())
+        queryBuilder.where().eq(Product.NAME, new SelectArg(product.getName()))
                 .and().eq(Product.ACTIVE, true)
                 .and().ne(Product.ID, product.getId()).queryForFirst();
 
@@ -87,7 +84,7 @@ public class ProductRepository extends BaseRepository {
 
         QueryBuilder<Product, Long> queryBuilder = productDao.queryBuilder();
         queryBuilder.where().ne(Product.ID, productId)
-                .and().eq(Product.NAME, productName)
+                .and().eq(Product.NAME, new SelectArg(productName))
                 .and().eq(Product.ACTIVE, true).queryForFirst();
 
         return productDao.queryForFirst(queryBuilder.prepare()) != null;
@@ -99,7 +96,7 @@ public class ProductRepository extends BaseRepository {
         }
 
         QueryBuilder<Product, Long> queryBuilder = productDao.queryBuilder();
-        queryBuilder.where().eq(Product.NAME, productName).queryForFirst();
+        queryBuilder.where().eq(Product.NAME, new SelectArg(productName)).queryForFirst();
 
         return productDao.queryForFirst(queryBuilder.prepare());
     }
@@ -190,7 +187,8 @@ public class ProductRepository extends BaseRepository {
         queryBuilder.where().eq(Product.ACTIVE, true);
 
         if (!TextUtils.isEmpty(keywords)) {
-            queryBuilder.where().eq(Product.ACTIVE, true).and().like(Tag.NAME, "%" + keywords + "%");
+            SelectArg arg = new SelectArg( "%" + keywords + "%");
+            queryBuilder.where().eq(Product.ACTIVE, true).and().like(Product.NAME, arg);
         }
 
         return dao.query(queryBuilder

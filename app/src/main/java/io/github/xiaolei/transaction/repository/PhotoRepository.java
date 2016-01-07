@@ -5,6 +5,7 @@ import android.text.TextUtils;
 
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.QueryBuilder;
+import com.j256.ormlite.stmt.SelectArg;
 import com.j256.ormlite.stmt.UpdateBuilder;
 
 import java.sql.SQLException;
@@ -46,7 +47,7 @@ public class PhotoRepository extends BaseRepository {
 
     public Photo queryByUrl(String photoUrl) throws SQLException {
         QueryBuilder<Photo, Long> queryBuilder = photoDao.queryBuilder();
-        queryBuilder.where().eq(Photo.URL, photoUrl);
+        queryBuilder.where().eq(Photo.URL, new SelectArg(photoUrl));
 
         return photoDao.queryForFirst(queryBuilder.prepare());
     }

@@ -1,7 +1,6 @@
 package io.github.xiaolei.transaction.ui;
 
 import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
@@ -20,7 +19,6 @@ import com.google.gson.Gson;
 import java.sql.SQLException;
 
 import de.greenrobot.event.EventBus;
-import io.github.xiaolei.enterpriselibrary.utility.AlertDialogButton;
 import io.github.xiaolei.enterpriselibrary.utility.DialogHelper;
 import io.github.xiaolei.transaction.R;
 import io.github.xiaolei.transaction.common.ValidationException;

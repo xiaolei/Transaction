@@ -5,7 +5,6 @@ import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.Menu;
@@ -14,19 +13,16 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.TextView;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 import de.greenrobot.event.EventBus;
-import io.github.xiaolei.enterpriselibrary.logging.Logger;
 import io.github.xiaolei.transaction.R;
 import io.github.xiaolei.transaction.adapter.GenericEndlessAdapter;
 import io.github.xiaolei.transaction.adapter.IPaginationDataLoader;
 import io.github.xiaolei.transaction.adapter.ProductListAdapter;
-import io.github.xiaolei.transaction.adapter.ProductNameAutoCompleteAdapter;
 import io.github.xiaolei.transaction.entity.Product;
 import io.github.xiaolei.transaction.event.RefreshProductListEvent;
 import io.github.xiaolei.transaction.listener.OnProductSelectedListener;
@@ -80,7 +76,7 @@ public class ProductListFragment extends BaseFragment {
 
     @Override
     public int getContentView() {
-        return R.layout.fragment_products;
+        return R.layout.fragment_product_list;
     }
 
     @Override
@@ -185,7 +181,7 @@ public class ProductListFragment extends BaseFragment {
             mAdapter = new GenericEndlessAdapter<Product>(getActivity(), innerAdapter, new IPaginationDataLoader<Product>() {
                 @Override
                 public List<Product> load(int offset, int limit) throws SQLException {
-                    return RepositoryProvider.getInstance(getActivity()).resolve(ProductRepository.class).query(offset, limit);
+                    return RepositoryProvider.getInstance(getActivity()).resolve(ProductRepository.class).query(mSearchKeywords, offset, limit);
                 }
             });
 
@@ -241,6 +237,7 @@ public class ProductListFragment extends BaseFragment {
         }
 
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchMenuItem);
+        searchView.setQueryHint(getString(R.string.search_product));
 
         MenuItemCompat.setOnActionExpandListener(searchMenuItem, new MenuItemCompat.OnActionExpandListener() {
             @Override
@@ -256,8 +253,6 @@ public class ProductListFragment extends BaseFragment {
             }
         });
 
-        searchView.setQueryHint(getString(R.string.search_product));
-
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -271,15 +266,6 @@ public class ProductListFragment extends BaseFragment {
                 mSearchKeywords = newText;
                 load();
                 return true;
-            }
-        });
-
-        searchView.setOnQueryTextFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (!hasFocus) {
-                    MenuItemCompat.collapseActionView(searchMenuItem);
-                }
             }
         });
     }
@@ -301,7 +287,9 @@ public class ProductListFragment extends BaseFragment {
         }
 
         switch (item.getItemId()) {
+            case R.id.action_new_product:
 
+                return true;
             default:
                 return true;
         }

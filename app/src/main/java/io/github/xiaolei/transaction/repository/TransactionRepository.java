@@ -9,7 +9,6 @@ import com.j256.ormlite.dao.RawRowMapper;
 import com.j256.ormlite.misc.TransactionManager;
 import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.stmt.SelectArg;
-import com.j256.ormlite.stmt.StatementBuilder;
 import com.j256.ormlite.stmt.UpdateBuilder;
 
 import java.math.BigDecimal;
