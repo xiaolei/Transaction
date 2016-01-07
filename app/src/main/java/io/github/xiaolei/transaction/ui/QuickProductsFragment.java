@@ -31,6 +31,7 @@ import io.github.xiaolei.transaction.event.CreateProductEvent;
 import io.github.xiaolei.transaction.event.DateSelectedEvent;
 import io.github.xiaolei.transaction.event.GetBarcodeResultEvent;
 import io.github.xiaolei.transaction.event.RefreshProductListEvent;
+import io.github.xiaolei.transaction.event.SearchProductEvent;
 import io.github.xiaolei.transaction.event.ShowDatePickerEvent;
 import io.github.xiaolei.transaction.listener.OnDateSelectedListener;
 import io.github.xiaolei.transaction.listener.OnProductSelectedListener;
@@ -54,6 +55,7 @@ public class QuickProductsFragment extends BaseFragment implements View.OnClickL
     private List<Product> mProductList = new ArrayList<Product>();
     private OnProductSelectedListener mOnProductSelectedListener;
     private android.view.ActionMode mActionMode;
+    private String mSearchKeywords = "";
 
     public static QuickProductsFragment newInstance(boolean isSelectionMode, boolean showAddButton) {
         QuickProductsFragment fragment = new QuickProductsFragment();
@@ -172,6 +174,11 @@ public class QuickProductsFragment extends BaseFragment implements View.OnClickL
         Toast.makeText(getActivity(), event.barcodeResult.getText(), Toast.LENGTH_SHORT).show();
     }
 
+    public void onEvent(SearchProductEvent event) {
+        mSearchKeywords = event.searchKeywords;
+        loadProductList();
+    }
+
     public void onEvent(CreateProductEvent event) {
         newProduct();
     }
@@ -183,7 +190,7 @@ public class QuickProductsFragment extends BaseFragment implements View.OnClickL
             protected List<Product> doInBackground(Void... voids) {
                 List<Product> result = new ArrayList<Product>();
                 try {
-                    result = RepositoryProvider.getInstance(getActivity()).resolve(ProductRepository.class).query(0, ConfigurationManager.DEFAULT_PAGE_SIZE);
+                    result = RepositoryProvider.getInstance(getActivity()).resolve(ProductRepository.class).query(mSearchKeywords, 0, ConfigurationManager.DEFAULT_PAGE_SIZE);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -213,7 +220,7 @@ public class QuickProductsFragment extends BaseFragment implements View.OnClickL
             mAdapter = new GenericEndlessAdapter<Product>(getActivity(), innerAdapter, new IPaginationDataLoader<Product>() {
                 @Override
                 public List<Product> load(int offset, int limit) throws SQLException {
-                    return RepositoryProvider.getInstance(getActivity()).resolve(ProductRepository.class).query(offset, limit);
+                    return RepositoryProvider.getInstance(getActivity()).resolve(ProductRepository.class).query(mSearchKeywords, offset, limit);
                 }
             });
 

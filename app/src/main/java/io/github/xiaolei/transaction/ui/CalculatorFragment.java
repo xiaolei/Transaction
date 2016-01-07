@@ -4,7 +4,9 @@ package io.github.xiaolei.transaction.ui;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
@@ -35,6 +37,7 @@ import io.github.xiaolei.transaction.event.NewProductCreatedEvent;
 import io.github.xiaolei.transaction.event.PickPhotoEvent;
 import io.github.xiaolei.transaction.event.ProductSelectedEvent;
 import io.github.xiaolei.transaction.event.RefreshTransactionListEvent;
+import io.github.xiaolei.transaction.event.SearchProductEvent;
 import io.github.xiaolei.transaction.listener.OnCalculatorActionClickListener;
 import io.github.xiaolei.transaction.listener.OnCalculatorActionLongClickListener;
 import io.github.xiaolei.transaction.listener.OnProductSelectedListener;
@@ -116,12 +119,53 @@ public class CalculatorFragment extends BaseFragment implements OnProductSelecte
         };
     }
 
+    private void initializeSearchView(final MenuItem searchMenuItem) {
+        if (searchMenuItem == null) {
+            return;
+        }
+
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchMenuItem);
+        searchView.setQueryHint(getString(R.string.search_product));
+
+        MenuItemCompat.setOnActionExpandListener(searchMenuItem, new MenuItemCompat.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                searchProduct("");
+                return true;
+            }
+        });
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                searchProduct(query);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                searchProduct(newText);
+                return true;
+            }
+        });
+    }
+
+    private void searchProduct(String keywords) {
+        EventBus.getDefault().post(new SearchProductEvent(keywords));
+    }
+
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
 
         menu.clear();
-        inflater.inflate(R.menu.menu_global, menu);
+        inflater.inflate(R.menu.menu_global_prod, menu);
+        initializeSearchView(menu.findItem(R.id.action_search_product));
     }
 
     @Override
