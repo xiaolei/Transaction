@@ -113,4 +113,6 @@
     <string name="title_rename_tag">Rename tag</string>
     <string name="error_tag_rename_failed">Sorry, failed to rename this tag, please try again later.</string>
     <string name="error_duplicate_tag_name">Sorry, this name already be taken, please try another one.</string>
+    <string name="input_new_account_name">New account name</string>
+    <string name="error_failed_to_update_account_display_name">Sorry, failed to update account display name, please try again later.</string>
 </resources>

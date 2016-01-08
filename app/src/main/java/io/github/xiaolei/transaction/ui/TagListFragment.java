@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.github.xiaolei.enterpriselibrary.listener.OnOperationCompletedListener;
-import io.github.xiaolei.enterpriselibrary.ui.InputDialog;
+import io.github.xiaolei.enterpriselibrary.ui.InputDialogFragment;
 import io.github.xiaolei.transaction.GlobalApplication;
 import io.github.xiaolei.transaction.R;
 import io.github.xiaolei.transaction.adapter.GenericEndlessAdapter;
@@ -129,7 +129,7 @@ public class TagListFragment extends BaseFragment implements AdapterView.OnItemC
 
         switch (item.getItemId()) {
             case R.id.action_new_tag:
-                InputDialog.showDialog(getActivity(), getActivity().getSupportFragmentManager(),
+                InputDialogFragment.showDialog(getActivity(), getActivity().getSupportFragmentManager(),
                         getString(R.string.title_rename_tag), "", new OnOperationCompletedListener<String>() {
                             @Override
                             public void onOperationCompleted(boolean success, String result, String message) {
@@ -200,7 +200,7 @@ public class TagListFragment extends BaseFragment implements AdapterView.OnItemC
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long id) {
         final Tag currentTag = (Tag) adapterView.getItemAtPosition(i);
-        InputDialog.showDialog(getActivity(), getActivity().getSupportFragmentManager(),
+        InputDialogFragment.showDialog(getActivity(), getActivity().getSupportFragmentManager(),
                 getString(R.string.title_rename_tag), currentTag.getName(), new OnOperationCompletedListener<String>() {
                     @Override
                     public void onOperationCompleted(boolean success, String result, String message) {

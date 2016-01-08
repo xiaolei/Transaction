@@ -17,7 +17,6 @@ import android.text.TextUtils;
 import android.widget.ArrayAdapter;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -29,7 +28,7 @@ import java.util.Locale;
 
 import io.github.xiaolei.enterpriselibrary.R;
 import io.github.xiaolei.enterpriselibrary.listener.OnOperationCompletedListener;
-import io.github.xiaolei.enterpriselibrary.ui.InputDialog;
+import io.github.xiaolei.enterpriselibrary.ui.InputDialogFragment;
 
 /**
  * Photo picker. Provides photo related common methods.
@@ -117,7 +116,7 @@ public class PhotoPicker {
                     pickPhotoFromGallery(context);
                 } else {
                     // Input photo link
-                    InputDialog.showDialog(context, fragmentManager, context.getString(R.string.photo_picker_input_photo_link),
+                    InputDialogFragment.showDialog(context, fragmentManager, context.getString(R.string.photo_picker_input_photo_link),
                             "", onOperationCompletedListener);
                 }
             }

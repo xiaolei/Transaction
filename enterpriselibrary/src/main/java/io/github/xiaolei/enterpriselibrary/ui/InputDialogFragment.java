@@ -19,8 +19,8 @@ import io.github.xiaolei.enterpriselibrary.listener.OnOperationCompletedListener
 /**
  * Input dialog
  */
-public class InputDialog extends DialogFragment {
-    public static final String TAG = InputDialog.class.getSimpleName();
+public class InputDialogFragment extends DialogFragment {
+    public static final String TAG = InputDialogFragment.class.getSimpleName();
     public static final String ARG_DEFAULT_TEXT = "arg_default_text";
     public static final String ARG_TITLE = "arg_title";
 
@@ -32,7 +32,7 @@ public class InputDialog extends DialogFragment {
 
     public static void showDialog(Context context, FragmentManager fragmentManager, String title, String defaultText,
                                   OnOperationCompletedListener<String> onOperationCompletedListener) {
-        InputDialog fragment = new InputDialog();
+        InputDialogFragment fragment = new InputDialogFragment();
         fragment.setOnUserCompletedInputListener(onOperationCompletedListener);
         fragment.mContext = context;
 

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.stmt.UpdateBuilder;
 
 import java.sql.SQLException;
 
@@ -31,6 +32,19 @@ public class AccountRepository extends BaseRepository {
         accountDao.refresh(account);
 
         return result;
+    }
+
+    public Account changeDisplayName(long accountId, String newDisplayName) throws SQLException {
+        if (accountId <= 0 || TextUtils.isEmpty(newDisplayName)) {
+            return null;
+        }
+
+        UpdateBuilder<Account, Long> updateBuilder = accountDao.updateBuilder();
+        updateBuilder.updateColumnValue(Account.DISPLAY_NAME, newDisplayName)
+                .where().eq(Account.ID, accountId);
+        accountDao.update(updateBuilder.prepare());
+
+        return accountDao.queryForId(accountId);
     }
 
     public void changeDefaultCurrencyCode(Account account, String code) throws SQLException {

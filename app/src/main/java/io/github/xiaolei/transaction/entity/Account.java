@@ -13,6 +13,8 @@ import io.github.xiaolei.transaction.util.PreferenceHelper;
  */
 @DatabaseTable(tableName = "account")
 public class Account extends TableEntity {
+    public static final String DISPLAY_NAME = "display_name";
+
     @DatabaseField(canBeNull = false, columnName = "display_name")
     private String displayName;
 

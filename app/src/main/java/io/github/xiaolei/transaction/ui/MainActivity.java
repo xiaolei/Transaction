@@ -173,7 +173,7 @@ public class MainActivity extends BaseActivity
 
     private void showAccountInfo() {
         if (mViewHolder != null && mViewHolder.accountView != null) {
-            mViewHolder.accountView.bind(GlobalApplication.getCurrentAccount());
+            mViewHolder.accountView.bind(this, GlobalApplication.getCurrentAccount());
         }
     }
 
@@ -204,7 +204,7 @@ public class MainActivity extends BaseActivity
             fragmentContainer = (FrameLayout) activity.findViewById(R.id.fragmentContainer);
             navigationView = (NavigationView) activity.findViewById(R.id.navigationView);
             drawerLayout = (DrawerLayout) activity.findViewById(R.id.drawer_layout);
-            accountView = (AccountView) activity.findViewById(R.id.accountView);
+            accountView = (AccountView) navigationView.getHeaderView(0).findViewById(R.id.accountView);
             mainViewFlipper = (ViewFlipper) activity.findViewById(R.id.mainViewFlipper);
             toolbar = (Toolbar) activity.findViewById(R.id.toolbar);
         }
