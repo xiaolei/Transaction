@@ -9,9 +9,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:choiceMode="singleChoice"
+        android:clipToPadding="false"
         android:columnWidth="@dimen/product_item_width"
         android:horizontalSpacing="5dp"
         android:numColumns="auto_fit"
+        android:padding="@dimen/spacing_medium"
+        android:scrollbarStyle="outsideOverlay"
         android:stretchMode="columnWidth"
         android:verticalSpacing="5dp" />
 
