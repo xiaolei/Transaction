@@ -187,6 +187,7 @@ public class MainActivity extends BaseActivity
         mViewHolder.toolbar.setVisibility(View.VISIBLE);
         mViewHolder.mainViewFlipper.setDisplayedChild(VIEW_INDEX_CONTENT);
         mViewHolder.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+        mViewHolder.accountView.bind(this, GlobalApplication.getCurrentAccount());
         switchToHomeFragment();
 
         EventBus.getDefault().post(new CheckPermissionEvent(Manifest.permission.WRITE_EXTERNAL_STORAGE));
@@ -204,7 +205,8 @@ public class MainActivity extends BaseActivity
             fragmentContainer = (FrameLayout) activity.findViewById(R.id.fragmentContainer);
             navigationView = (NavigationView) activity.findViewById(R.id.navigationView);
             drawerLayout = (DrawerLayout) activity.findViewById(R.id.drawer_layout);
-            accountView = (AccountView) navigationView.getHeaderView(0).findViewById(R.id.accountView);
+            accountView = new AccountView(activity);
+            navigationView.addHeaderView(accountView);
             mainViewFlipper = (ViewFlipper) activity.findViewById(R.id.mainViewFlipper);
             toolbar = (Toolbar) activity.findViewById(R.id.toolbar);
         }

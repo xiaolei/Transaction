@@ -10,7 +10,7 @@
         android:id="@+id/dataContainerViewProducts"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:dataLayout="@layout/layout_products" />
+        app:dataLayout="@layout/layout_quick_products" />
 
     <net.i2p.android.ext.floatingactionbutton.FloatingActionsMenu
         android:id="@+id/famProduct"
