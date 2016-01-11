@@ -5,7 +5,6 @@
     android:layout_height="wrap_content"
     android:background="@drawable/side_nav_bar"
     android:minHeight="160dp"
-    android:paddingBottom="@dimen/spacing_medium"
     android:paddingRight="@dimen/spacing_medium"
     android:paddingTop="@dimen/spacing_medium">
 
