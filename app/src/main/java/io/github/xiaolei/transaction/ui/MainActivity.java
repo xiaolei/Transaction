@@ -2,6 +2,7 @@ package io.github.xiaolei.transaction.ui;
 
 import android.Manifest;
 import android.app.Activity;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -14,8 +15,10 @@ import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 import android.widget.ViewFlipper;
 
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,10 +26,14 @@ import de.greenrobot.event.EventBus;
 import io.github.xiaolei.enterpriselibrary.logging.Logger;
 import io.github.xiaolei.transaction.GlobalApplication;
 import io.github.xiaolei.transaction.R;
+import io.github.xiaolei.transaction.entity.Account;
 import io.github.xiaolei.transaction.event.AccountInfoLoadCompletedEvent;
 import io.github.xiaolei.transaction.event.AppInitCompletedEvent;
 import io.github.xiaolei.transaction.event.CheckPermissionEvent;
 import io.github.xiaolei.transaction.event.NavigationDrawerStateEvent;
+import io.github.xiaolei.transaction.event.PickPhotoEvent;
+import io.github.xiaolei.transaction.repository.AccountRepository;
+import io.github.xiaolei.transaction.repository.RepositoryProvider;
 import io.github.xiaolei.transaction.widget.AccountView;
 
 
@@ -171,9 +178,45 @@ public class MainActivity extends BaseActivity
         switchToContentView();
     }
 
+    public void onEvent(PickPhotoEvent event) {
+        updateAccountAvatarAsync(GlobalApplication.getCurrentAccountId(), event.photoFileUri);
+    }
+
+    private void updateAccountAvatarAsync(final long accountId, final String photoUrl) {
+        AsyncTask<Void, Void, Account> task = new AsyncTask<Void, Void, Account>() {
+
+            @Override
+            protected Account doInBackground(Void... params) {
+                Account account = null;
+                try {
+                    account = RepositoryProvider.getInstance(MainActivity.this).resolve(AccountRepository.class)
+                            .updateAvatar(accountId, photoUrl);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    return account;
+                }
+
+                return account;
+            }
+
+            @Override
+            protected void onPostExecute(Account account) {
+                if (account == null) {
+                    Toast.makeText(MainActivity.this, getString(R.string.error_failed_to_update_avator), Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                GlobalApplication.setCurrentAccount(account);
+                mViewHolder.accountView.bind(account);
+            }
+        };
+
+        task.execute();
+    }
+
     private void showAccountInfo() {
         if (mViewHolder != null && mViewHolder.accountView != null) {
-            mViewHolder.accountView.bind(this, GlobalApplication.getCurrentAccount());
+            mViewHolder.accountView.bind(GlobalApplication.getCurrentAccount());
         }
     }
 
@@ -187,7 +230,7 @@ public class MainActivity extends BaseActivity
         mViewHolder.toolbar.setVisibility(View.VISIBLE);
         mViewHolder.mainViewFlipper.setDisplayedChild(VIEW_INDEX_CONTENT);
         mViewHolder.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
-        mViewHolder.accountView.bind(this, GlobalApplication.getCurrentAccount());
+        mViewHolder.accountView.bind(GlobalApplication.getCurrentAccount());
         switchToHomeFragment();
 
         EventBus.getDefault().post(new CheckPermissionEvent(Manifest.permission.WRITE_EXTERNAL_STORAGE));

@@ -150,17 +150,4 @@
 
         </TextSwitcher>
     </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/transactionPhotoGallery"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone">
-
-        <io.github.xiaolei.transaction.widget.SquareImageView
-            android:id="@+id/imageViewPickedPhoto"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:scaleType="centerCrop" />
-    </RelativeLayout>
 </LinearLayout>

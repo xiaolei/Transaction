@@ -14,6 +14,7 @@ import io.github.xiaolei.transaction.util.PreferenceHelper;
 @DatabaseTable(tableName = "account")
 public class Account extends TableEntity {
     public static final String DISPLAY_NAME = "display_name";
+    public static final String PHOTO_ID = "photo_id";
 
     @DatabaseField(canBeNull = false, columnName = "display_name")
     private String displayName;
@@ -32,6 +33,9 @@ public class Account extends TableEntity {
 
     @DatabaseField(canBeNull = false, columnName = "default_currency_code", defaultValue = "USD")
     private String defaultCurrencyCode;
+
+    @DatabaseField(foreign = true, columnName = PHOTO_ID, foreignColumnName = Photo.ID)
+    private Photo photo;
 
     public Account() {
         setDefaultCurrencyCode(PreferenceHelper.DEFAULT_CURRENCY_CODE);
@@ -131,5 +135,13 @@ public class Account extends TableEntity {
 
     public void setUnlockPassword(String unlockPassword) {
         this.unlockPassword = HashHelper.getSHA256SecurePassword(unlockPassword);
+    }
+
+    public Photo getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(Photo photo) {
+        this.photo = photo;
     }
 }

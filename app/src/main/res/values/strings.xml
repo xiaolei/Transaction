@@ -48,7 +48,7 @@
     <string name="dialog_title_choose_currency">Choose Currency</string>
     <string name="action_delete_product">Delete</string>
     <string name="confirm_message_delete_products">Are you sure to delete the selected %d products?</string>
-    <string name="copy_database">Copy Database</string>
+    <string name="clone_database">Clone Database</string>
     <string name="validation_error_product_name_duplicate">Product name is duplicate, please change another one.</string>
     <string name="unlock">Unlock</string>
     <string name="no_product">No product found</string>
@@ -115,4 +115,5 @@
     <string name="error_duplicate_tag_name">Sorry, this name already be taken, please try another one.</string>
     <string name="input_new_account_name">New account name</string>
     <string name="error_failed_to_update_account_display_name">Sorry, failed to update account display name, please try again later.</string>
+    <string name="error_failed_to_update_avator">Sorry, failed to update your avator, please try again later.</string>
 </resources>

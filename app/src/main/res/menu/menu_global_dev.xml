@@ -11,8 +11,8 @@
         android:title="@string/delete_database"
         app:showAsAction="never" />
     <item
-        android:id="@+id/action_copy_database"
-        android:title="@string/copy_database"
+        android:id="@+id/action_clone_database"
+        android:title="@string/clone_database"
         app:showAsAction="never" />
 
     <item

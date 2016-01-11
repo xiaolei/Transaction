@@ -10,13 +10,11 @@ import java.sql.SQLException;
 
 import de.greenrobot.event.EventBus;
 import io.github.xiaolei.enterpriselibrary.logging.Logger;
-import io.github.xiaolei.enterpriselibrary.utility.FileUtils;
 import io.github.xiaolei.transaction.entity.Account;
 import io.github.xiaolei.transaction.event.AccountInfoLoadCompletedEvent;
 import io.github.xiaolei.transaction.event.AppInitCompletedEvent;
 import io.github.xiaolei.transaction.repository.AccountRepository;
 import io.github.xiaolei.transaction.repository.RepositoryProvider;
-import io.github.xiaolei.transaction.util.ConfigurationManager;
 import io.github.xiaolei.transaction.util.PreferenceHelper;
 
 /**
@@ -24,7 +22,7 @@ import io.github.xiaolei.transaction.util.PreferenceHelper;
  */
 public class GlobalApplication extends Application {
     private static final String TAG = GlobalApplication.class.getSimpleName();
-    private static Account currentAccount;
+    private static Account mCurrentAccount;
     private static boolean mIsInitialized;
 
     public static boolean isInitialized() {
@@ -33,11 +31,15 @@ public class GlobalApplication extends Application {
 
 
     public static Account getCurrentAccount() {
-        return currentAccount;
+        return mCurrentAccount;
+    }
+
+    public static void setCurrentAccount(Account account){
+        mCurrentAccount = account;
     }
 
     public static long getCurrentAccountId(){
-        return currentAccount != null ? currentAccount.getId() : -1;
+        return mCurrentAccount != null ? mCurrentAccount.getId() : -1;
     }
 
     @Override
@@ -96,21 +98,15 @@ public class GlobalApplication extends Application {
         Log.d(TAG, "saved account id: " + accountId);
 
         if (accountId <= 0) {
-            currentAccount = createAccount();
+            mCurrentAccount = createAccount();
         } else {
             Dao<Account, Long> accountDao = RepositoryProvider.getInstance(getApplicationContext()).resolve(AccountRepository.class).getDataAccessObject(Account.class);
-            currentAccount = accountDao.queryForId(accountId);
-            if (currentAccount != null) {
+            mCurrentAccount = accountDao.queryForId(accountId);
+            if (mCurrentAccount != null) {
                 Log.d(TAG, "load current account. id = " + accountId);
             } else {
                 createAccount();
             }
-        }
-    }
-
-    private void createPictureFolder() {
-        if (FileUtils.isExternalStorageAvailable()) {
-            FileUtils.createFolderPathInPicturesFolder(ConfigurationManager.PICTURES_FOLDER_NAME);
         }
     }
 

@@ -179,11 +179,13 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
         getWritableDatabase().execSQL(sql, bindArgs);
     }
 
-    public void copy() throws IOException {
+    public File backup() throws IOException {
         File targetFile = new File(Environment.getExternalStorageDirectory() + java.io.File.separator + DATABASE_NAME);
         targetFile.createNewFile();
         File dbFile = mContextReference.context.getDatabasePath(DATABASE_NAME).getAbsoluteFile();
         FileUtils.copyToFile(dbFile, targetFile);
+
+        return targetFile;
     }
 
     /**

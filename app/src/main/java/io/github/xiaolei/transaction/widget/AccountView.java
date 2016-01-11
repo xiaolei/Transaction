@@ -11,13 +11,17 @@ import android.widget.Toast;
 
 import java.sql.SQLException;
 
+import de.greenrobot.event.EventBus;
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.github.xiaolei.enterpriselibrary.listener.OnOperationCompletedListener;
+import io.github.xiaolei.enterpriselibrary.utility.DialogHelper;
+import io.github.xiaolei.enterpriselibrary.utility.PhotoPicker;
+import io.github.xiaolei.enterpriselibrary.utility.ViewHelper;
 import io.github.xiaolei.transaction.R;
 import io.github.xiaolei.transaction.entity.Account;
 import io.github.xiaolei.transaction.repository.AccountRepository;
 import io.github.xiaolei.transaction.repository.RepositoryProvider;
-import io.github.xiaolei.transaction.util.InputDialogHelper;
+import io.github.xiaolei.transaction.util.ImageLoader;
 
 /**
  * TODO: add comment
@@ -50,7 +54,7 @@ public class AccountView extends RelativeLayout {
         mViewHolder.textViewUserName.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                InputDialogHelper.show(getContext(),
+                DialogHelper.showInputDialog(getContext(),
                         getContext().getString(R.string.input_new_account_name),
                         mAccount != null ? mAccount.getDisplayName() : "",
                         new OnOperationCompletedListener<String>() {
@@ -61,16 +65,25 @@ public class AccountView extends RelativeLayout {
                         });
             }
         });
+
+        mViewHolder.profileImage.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PhotoPicker.getInstance(getContext()).showPhotoPickerDialog(ViewHelper.getActivity(getContext()));
+            }
+        });
     }
 
-    public void bind(Context context, Account account) {
+    public void bind(Account account) {
         if (account == null) {
             return;
         }
 
-        mContext = context;
         mAccount = account;
         mViewHolder.textViewUserName.setText(account.getDisplayName());
+        if (account.getPhoto() != null) {
+            ImageLoader.loadImage(getContext(), account.getPhoto().getUrl(), mViewHolder.profileImage, ImageLoader.PhotoScaleMode.CENTER_INSIDE);
+        }
     }
 
     private void rename(final String displayName) {
@@ -100,7 +113,7 @@ public class AccountView extends RelativeLayout {
                     return;
                 }
 
-                bind(getContext().getApplicationContext(), mAccount);
+                bind(mAccount);
             }
         };
         task.execute();

@@ -17,9 +17,7 @@ import android.widget.TextSwitcher;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
-import com.squareup.picasso.Picasso;
 
-import java.io.File;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.util.Date;
@@ -501,18 +499,6 @@ public class CalculatorOutputView extends RelativeLayout {
         return mViewHolder.textViewCalculatorPrice.getText().toString();
     }
 
-    public void showPhoto(String photoFileName) {
-        if (TextUtils.isEmpty(photoFileName)) {
-            return;
-        }
-        mViewHolder.transactionPhotoGallery.setVisibility(View.VISIBLE);
-        Picasso.with(getContext()).load(new File(photoFileName)).fit().into(mViewHolder.imageViewPickedPhoto);
-    }
-
-    public void hidePhoto() {
-        mViewHolder.transactionPhotoGallery.setVisibility(View.GONE);
-    }
-
     public void setTip(String tip) {
         mViewHolder.textViewTodayAmount.setText(tip);
     }
@@ -525,9 +511,6 @@ public class CalculatorOutputView extends RelativeLayout {
         public TextSwitcher textViewTodayAmount;
         public TextView textViewTransactionDate;
 
-        public RelativeLayout transactionPhotoGallery;
-        public SquareImageView imageViewPickedPhoto;
-
         public ViewHolder(View view) {
             textViewCalculatorPrice = (TextView) view.findViewById(R.id.textViewCalculatorPrice);
             textViewCalculatorProductName = (TextSwitcher) view.findViewById(R.id.textViewCalculatorProductName);
@@ -535,9 +518,6 @@ public class CalculatorOutputView extends RelativeLayout {
             textViewIncomingOrOutgoing = (TextView) view.findViewById(R.id.textViewTransactionType);
             textViewTodayAmount = (TextSwitcher) view.findViewById(R.id.textViewTodayAmount);
             textViewTransactionDate = (TextView) view.findViewById(R.id.textViewTransactionDate);
-
-            transactionPhotoGallery = (RelativeLayout) view.findViewById(R.id.transactionPhotoGallery);
-            imageViewPickedPhoto = (SquareImageView) view.findViewById(R.id.imageViewPickedPhoto);
         }
     }
 }

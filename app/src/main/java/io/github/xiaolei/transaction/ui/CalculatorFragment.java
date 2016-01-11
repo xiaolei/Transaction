@@ -22,6 +22,7 @@ import java.sql.SQLException;
 import java.util.Date;
 
 import de.greenrobot.event.EventBus;
+import io.github.xiaolei.enterpriselibrary.listener.OnOperationCompletedListener;
 import io.github.xiaolei.enterpriselibrary.logging.Logger;
 import io.github.xiaolei.enterpriselibrary.utility.DialogHelper;
 import io.github.xiaolei.transaction.GlobalApplication;
@@ -34,7 +35,6 @@ import io.github.xiaolei.transaction.entity.Transaction;
 import io.github.xiaolei.transaction.event.CreateProductEvent;
 import io.github.xiaolei.transaction.event.DateSelectedEvent;
 import io.github.xiaolei.transaction.event.NewProductCreatedEvent;
-import io.github.xiaolei.transaction.event.PickPhotoEvent;
 import io.github.xiaolei.transaction.event.ProductSelectedEvent;
 import io.github.xiaolei.transaction.event.RefreshTransactionListEvent;
 import io.github.xiaolei.transaction.event.SearchProductEvent;
@@ -164,7 +164,7 @@ public class CalculatorFragment extends BaseFragment implements OnProductSelecte
         super.onCreateOptionsMenu(menu, inflater);
 
         menu.clear();
-        inflater.inflate(R.menu.menu_global_prod, menu);
+        inflater.inflate(R.menu.menu_global_dev, menu);
         initializeSearchView(menu.findItem(R.id.action_search_product));
     }
 
@@ -186,18 +186,28 @@ public class CalculatorFragment extends BaseFragment implements OnProductSelecte
                         });
 
                 return true;
-            case R.id.action_copy_database:
+            case R.id.action_clone_database:
                 try {
-                    DatabaseHelper.getInstance(getActivity()).copy();
-                    Toast.makeText(getActivity(), "Database copied.", Toast.LENGTH_SHORT).show();
+                    DatabaseHelper.getInstance(getActivity()).backup();
+                    Toast.makeText(getActivity(), "Database cloned.", Toast.LENGTH_SHORT).show();
                 } catch (Exception e) {
                     e.printStackTrace();
                     Log.e(TAG, e.toString());
                 }
                 return true;
             case R.id.action_execute_sql:
-                DatabaseHelper.getInstance(getActivity()).executeSql("ALTER TABLE \"exchange_rate\" ADD COLUMN \"frequency\" DOUBLE NOT NULL  DEFAULT 0");
-                Toast.makeText(getActivity(), "SQL executed.", Toast.LENGTH_SHORT).show();
+                DialogHelper.showInputDialog(getActivity(), "Execute SQL", "", new OnOperationCompletedListener<String>() {
+                    @Override
+                    public void onOperationCompleted(boolean success, String result, String message) {
+                        if(TextUtils.isEmpty(result)){
+                            return;
+                        }
+
+                        DatabaseHelper.getInstance(getActivity()).executeSql(result);
+                        Toast.makeText(getActivity(), "SQL executed.", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
                 return true;
             default:
                 return false;
@@ -375,10 +385,6 @@ public class CalculatorFragment extends BaseFragment implements OnProductSelecte
 
     public void onEvent(DateSelectedEvent event) {
         mViewHolder.calculatorOutputView.setTransactionDate(event.selectedDate);
-    }
-
-    public void onEvent(PickPhotoEvent event) {
-        mViewHolder.calculatorOutputView.showPhoto(event.photoFileUri);
     }
 
     private void save() {
