@@ -230,7 +230,7 @@ public class MainActivity extends BaseActivity
         mViewHolder.toolbar.setVisibility(View.VISIBLE);
         mViewHolder.mainViewFlipper.setDisplayedChild(VIEW_INDEX_CONTENT);
         mViewHolder.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
-        mViewHolder.accountView.bind(GlobalApplication.getCurrentAccount());
+        showAccountInfo();
         switchToHomeFragment();
 
         EventBus.getDefault().post(new CheckPermissionEvent(Manifest.permission.WRITE_EXTERNAL_STORAGE));

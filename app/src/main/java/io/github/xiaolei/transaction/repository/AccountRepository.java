@@ -4,6 +4,7 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.stmt.SelectArg;
 import com.j256.ormlite.stmt.UpdateBuilder;
 
 import java.sql.SQLException;
@@ -41,7 +42,7 @@ public class AccountRepository extends BaseRepository {
         }
 
         UpdateBuilder<Account, Long> updateBuilder = accountDao.updateBuilder();
-        updateBuilder.updateColumnValue(Account.DISPLAY_NAME, newDisplayName)
+        updateBuilder.updateColumnValue(Account.DISPLAY_NAME, new SelectArg(newDisplayName))
                 .where().eq(Account.ID, accountId);
         accountDao.update(updateBuilder.prepare());
 

@@ -11,12 +11,12 @@ import android.widget.Toast;
 
 import java.sql.SQLException;
 
-import de.greenrobot.event.EventBus;
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.github.xiaolei.enterpriselibrary.listener.OnOperationCompletedListener;
 import io.github.xiaolei.enterpriselibrary.utility.DialogHelper;
 import io.github.xiaolei.enterpriselibrary.utility.PhotoPicker;
 import io.github.xiaolei.enterpriselibrary.utility.ViewHelper;
+import io.github.xiaolei.transaction.GlobalApplication;
 import io.github.xiaolei.transaction.R;
 import io.github.xiaolei.transaction.entity.Account;
 import io.github.xiaolei.transaction.repository.AccountRepository;
@@ -56,7 +56,7 @@ public class AccountView extends RelativeLayout {
             public void onClick(View v) {
                 DialogHelper.showInputDialog(getContext(),
                         getContext().getString(R.string.input_new_account_name),
-                        mAccount != null ? mAccount.getDisplayName() : "",
+                        GlobalApplication.getCurrentAccount() != null ? GlobalApplication.getCurrentAccount().getDisplayName() : "",
                         new OnOperationCompletedListener<String>() {
                             @Override
                             public void onOperationCompleted(boolean success, String result, String message) {
@@ -92,28 +92,28 @@ public class AccountView extends RelativeLayout {
             return;
         }
 
-        AsyncTask<Void, Void, Boolean> task = new AsyncTask<Void, Void, Boolean>() {
+        AsyncTask<Void, Void, Account> task = new AsyncTask<Void, Void, Account>() {
 
             @Override
-            protected Boolean doInBackground(Void... params) {
+            protected Account doInBackground(Void... params) {
                 try {
-                    mAccount = RepositoryProvider.getInstance(mContext).resolve(AccountRepository.class)
+                    return RepositoryProvider.getInstance(mContext).resolve(AccountRepository.class)
                             .changeDisplayName(mAccount.getId(), displayName);
                 } catch (SQLException e) {
                     e.printStackTrace();
-                    return false;
+                    return null;
                 }
-                return true;
             }
 
             @Override
-            protected void onPostExecute(Boolean success) {
-                if (!success) {
+            protected void onPostExecute(Account account) {
+                if (account == null) {
                     Toast.makeText(mContext, getContext().getString(R.string.error_failed_to_update_account_display_name), Toast.LENGTH_SHORT).show();
                     return;
                 }
 
-                bind(mAccount);
+                GlobalApplication.setCurrentAccount(account);
+                bind(account);
             }
         };
         task.execute();
