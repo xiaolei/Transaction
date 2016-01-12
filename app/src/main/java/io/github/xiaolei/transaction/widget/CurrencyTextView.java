@@ -104,7 +104,7 @@ public class CurrencyTextView extends RelativeLayout implements View.OnClickList
         mCurrencyCode = currencyCode;
 
         mViewHolder.textViewCurrency.setText(CurrencyHelper.formatCurrency(currencyCode, price));
-        if (price.intValue() > 0) {
+        if (price.doubleValue() >= 0) {
             mViewHolder.textViewCurrency.setTextColor(mIncomeTextColor);
         } else {
             mViewHolder.textViewCurrency.setTextColor(mExpenseTextColor);

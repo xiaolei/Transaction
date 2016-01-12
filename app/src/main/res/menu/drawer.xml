@@ -37,6 +37,12 @@
             android:icon="@drawable/ic_loyalty_white_24dp"
             android:orderInCategory="5"
             android:title="@string/tags" />
+
+        <item
+            android:id="@+id/navigation_item_exchange_rate_list"
+            android:icon="@drawable/ic_swap_horiz_white_24dp"
+            android:orderInCategory="6"
+            android:title="@string/action_bar_title_exchange_rate_list" />
     </group>
 
 </menu>

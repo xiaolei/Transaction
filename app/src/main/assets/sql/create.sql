@@ -174,3 +174,4 @@ INSERT INTO exchange_rate(currency_code, exchange_rate) VALUES("RSD", 10913);
 INSERT INTO exchange_rate(currency_code, exchange_rate) VALUES("BHD", 37);
 INSERT INTO exchange_rate(currency_code, exchange_rate) VALUES("JPY", 12344);
 INSERT INTO exchange_rate(currency_code, exchange_rate) VALUES("SDG", 597);
+UPDATE exchange_rate set active = 1;

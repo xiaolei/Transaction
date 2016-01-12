@@ -196,7 +196,7 @@ public class CalculatorFragment extends BaseFragment implements OnProductSelecte
                 }
                 return true;
             case R.id.action_execute_sql:
-                DialogHelper.showInputDialog(getActivity(), "Execute SQL", "", new OnOperationCompletedListener<String>() {
+                DialogHelper.showInputDialog(getActivity(), "Execute SQL", "UPDATE exchange_rate set active = 1;", new OnOperationCompletedListener<String>() {
                     @Override
                     public void onOperationCompleted(boolean success, String result, String message) {
                         if(TextUtils.isEmpty(result)){

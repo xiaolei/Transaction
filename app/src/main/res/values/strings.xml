@@ -116,4 +116,6 @@
     <string name="input_new_account_name">New account name</string>
     <string name="error_failed_to_update_account_display_name">Sorry, failed to update account display name, please try again later.</string>
     <string name="error_failed_to_update_avator">Sorry, failed to update your avator, please try again later.</string>
+    <string name="action_bar_title_exchange_rate_list">Exchange Rate</string>
+    <string name="no_exchange_rate">No exchange rate</string>
 </resources>

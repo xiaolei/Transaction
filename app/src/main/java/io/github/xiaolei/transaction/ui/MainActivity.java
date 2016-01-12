@@ -59,6 +59,7 @@ public class MainActivity extends BaseActivity
         //mMenuItemAndFragmentMapping.put(R.id.navigation_item_analysis, AnalysisFragment.class.getName());
         mMenuItemAndFragmentMapping.put(R.id.navigation_item_products, ProductListFragment.class.getName());
         mMenuItemAndFragmentMapping.put(R.id.navigation_item_tags, TagListFragment.class.getName());
+        mMenuItemAndFragmentMapping.put(R.id.navigation_item_exchange_rate_list, ExchangeRateListFragment.class.getName());
 
         start();
     }
