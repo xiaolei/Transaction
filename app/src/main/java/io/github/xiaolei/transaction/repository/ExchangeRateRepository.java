@@ -1,18 +1,18 @@
 package io.github.xiaolei.transaction.repository;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.QueryBuilder;
+import com.j256.ormlite.stmt.UpdateBuilder;
 
+import java.math.BigDecimal;
 import java.sql.SQLException;
-import java.util.Date;
 import java.util.List;
 
-import io.github.xiaolei.enterpriselibrary.utility.DateTimeUtils;
+import io.github.xiaolei.enterpriselibrary.utility.CurrencyHelper;
 import io.github.xiaolei.transaction.entity.ExchangeRate;
-import io.github.xiaolei.transaction.entity.Product;
-import io.github.xiaolei.transaction.entity.Transaction;
 
 /**
  * TODO: add comment
@@ -43,9 +43,17 @@ public class ExchangeRateRepository extends BaseRepository {
         return exchangeRateDao.query(query.prepare());
     }
 
-    public List<ExchangeRate> query(long offset, long limit) throws SQLException {
+    public List<ExchangeRate> query(String searchKeywords, long offset, long limit) throws SQLException {
         QueryBuilder<ExchangeRate, Long> queryBuilder = exchangeRateDao.queryBuilder();
-        queryBuilder.where().eq(ExchangeRate.ACTIVE, true);
+
+        if (!TextUtils.isEmpty(searchKeywords) && searchKeywords.trim().length() > 0) {
+            queryBuilder
+                    .where()
+                    .eq(ExchangeRate.ACTIVE, true)
+                    .and().like(ExchangeRate.CURRENCY_CODE, "%" + searchKeywords + "%");
+        } else {
+            queryBuilder.where().eq(ExchangeRate.ACTIVE, true);
+        }
 
         return exchangeRateDao.query(queryBuilder.orderBy(ExchangeRate.LAST_MODIFIED, false).orderBy(ExchangeRate.CREATION_TIME, false).offset(offset).limit(limit).prepare());
     }
@@ -58,5 +66,11 @@ public class ExchangeRateRepository extends BaseRepository {
                 .where().eq(ExchangeRate.ACTIVE, true);
 
         return exchangeRateDao.query(query.prepare());
+    }
+
+    public void updateExchangeRate(long exchangeRateId, BigDecimal newValue) throws SQLException {
+        UpdateBuilder<ExchangeRate, Long> updateBuilder = exchangeRateDao.updateBuilder();
+        updateBuilder.updateColumnValue(ExchangeRate.EXCHANGE_RATE, CurrencyHelper.castToInteger(newValue));
+        exchangeRateDao.update(updateBuilder.prepare());
     }
 }

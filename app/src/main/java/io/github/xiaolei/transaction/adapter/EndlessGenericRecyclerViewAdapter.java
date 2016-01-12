@@ -27,6 +27,9 @@ public abstract class EndlessGenericRecyclerViewAdapter<T, V extends GenericRecy
     protected static final int VIEW_TYPE_DATA = 2;
     private static final String TAG = EndlessGenericRecyclerViewAdapter.class.getSimpleName();
 
+    protected GenericRecyclerViewAdapter.OnRecyclerViewItemLongClickListener mOnLongClickListener;
+    protected GenericRecyclerViewAdapter.OnRecyclerViewItemClickListener mOnItemClickListener;
+
     protected int mPageSize = ConfigurationManager.DEFAULT_PAGE_SIZE;
     protected Context mContext;
     protected RecyclerView mRecyclerView;
@@ -73,6 +76,14 @@ public abstract class EndlessGenericRecyclerViewAdapter<T, V extends GenericRecy
         };
 
         mRecyclerView.setOnScrollListener(mEndlessRecyclerOnScrollListener);
+    }
+
+    public void setOnItemLongClickListener(GenericRecyclerViewAdapter.OnRecyclerViewItemLongClickListener onLongClickListener) {
+        mOnLongClickListener = onLongClickListener;
+    }
+
+    public void setOnItemClickListener(GenericRecyclerViewAdapter.OnRecyclerViewItemClickListener onItemClickListener) {
+        mOnItemClickListener = onItemClickListener;
     }
 
     public int getPageSize() {
@@ -132,14 +143,15 @@ public abstract class EndlessGenericRecyclerViewAdapter<T, V extends GenericRecy
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        RecyclerView.ViewHolder viewHolder = null;
         if (viewType == VIEW_TYPE_DATA) {
-            viewHolder = createDataItemViewHolder(parent, viewType);
-        } else {
-            viewHolder = createLoadingViewHolder(parent, viewType);
-        }
+            V viewHolder = createDataItemViewHolder(parent, viewType);
+            viewHolder.setOnItemClickListener(mOnItemClickListener);
+            viewHolder.setOnItemLongClickListener(mOnLongClickListener);
 
-        return viewHolder;
+            return viewHolder;
+        } else {
+            return createLoadingViewHolder(parent, viewType);
+        }
     }
 
     @Override

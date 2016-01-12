@@ -1,12 +1,10 @@
 package io.github.xiaolei.transaction.adapter;
 
-import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import java.util.Currency;
 import java.util.List;
 
 import io.github.xiaolei.enterpriselibrary.utility.CurrencyHelper;
@@ -34,11 +32,7 @@ public class ExchangeRateListAdapter extends EndlessGenericRecyclerViewAdapter<E
 
     @Override
     protected void bindData(ViewHolder viewHolder, ExchangeRate item) {
-        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
-            viewHolder.textViewCurrencyName.setText(item.getCurrencyCode());
-        } else {
-            viewHolder.textViewCurrencyName.setText(Currency.getInstance(item.getCurrencyCode()).getDisplayName());
-        }
+        viewHolder.textViewCurrencyName.setText(item.getCurrencyCode());
         viewHolder.textViewExchangeRate.setCurrencyCode(item.getCurrencyCode());
         viewHolder.textViewExchangeRate.setPrice(CurrencyHelper.castToBigDecimal(item.getExchangeRate()), item.getCurrencyCode());
         viewHolder.textViewCreationTime.setText(DateTimeUtils.formatDateTime(item.getCreationTime()));

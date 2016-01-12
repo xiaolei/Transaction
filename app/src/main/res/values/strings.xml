@@ -118,4 +118,7 @@
     <string name="error_failed_to_update_avator">Sorry, failed to update your avator, please try again later.</string>
     <string name="action_bar_title_exchange_rate_list">Exchange Rate</string>
     <string name="no_exchange_rate">No exchange rate</string>
+    <string name="title_change_exchange_rate">Change Exchange Rate</string>
+    <string name="search_exchange_rate">Type Currency Code</string>
+    <string name="error_failed_to_update_exchange_rate">Sorry, failed to update the exchange rate, please try again later.</string>
 </resources>

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -61,7 +62,7 @@ public class DialogHelper {
         }
 
         AlertDialogButton button = new AlertDialogButton(
-                AlertDialog.BUTTON_POSITIVE, "确定",
+                AlertDialog.BUTTON_POSITIVE, context.getString(android.R.string.ok),
                 new DialogInterface.OnClickListener() {
 
                     @Override
@@ -81,7 +82,7 @@ public class DialogHelper {
     public static AlertDialog showAlertDialog(Context context, String message,
                                               DialogInterface.OnClickListener onOkButtonClickListener) {
         AlertDialogButton button = new AlertDialogButton(
-                AlertDialog.BUTTON_POSITIVE, "确定", onOkButtonClickListener);
+                AlertDialog.BUTTON_POSITIVE, context.getString(android.R.string.ok), onOkButtonClickListener);
         return showAlertDialog(context, "", message, true, button);
     }
 
@@ -99,7 +100,13 @@ public class DialogHelper {
     }
 
     public static void showInputDialog(final Context context, String title, String defaultValue,
-                            final OnOperationCompletedListener<String> onOperationCompletedListener) {
+                                       final OnOperationCompletedListener<String> onOperationCompletedListener) {
+        showInputDialog(context, title, defaultValue, InputType.TYPE_CLASS_TEXT, onOperationCompletedListener);
+    }
+
+    public static void showInputDialog(final Context context, String title, String defaultValue,
+                                       int inputType,
+                                       final OnOperationCompletedListener<String> onOperationCompletedListener) {
         if (context == null) {
             return;
         }
@@ -107,6 +114,7 @@ public class DialogHelper {
         final View view = View.inflate(context, R.layout.dialog_fragment_input, null);
         final ViewHolder viewHolder = new ViewHolder(view);
         viewHolder.editTextProductName.setText(defaultValue);
+        viewHolder.editTextProductName.setInputType(inputType);
 
         AlertDialog dialog = new AlertDialog.Builder(context)
                 .setTitle(title)
