@@ -23,7 +23,7 @@ import io.github.xiaolei.transaction.repository.RepositoryProvider;
  */
 public class ConfigurationManager {
     public static final int DECIMAL_POINT_LEFT = 2;
-    public static final int DEFAULT_PAGE_SIZE = 10;
+    public static final int DEFAULT_PAGE_SIZE = 15;
     public static final String PICTURES_FOLDER_NAME = "Transaction";
     private static final String TAG = ConfigurationManager.class.getSimpleName();
 

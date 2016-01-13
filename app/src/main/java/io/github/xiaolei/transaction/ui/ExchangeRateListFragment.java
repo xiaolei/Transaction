@@ -11,7 +11,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
 import android.widget.Toast;
 
 import java.math.BigDecimal;
@@ -122,12 +121,12 @@ public class ExchangeRateListFragment extends BaseFragment implements OnLoadMore
                 new OnOperationCompletedListener<String>() {
                     @Override
                     public void onOperationCompleted(boolean success, String result, String message) {
-                        updateExchangeRateAsync(position, exchangeRate.getId(), result);
+                        updateExchangeRateAsync(exchangeRate.getId(), result);
                     }
                 });
     }
 
-    private void updateExchangeRateAsync(final int position, final long id, final String newValue) {
+    private void updateExchangeRateAsync(final long id, final String newValue) {
         if (TextUtils.isEmpty(newValue)) {
             return;
         }

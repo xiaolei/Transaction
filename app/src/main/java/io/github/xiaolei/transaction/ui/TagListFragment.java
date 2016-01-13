@@ -130,7 +130,7 @@ public class TagListFragment extends BaseFragment implements AdapterView.OnItemC
         switch (item.getItemId()) {
             case R.id.action_new_tag:
                 InputDialogFragment.showDialog(getActivity(), getActivity().getSupportFragmentManager(),
-                        getString(R.string.title_rename_tag), "", new OnOperationCompletedListener<String>() {
+                        getString(R.string.title_new_tag), "", new OnOperationCompletedListener<String>() {
                             @Override
                             public void onOperationCompleted(boolean success, String result, String message) {
                                 createTag(result);

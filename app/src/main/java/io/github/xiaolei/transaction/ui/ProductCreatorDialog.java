@@ -34,6 +34,7 @@ import io.github.xiaolei.transaction.repository.RepositoryProvider;
  */
 public class ProductCreatorDialog extends DialogFragment {
     private static final String TAG = ProductCreatorDialog.class.getSimpleName();
+    public static final String ARG_TITLE = "arg_title";
     private ViewHolder mViewHolder;
     private Product mCurrentProduct;
     private String mTypedProductName;
@@ -47,13 +48,27 @@ public class ProductCreatorDialog extends DialogFragment {
         return fragment;
     }
 
-    public static void showDialog(FragmentManager fragmentManager) {
+    public static void showDialog(FragmentManager fragmentManager, String title) {
         ProductCreatorDialog fragment = newInstance();
+        Bundle args = new Bundle();
+        args.putString(ARG_TITLE, title);
+        fragment.setArguments(args);
+
         fragment.show(fragmentManager, TAG);
     }
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        String title = "";
+        Bundle args = getArguments();
+        if (args != null) {
+            title = args.getString(ARG_TITLE);
+        }
+
+        if (TextUtils.isEmpty(title)) {
+            title = getString(R.string.create_product);
+        }
+
         View view = View.inflate(getActivity(), R.layout.dialog_fragment_quick_product_creator, null);
         mViewHolder = new ViewHolder(view);
         mViewHolder.editTextProductName.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -94,7 +109,7 @@ public class ProductCreatorDialog extends DialogFragment {
         });
 
         AlertDialog dialog = new AlertDialog.Builder(getActivity())
-                .setTitle(R.string.create_product)
+                .setTitle(title)
                 .setView(view)
                 .setPositiveButton(android.R.string.ok,
                         new DialogInterface.OnClickListener() {

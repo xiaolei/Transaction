@@ -83,7 +83,7 @@ public class QuickProductsFragment extends BaseFragment implements View.OnClickL
     }
 
     private void newProduct() {
-        ProductCreatorDialog.showDialog(getActivity().getSupportFragmentManager());
+        ProductCreatorDialog.showDialog(getActivity().getSupportFragmentManager(), getString(R.string.create_or_search_product));
     }
 
     private void scanBarcode() {
@@ -99,7 +99,6 @@ public class QuickProductsFragment extends BaseFragment implements View.OnClickL
     public void onStart() {
         super.onStart();
         Log.d(TAG, "onStart");
-
     }
 
     public void setOnProductSelectedListener(OnProductSelectedListener listener) {

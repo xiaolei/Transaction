@@ -52,6 +52,7 @@ public abstract class EndlessRecyclerOnScrollListener<T> extends RecyclerView.On
 
     public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
         // Don't take any action on changed
+        int state = newState;
     }
 
     @Override

@@ -69,7 +69,8 @@
     <string name="transaction_navigator_by_month">By Month</string>
     <string name="transaction_navigator_by_year">By Year</string>
     <string name="title_activity_barcode_scanner">Scan Barcode</string>
-    <string name="create_product">Create or Search Product</string>
+    <string name="create_product">Create new product</string>
+    <string name="create_or_search_product">Create or Search Product</string>
     <string name="label_product_name">Product Name</string>
     <string name="loading_msg_creating_product">Creating new product, please wait...</string>
     <string name="photo_picker_take_from_camera">Take from camera</string>
@@ -121,4 +122,5 @@
     <string name="title_change_exchange_rate">Change Exchange Rate</string>
     <string name="search_exchange_rate">Type Currency Code</string>
     <string name="error_failed_to_update_exchange_rate">Sorry, failed to update the exchange rate, please try again later.</string>
+    <string name="title_new_tag">Create new tag</string>
 </resources>

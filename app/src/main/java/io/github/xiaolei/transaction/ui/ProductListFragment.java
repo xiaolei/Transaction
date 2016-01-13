@@ -288,7 +288,7 @@ public class ProductListFragment extends BaseFragment {
 
         switch (item.getItemId()) {
             case R.id.action_new_product:
-
+                ProductCreatorDialog.showDialog(getActivity().getSupportFragmentManager(), getString(R.string.create_product));
                 return true;
             default:
                 return true;
