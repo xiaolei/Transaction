@@ -5,6 +5,7 @@ import android.text.TextUtils;
 
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.QueryBuilder;
+import com.j256.ormlite.stmt.SelectArg;
 import com.j256.ormlite.stmt.UpdateBuilder;
 
 import java.math.BigDecimal;
@@ -50,7 +51,7 @@ public class ExchangeRateRepository extends BaseRepository {
             queryBuilder
                     .where()
                     .eq(ExchangeRate.ACTIVE, true)
-                    .and().like(ExchangeRate.CURRENCY_CODE, "%" + searchKeywords + "%");
+                    .and().like(ExchangeRate.CURRENCY_CODE, new SelectArg("%" + searchKeywords + "%"));
         } else {
             queryBuilder.where().eq(ExchangeRate.ACTIVE, true);
         }
