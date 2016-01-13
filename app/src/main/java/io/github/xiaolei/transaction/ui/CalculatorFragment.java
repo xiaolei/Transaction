@@ -164,7 +164,7 @@ public class CalculatorFragment extends BaseFragment implements OnProductSelecte
         super.onCreateOptionsMenu(menu, inflater);
 
         menu.clear();
-        inflater.inflate(R.menu.menu_global_dev, menu);
+        inflater.inflate(R.menu.menu_global_prod, menu);
         initializeSearchView(menu.findItem(R.id.action_search_product));
     }
 

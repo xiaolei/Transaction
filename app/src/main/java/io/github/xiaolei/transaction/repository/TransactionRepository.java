@@ -33,10 +33,10 @@ import io.github.xiaolei.transaction.viewmodel.DailyTransactionSummaryInfo;
 public class TransactionRepository extends BaseRepository {
     private ExchangeRateRepository exchangeRateRepository;
     private Dao<Transaction, Long> transactionDao;
-    public static final String AMOUNT_SQL = "select ifnull(sum(case t.currency_code when '%s' then t.product_price else round(t.product_price/er.exchange_rate * %s, 0) end), 0) as total_target_currency_price  from 'transaction' t left join exchange_rate er on er.currency_code = t.currency_code where t.active = 1 and t.account_id=? ";
-    public static final String SQL_EXPENSE_TRANSACTION_AMOUNT_GROUP_BY_DAY = "select abs(ifnull(sum(case t.currency_code when '%s' then t.product_price else round(t.product_price/er.exchange_rate * %s, 0) end), 0)) as price, date(t.creation_time) as creation_time from 'transaction' t left join exchange_rate er on er.currency_code = t.currency_code where t.active = 1 and t.price < 0 and t.account_id=? group by date(t.creation_time) order by date(t.creation_time) desc";
-    public static final String SQL_INCOME_TRANSACTION_AMOUNT_GROUP_BY_DAY = "select ifnull(sum(case t.currency_code when '%s' then t.product_price else round(t.product_price/er.exchange_rate * %s, 0) end), 0) as price, date(t.creation_time) as creation_time from 'transaction' t left join exchange_rate er on er.currency_code = t.currency_code where t.active = 1 and t.price > 0 and t.account_id=? group by date(t.creation_time) order by date(t.creation_time) desc";
-    public static final String SQL_MOST_EXPENSIVE_TRANSACTION = "select t.id, t.product_id, t.product_count, t.product_price, (case t.currency_code when '%s' then t.product_price else round(t.product_price/er.exchange_rate * %s, 0) end) as price, p.name from 'transaction' t left join exchange_rate er on er.currency_code = t.currency_code left join product p on p.id = t.product_id where t.active=1 and t.account_id =? order by abs(t.product_price) desc limit 1";
+    public static final String AMOUNT_SQL = "select ifnull(sum(case t.currency_code when '%s' then t.product_price else round(t.product_price*1.000/er.exchange_rate * %s, 0) end), 0) as total_target_currency_price  from 'transaction' t left join exchange_rate er on er.currency_code = t.currency_code where t.active = 1 and t.account_id=? ";
+    public static final String SQL_EXPENSE_TRANSACTION_AMOUNT_GROUP_BY_DAY = "select abs(ifnull(sum(case t.currency_code when '%s' then t.product_price else round(t.product_price*1.000/er.exchange_rate * %s, 0) end), 0)) as price, date(t.creation_time) as creation_time from 'transaction' t left join exchange_rate er on er.currency_code = t.currency_code where t.active = 1 and t.price < 0 and t.account_id=? group by date(t.creation_time) order by date(t.creation_time) desc";
+    public static final String SQL_INCOME_TRANSACTION_AMOUNT_GROUP_BY_DAY = "select ifnull(sum(case t.currency_code when '%s' then t.product_price else round(t.product_price*1.000/er.exchange_rate * %s, 0) end), 0) as price, date(t.creation_time) as creation_time from 'transaction' t left join exchange_rate er on er.currency_code = t.currency_code where t.active = 1 and t.price > 0 and t.account_id=? group by date(t.creation_time) order by date(t.creation_time) desc";
+    public static final String SQL_MOST_EXPENSIVE_TRANSACTION = "select t.id, t.product_id, t.product_count, t.product_price, (case t.currency_code when '%s' then t.product_price else round(t.product_price*1.000/er.exchange_rate * %s, 0) end) as price, p.name from 'transaction' t left join exchange_rate er on er.currency_code = t.currency_code left join product p on p.id = t.product_id where t.active=1 and t.account_id =? order by abs(t.product_price) desc limit 1";
     public static final String SQL_TOTAL_TRANSACTION_COUNT = "select count(id) from 'transaction' t where t.active=1 and t.account_id=?";
 
     public TransactionRepository(Context context) throws SQLException {
@@ -316,7 +316,7 @@ public class TransactionRepository extends BaseRepository {
                     return null;
                 }
             }
-        }, new String[]{String.valueOf(accountId)});
+        }, String.valueOf(accountId));
 
         BigDecimal value = result.getFirstResult();
         if (value != null) {

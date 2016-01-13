@@ -3,7 +3,6 @@ package io.github.xiaolei.transaction.util;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Environment;
-import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -13,7 +12,6 @@ import java.sql.SQLException;
 import de.greenrobot.event.EventBus;
 import io.github.xiaolei.transaction.GlobalApplication;
 import io.github.xiaolei.transaction.entity.Account;
-import io.github.xiaolei.transaction.entity.ExchangeRate;
 import io.github.xiaolei.transaction.event.DefaultCurrencyCodeChangedEvent;
 import io.github.xiaolei.transaction.repository.AccountRepository;
 import io.github.xiaolei.transaction.repository.RepositoryProvider;

@@ -26,7 +26,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignRight="@+id/textViewAmount"
-            android:text="Total amount (CNY)"
+            android:text="Total amount"
             android:textSize="@dimen/dashboard_label_text_size" />
     </RelativeLayout>
 
@@ -47,8 +47,8 @@
                 android:id="@+id/textViewTotalIncomeLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignLeft="@+id/textViewTotalIncome"
-                android:text="Total income (CNY)"
+                android:layout_alignRight="@+id/textViewTotalIncome"
+                android:text="Total income"
                 android:textSize="@dimen/dashboard_label_text_size" />
 
             <TextView
@@ -76,8 +76,8 @@
                 android:id="@+id/textViewTotalExpenseLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignLeft="@+id/textViewTotalExpense"
-                android:text="Total expense (CNY)"
+                android:layout_alignRight="@+id/textViewTotalExpense"
+                android:text="Total expense"
                 android:textSize="@dimen/dashboard_label_text_size" />
 
             <TextView
