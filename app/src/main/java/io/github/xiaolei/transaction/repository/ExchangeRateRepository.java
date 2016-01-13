@@ -70,7 +70,8 @@ public class ExchangeRateRepository extends BaseRepository {
 
     public void updateExchangeRate(long exchangeRateId, BigDecimal newValue) throws SQLException {
         UpdateBuilder<ExchangeRate, Long> updateBuilder = exchangeRateDao.updateBuilder();
-        updateBuilder.updateColumnValue(ExchangeRate.EXCHANGE_RATE, CurrencyHelper.castToInteger(newValue));
+        updateBuilder.updateColumnValue(ExchangeRate.EXCHANGE_RATE, CurrencyHelper.castToInteger(newValue))
+                .where().eq(ExchangeRate.ID, exchangeRateId);
         exchangeRateDao.update(updateBuilder.prepare());
     }
 }
