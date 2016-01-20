@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="tooltip_top_bottom_spacing">8dp</dimen>
+    <dimen name="tooltip_left_right_spacing">12dp</dimen>
+    <dimen name="tooltip_arrow_height">12dp</dimen>
+</resources>
