@@ -44,7 +44,83 @@ public class CurrencyHelper {
         return new BigDecimal(money).movePointLeft(MAXIMUM_FRACTION_DIGITS);
     }
 
-    public static int castToInteger(BigDecimal money){
+    public static int castToInteger(BigDecimal money) {
         return money.movePointRight(MAXIMUM_FRACTION_DIGITS).intValue();
+    }
+
+    /**
+     * 格式化显示金额
+     *
+     * @param money                    金额
+     * @param showCurrencySymbol       是否显示货币符号
+     * @param alwaysShowFractionDigits 是否一直显示小数，即使金额为整数值
+     * @return 显示金额
+     */
+    public static String formatCurrency(BigDecimal money, String currencyCode, boolean showCurrencySymbol,
+                                        boolean alwaysShowFractionDigits) {
+        if (money == null || TextUtils.isEmpty(currencyCode)) {
+            return "";
+        }
+
+        BigDecimal value = money;
+        if (alwaysShowFractionDigits) {
+            value = money.setScale(MAXIMUM_FRACTION_DIGITS, BigDecimal.ROUND_HALF_EVEN); // 不管有没有小数，都显示到后两位小数
+        }
+
+        String currencySymbol = Currency.getInstance(currencyCode).getSymbol();
+
+        return showCurrencySymbol ? currencySymbol + value.toString() : value.toString();
+    }
+
+    public static boolean isGreaterThan(BigDecimal source, BigDecimal target) {
+        return source.compareTo(target) == 1;
+    }
+
+    public static boolean isGreaterOrEquals(BigDecimal source, BigDecimal target) {
+        int diff = source.compareTo(target);
+        return diff == 1 || diff == 0;
+    }
+
+    public static boolean isLessThan(BigDecimal source, BigDecimal target) {
+        int diff = source.compareTo(target);
+        return diff == -1;
+    }
+
+    public static boolean isLessOrEquals(BigDecimal source, BigDecimal target) {
+        int diff = source.compareTo(target);
+        return diff == -1 || diff == 0;
+    }
+
+    public static boolean isIntegerValue(BigDecimal bd) {
+        return bd.signum() == 0 || bd.scale() <= 0 || bd.stripTrailingZeros().scale() <= 0;
+    }
+
+    public static boolean isValidCurrency(String text) {
+        if (TextUtils.isEmpty(text)) {
+            return false;
+        }
+
+        try {
+            BigDecimal money = new BigDecimal(text);
+            return true;
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    public static boolean isValidNumber(String text) {
+        if (TextUtils.isEmpty(text)) {
+            return false;
+        }
+        try {
+            Integer.parseInt(text);
+            return true;
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
+
+        return false;
     }
 }
