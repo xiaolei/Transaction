@@ -35,7 +35,7 @@ public class NewTransactionActivity extends BaseActivity {
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
                 .replace(R.id.fragmentContainer, CalculatorFragment.newInstance(mTransactionDate))
-                .commit();
+                .commitAllowingStateLoss();
     }
 
     public void onEvent(RefreshTransactionListEvent event) {

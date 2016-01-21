@@ -195,7 +195,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Activity
 
         Fragment fragment = Fragment.instantiate(this, fragmentTagName, arguments);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(fragmentContainerId, fragment).commit();
+        transaction.replace(fragmentContainerId, fragment).commitAllowingStateLoss();
     }
 
     @Override
