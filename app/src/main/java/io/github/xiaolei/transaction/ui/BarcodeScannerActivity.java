@@ -54,14 +54,14 @@ public class BarcodeScannerActivity extends BaseActivity implements BarcodeCallb
     }
 
     @Override
-    protected void onResume() {
+    public void onResume() {
         super.onResume();
 
         mViewHolder.barcodeView.resume();
     }
 
     @Override
-    protected void onPause() {
+    public void onPause() {
         super.onPause();
 
         mViewHolder.barcodeView.pause();

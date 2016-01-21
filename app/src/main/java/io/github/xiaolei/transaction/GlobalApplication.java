@@ -10,6 +10,7 @@ import java.sql.SQLException;
 
 import de.greenrobot.event.EventBus;
 import io.github.xiaolei.enterpriselibrary.logging.Logger;
+import io.github.xiaolei.transaction.analysis.AnalyticsTrackerManager;
 import io.github.xiaolei.transaction.entity.Account;
 import io.github.xiaolei.transaction.event.AccountInfoLoadCompletedEvent;
 import io.github.xiaolei.transaction.event.AppInitCompletedEvent;
@@ -34,11 +35,11 @@ public class GlobalApplication extends Application {
         return mCurrentAccount;
     }
 
-    public static void setCurrentAccount(Account account){
+    public static void setCurrentAccount(Account account) {
         mCurrentAccount = account;
     }
 
-    public static long getCurrentAccountId(){
+    public static long getCurrentAccountId() {
         return mCurrentAccount != null ? mCurrentAccount.getId() : -1;
     }
 
@@ -72,6 +73,8 @@ public class GlobalApplication extends Application {
             protected Boolean doInBackground(Void... voids) {
                 try {
                     initializeAccountInfo();
+                    initializeAnalysisSDK();
+
                     return true;
                 } catch (Exception e) {
                     return false;
@@ -90,8 +93,12 @@ public class GlobalApplication extends Application {
         task.execute();
     }
 
+    private void initializeAnalysisSDK() {
+        AnalyticsTrackerManager.getInstance().getDefaultTracker().initialize();
+    }
+
     /**
-     * Create a new account or load current account
+     * Create a new account or load current account info
      */
     private void initializeAccountInfo() throws SQLException {
         final long accountId = PreferenceHelper.getInstance(getApplicationContext()).getSharedPreferences().getLong(PreferenceHelper.PREF_KEY_CURRENT_ACCOUNT_ID, -1);

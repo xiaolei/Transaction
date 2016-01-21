@@ -28,6 +28,7 @@ import io.github.xiaolei.enterpriselibrary.logging.Logger;
 import io.github.xiaolei.enterpriselibrary.utility.DialogHelper;
 import io.github.xiaolei.enterpriselibrary.utility.PhotoPicker;
 import io.github.xiaolei.transaction.R;
+import io.github.xiaolei.transaction.analysis.AnalyticsTrackerManager;
 import io.github.xiaolei.transaction.event.CheckPermissionEvent;
 import io.github.xiaolei.transaction.event.PickPhotoEvent;
 import io.github.xiaolei.transaction.event.SwitchToFragmentEvent;
@@ -308,5 +309,17 @@ public abstract class BaseActivity extends AppCompatActivity implements Activity
             boolean granted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
             onGotPermissionResult(new PermissionResult(permissions[0], granted));
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        AnalyticsTrackerManager.getInstance().getDefaultTracker().onResume(this);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        AnalyticsTrackerManager.getInstance().getDefaultTracker().onPause(this);
     }
 }
